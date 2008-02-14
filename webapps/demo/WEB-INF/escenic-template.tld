@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>template</short-name>
+  <uri>http://www.escenic.com/taglib/escenic-template</uri>
+  
+  <tag>
+    <name>call</name>
+    <tag-class>neo.taglib.template.CallTemplateTag</tag-class>
+    <body-content>JSP</body-content>
+    
+    
+    <attribute>
+      <name>file</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>fileName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>fileProperty</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionParameter</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>prefix</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>suffix</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>pluginName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>pluginProperty</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>servletContext</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>defaultPresentationArticle</name>
+    <tag-class>neo.taglib.template.DefaultPresentationArticleTag</tag-class>
+    <body-content>empty</body-content>
+    
+  </tag>
+  
+  <tag>
+    <name>defaultPresentationPool</name>
+    <tag-class>neo.taglib.template.DefaultPresentationPoolTag</tag-class>
+    <body-content>empty</body-content>
+    
+  </tag>
+  
+  <tag>
+    <name>defaultPublication</name>
+    <tag-class>neo.taglib.template.DefaultPublicationTag</tag-class>
+    <body-content>empty</body-content>
+    
+    <attribute>
+      <name>publicationId</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>publicationID</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>defaultSection</name>
+    <tag-class>neo.taglib.template.DefaultSectionTag</tag-class>
+    <body-content>empty</body-content>
+    
+    <attribute>
+      <name>sectionId</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionID</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+      
+    </attribute>
+    <attribute>
+      <name>docRoot</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>element</name>
+    <tag-class>neo.taglib.template.ElementTag</tag-class>
+    <body-content>JSP</body-content>
+    
+    
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>hasElement</name>
+    <tag-class>neo.taglib.template.HasElementTag</tag-class>
+    <body-content>JSP</body-content>
+    
+    <attribute>
+      <name>columnName</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>hasNoElement</name>
+    <tag-class>neo.taglib.template.HasNoElementTag</tag-class>
+    <body-content>JSP</body-content>
+    
+    <attribute>
+      <name>columnName</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>insert</name>
+    <tag-class>neo.taglib.template.InsertTag</tag-class>
+    <tei-class>neo.taglib.template.InsertTEI</tei-class>
+    <body-content>JSP</body-content>
+    
+    
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+      
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+      
+    </attribute>
+    <attribute>
+      <name>template</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+      
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+      
+    </attribute>
+    <attribute>
+      <name>typeName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>typeProperty</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>templateName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>templateProperty</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>elementName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>elementProperty</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+            
+    </attribute>
+    <attribute>
+      <name>groupName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>groupProperty</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+            
+    </attribute>
+    <attribute>
+      <name>offset</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>length</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>pluginName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>pluginProperty</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>parameter</name>
+    <tag-class>neo.taglib.util.ParameterTag</tag-class>
+    <body-content>JSP</body-content>
+    
+    
+    
+    <attribute>
+      <name>key</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>value</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>serviceParameter</name>
+    <tag-class>neo.taglib.template.ServiceParameterTag</tag-class>
+    <body-content>EMPTY</body-content>
+    
+    
+    
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+</taglib>

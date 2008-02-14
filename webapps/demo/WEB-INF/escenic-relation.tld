@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>relation</short-name>
+  <uri>http://www.escenic.com/taglib/escenic-relation</uri>
+
+  
+  <tag>
+    <name>articles</name>
+    <tag-class>neo.taglib.relation.RelatedArticlesTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Gets all the related articles from the spesified article.
+    </description>
+    
+    <variable>
+      <name-from-attribute>id</name-from-attribute>
+      <variable-class>neo.xredsys.presentation.PresentationRelationArticle</variable-class>
+      <scope>NESTED</scope>
+    </variable>
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>start</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>includeArticleTypes</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>excludeArticleTypes</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>field</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>images</name>
+    <tag-class>neo.taglib.relation.RelatedImageTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Gets all the related images from the specified article.
+    </description>
+    
+    <variable>
+      <name-from-attribute>id</name-from-attribute>
+      <variable-class>neo.xredsys.presentation.PresentationRelationImage</variable-class>
+      <scope>NESTED</scope>
+    </variable>
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>fallbackToDefault</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>start</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>field</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>version</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>links</name>
+    <tag-class>neo.taglib.relation.RelatedLinksTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Gets the related links from the specified article.
+    </description>
+    
+    <variable>
+      <name-from-attribute>id</name-from-attribute>
+      <variable-class>neo.xredsys.presentation.PresentationRelationLink</variable-class>
+      <scope>NESTED</scope>
+    </variable>
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>start</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>field</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>media</name>
+    <tag-class>neo.taglib.relation.RelatedMediaTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Gets all the related media-objects from the specified article.
+    </description>
+    
+    <variable>
+      <name-from-attribute>id</name-from-attribute>
+      <variable-class>neo.xredsys.presentation.PresentationRelationMedia</variable-class>
+      <scope>NESTED</scope>
+    </variable>
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>start</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>field</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>persons</name>
+    <tag-class>neo.taglib.relation.RelatedPersonsTag</tag-class>
+    <body-content>JSP</body-content>
+    <description>
+      Gets the related persons from the specified article.
+    </description>
+    
+    <variable>
+      <name-from-attribute>id</name-from-attribute>
+      <variable-class>neo.xredsys.presentation.PresentationRelationPerson</variable-class>
+      <scope>NESTED</scope>
+    </variable>
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      
+    </attribute>
+    <attribute>
+      <name>start</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+</taglib>

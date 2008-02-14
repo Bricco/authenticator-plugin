@@ -1,0 +1,205 @@
+<project name="authenticator" default="usage" basedir=".">
+
+	<property name="version" value="1.0" />
+
+	<property environment="env" />
+	<!-- set webapps.dir if TOMCAT_HOME env variable is set. CruiseControl sends this variable along -->
+	<available file="${env.TOMCAT_HOME}" property="webapps.dir" value="${env.TOMCAT_HOME}/webapps" />
+	<available file="${env.TOMCAT_HOME}" property="shared-lib.dir" value="${env.TOMCAT_HOME}/shared/lib" />
+	<available file="${env.ESCENIC_HOME}" property="escenic_home" value="${env.ESCENIC_HOME}" />
+	<property name="escenic_home" value="/opt/escenic/" />
+	<property name="jar.file" value="escenic-${ant.project.name}-classes.jar" />
+	<property name="publication-jar.file" value="escenic-${ant.project.name}-taglib.jar" />
+	<property name="plugin-jar.file" value="${ant.project.name}-${version}.jar" />
+	<property name="demo-publication" value="${ant.project.name}-demo" />
+	<property name="demo-war.file" value="${demo-publication}.war" />
+	<path id="project.class.path">
+		<fileset dir="buildjars">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="usage">
+		<echo>
+**************************************************
+* ${ant.project.name} builder.
+* 
+* Available targets:
+*
+*   usage       display this help
+*   deploy-jsp  copies JSPs to Tomcat
+*   war         create publication WAR file
+*   clean       clean up
+*
+**************************************************
+		</echo>
+	</target>
+
+	<target name="init" description="Initializes the build process.">
+		<mkdir dir="dist" />
+		<mkdir dir="build" />
+	</target>
+
+	<target name="compile" depends="init, generate-kundservice-client">
+		<javac debug="on" srcdir="src/java" destdir="build">
+			<include name="talentum/**" />
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<delete failonerror="false" file="dist/${jar.file}" />
+		<mkdir dir="tmp/com/escenic/plugin" />
+		<copyfile dest="tmp/com/escenic/plugin/plugin.xml" src="resources/plugin.xml" />
+		<jar jarfile="dist/${jar.file}">
+			<fileset dir="build">
+				<include name="talentum/escenic/plugins/authenticator/*" />
+				<include name="talentum/escenic/plugins/authenticator/agreements/*" />
+				<include name="talentum/escenic/plugins/authenticator/authenticators/**" />
+				<include name="net/kundservice/www/prenstatusws/**" />
+			</fileset>
+			<fileset dir="tmp">
+				<include name="com/escenic/plugin/*" />
+			</fileset>
+		</jar>
+		<delete failonerror="false" file="dist/${publication-jar.file}" />
+		<jar jarfile="dist/${publication-jar.file}">
+			<fileset dir="build">
+				<include name="talentum/escenic/plugins/authenticator/struts/*" />
+				<include name="talentum/escenic/plugins/authenticator/taglib/*" />
+			</fileset>
+		</jar>
+		<delete dir="tmp"/>
+	</target>
+
+	<target name="war" depends="clean, jar" description="Builds a demo WAR file into ./dist folder.">
+		<echo>Creating demo WAR file</echo>
+		<war destfile="dist/${demo-war.file}" webxml="resources/web.xml">
+			<fileset dir="webapps/demo">
+				<include name="**" />
+			</fileset>
+			<!-- add the JAR to WEB-INF/lib -->
+			<lib dir="dist">
+				<include name="${publication-jar.file}" />
+			</lib>
+		</war>
+		<echo>WAR file ${demo-war.file} created</echo>
+	</target>
+
+	<target name="publish-demo" depends="war" description="Calls the escenic-admin application and publishes the WAR to it.">
+		<echo>NOT IMPLEMENTED YET</echo>
+	</target>
+
+	<target name="deploy-demo" depends="install-plugin" if="webapps.dir" description="Deploys the WAR file to the application server webapps directory.">
+		<!-- delete the old unpacked war -->
+		<delete dir="${webapps.dir}/${demo-publication}" />
+
+		<!-- deploy the new war -->
+		<!--
+		<copy todir="${webapps.dir}" file="dist/${demo-war.file}" />
+		-->
+
+		<fail unless="escenic_home">
+			ESCENIC_HOME must be set in your environment.
+		</fail>
+		<property name="asseblytool.dir" value="${escenic_home}/assemblytool" />
+		<echo>Copying WAR to assemblytool</echo>
+		<copy todir="${asseblytool.dir}/publications" file="dist/${demo-war.file}" />
+		<echo>Creating properties file for assemblytool</echo>
+		<echo file="${asseblytool.dir}/publications/${demo-publication}.properties">
+name: ${demo-publication}
+source-war: ${demo-war.file}
+context-root: /${demo-publication}
+		</echo>
+		<echo>Running assebly tool</echo>
+		<ant dir="${asseblytool.dir}" target="clean" inheritall="false" />
+		<ant dir="${asseblytool.dir}" target="ear" inheritall="false" />
+		<echo>Deploying WAR to ${webapps.dir}</echo>
+		<copy todir="${webapps.dir}" file="${asseblytool.dir}/dist/war/${demo-war.file}" />
+	</target>
+
+	<target name="deploy-jsp" depends="init" if="webapps.dir" description="Copies all modified JSPs into the webapp folder of the application server.">
+		<echo>Deploying JSP files to ${webapps.dir}</echo>
+		<copy todir="${webapps.dir}/${demo-publication}">
+			<fileset dir="webapps/demo" includes="**/*.jsp" />
+		</copy>
+	</target>
+
+	<target name="deploy-jar" depends="jar" if="webapps.dir" description="Copies all modified JSPs into the webapp folder of the application server.">
+		<echo>Deploying JAR file to ${shared-lib.dir}</echo>
+		<copy todir="${shared-lib.dir}">
+			<fileset dir="dist" includes="${jar.file}" />
+		</copy>
+	</target>
+	
+	<target name="generate-kundservice-client">
+		<taskdef resource="axis-tasks.properties"
+		  classpathref="project.class.path" />
+		<axis-wsdl2java
+		  output="src/java"
+		  testcase="true"
+		  verbose="true"
+		  url="resources/kundservice_authorization.wsdl" >
+			<!--
+		    <mapping
+		      namespace="https://www.kundservice.net/WS/Authorization"
+		      package="talentum.escenic.plugins.authenticator.authenticators.kundservice.ws" />
+		      -->
+		  </axis-wsdl2java>
+	</target>
+
+	<target name="pack" depends="war">
+		
+		<mkdir dir="tmp/${ant.project.name}"/>
+		<mkdir dir="tmp/${ant.project.name}/admin/webapp/plugins/${ant.project.name}"/>
+		<mkdir dir="tmp/${ant.project.name}/lib"/>
+		<mkdir dir="tmp/${ant.project.name}/misc/siteconfig"/>
+		<mkdir dir="tmp/${ant.project.name}/publication/webapp/WEB-INF/lib"/>
+		<mkdir dir="tmp/${ant.project.name}/wars"/>
+		
+		<copy todir="tmp/${ant.project.name}/admin/webapp/plugins/${ant.project.name}">
+			<fileset dir="webapps/admin">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy file="dist/${jar.file}" todir="tmp/${ant.project.name}/lib" />
+		<copy file="buildjars/axis.jar" todir="tmp/${ant.project.name}/lib" />
+		<copy file="buildjars/jaxrpc.jar" todir="tmp/${ant.project.name}/lib" />
+		<copy file="buildjars/commons-discovery-0.2.jar" todir="tmp/${ant.project.name}/lib" />
+		<copy file="buildjars/saaj.jar" todir="tmp/${ant.project.name}/lib" />
+		<copy file="buildjars/wsdl4j-1.5.1.jar" todir="tmp/${ant.project.name}/lib" />
+		<copy todir="tmp/${ant.project.name}/misc/siteconfig">
+			<fileset dir="siteconfig">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy file="dist/${publication-jar.file}" todir="tmp/${ant.project.name}/publication/webapp/WEB-INF/lib" />
+		<copy file="dist/${demo-war.file}" todir="tmp/${ant.project.name}/wars" />
+		
+		<delete failonerror="false" file="dist/${plugin-jar.file}" />
+		<jar jarfile="dist/${plugin-jar.file}">
+			<fileset dir="tmp">
+				<include name="${ant.project.name}/**/*" />
+			</fileset>
+		</jar>
+		
+		<delete dir="tmp"/>
+	</target>
+	
+	<target name="install-plugin" depends="pack">
+		<fail unless="escenic_home">
+			ESCENIC_HOME must be set in your environment.
+		</fail>
+		<unjar src="dist/${plugin-jar.file}" dest="${escenic_home}/engine/plugins" overwrite="true"></unjar>
+	</target>
+	
+	<target name="clean" description="Removes generated directories.">
+		<delete failonerror="false" dir="build" />
+		<delete failonerror="false">
+			<fileset dir="dist">
+				<include name="*" />
+			</fileset>
+		</delete>
+	</target>
+
+</project>

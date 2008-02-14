@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>section</short-name>
+  <uri>http://www.escenic.com/taglib/escenic-section</uri>
+  
+  
+  
+
+  <tag>
+    <name>ancestorView</name>
+    <tag-class>neo.taglib.section.AncestorViewTag</tag-class>
+    <tei-class>neo.taglib.section.ViewTEI</tei-class>
+    <body-content>empty</body-content>
+    
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>section</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>uniqueName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>height</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>includeRoot</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>lastChanged</name>
+    <tag-class>neo.taglib.section.LastChangedTag</tag-class>
+    <tei-class>neo.taglib.DefaultIdBehaviorTEI</tei-class>
+    <body-content>empty</body-content>
+    <description>
+      Formates the date added
+    </description>
+    
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>format</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>locale</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>nameFormat</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>expiresCache</name>
+    <tag-class>neo.taglib.section.SectionExpiresCacheTag</tag-class>
+    <body-content>EMPTY</body-content>
+    
+    
+    <attribute>
+      <name>section</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>uniqueName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+
+
+
+  <tag>
+    <name>link</name>
+    <tag-class>neo.taglib.section.LinkTag</tag-class>
+    <body-content>JSP</body-content>
+    
+    
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>section</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>uniqueName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>accesskey</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onblur</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onclick</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>ondblclick</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onfocus</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onkeydown</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onkeypress</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onkeyup</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onmousedown</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onmousemove</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onmouseout</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onmouseover</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>onmouseup</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>style</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>styleClass</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>styleId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>tabindex</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>title</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>parameter</name>
+    <tag-class>neo.taglib.section.ParameterTag</tag-class>
+    <tei-class>neo.taglib.DefaultIdBehaviorTEI</tei-class>
+    <body-content>JSP</body-content>
+    
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>parameter</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>via</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>name</name>
+    <tag-class>neo.taglib.section.NameTag</tag-class>
+    <body-content>empty</body-content>
+    
+    
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>section</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>uniqueName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>recursiveView</name>
+    <tag-class>neo.taglib.section.RecursiveViewTag</tag-class>
+    <tei-class>neo.taglib.section.ViewTEI</tei-class>
+    <body-content>empty</body-content>
+    
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>depth</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>includeRoot</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>section</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>uniqueName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>use</name>
+    <tag-class>neo.taglib.section.UseTag</tag-class>
+    <tei-class>neo.taglib.section.UseTEI</tei-class>
+    <body-content>JSP</body-content>
+    
+    <attribute>
+      <name>section</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>uniqueName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>source</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sourceId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionIdInt</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+
+
+
+  <tag>
+    <name>view</name>
+    <tag-class>neo.taglib.section.ViewTag</tag-class>
+    <tei-class>neo.taglib.section.ViewTEI</tei-class>
+    <body-content>empty</body-content>
+    
+    <attribute>
+      <name>id</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>section</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>sectionId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>uniqueName</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+    <attribute>
+      <name>property</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      
+    </attribute>
+  </tag>
+
+
+</taglib>

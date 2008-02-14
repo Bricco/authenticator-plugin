@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<IoTypeDef xmlns="http://www.escenic.com/ece40/ArticleType"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.escenic.com/ece40/ArticleType ArticleType.xsd"
+	version="2">
+
+	<FieldGroup name="title">
+		<Field>
+			<name>title</name>
+			<label>Title</label>
+			<constraint allowEmpty="false" />
+		</Field>
+	</FieldGroup>
+	<FieldGroup name="leadtext">
+		<Field>
+			<name>leadtext</name>
+			<label>Lead text</label>
+			<layout rows="5" cols="65" />
+		</Field>
+	</FieldGroup>
+	<FieldGroup name="body">
+		<Field type="basic">
+			<name>body</name>
+			<label>Body</label>
+			<layout rows="16" cols="65" />
+			<pluginEditor type="panel"
+				class="neo.client.gui.components.editor.XHTMLEditor">
+				<XHTMLEditor
+					xmlns="http://www.escenic.com/XHTMLEditor">
+					<param>
+						<name>ecs_all_html</name>
+					</param>
+				</XHTMLEditor>
+			</pluginEditor>
+		</Field>
+	</FieldGroup>
+	<FieldGroup name="include">
+		<Field type="basic">
+			<name>sourceUrl</name>
+			<label>Source URL</label>
+			<description>
+				The url where we want to get the content from.
+			</description>
+		</Field>
+	</FieldGroup>
+
+
+	<ArticleType>
+		<name>news</name>
+		<label>News article</label>
+		<description>A regular news article.</description>
+		<title>title</title>
+		<Panel>
+			<name>default</name>
+			<label>News article fields</label>
+			<FieldGroup name="title" />
+			<FieldGroup name="leadtext" />
+			<FieldGroup name="body" />
+		</Panel>
+	</ArticleType>
+
+	<ArticleType>
+		<name>include</name>
+		<label>Include article</label>
+		<description>
+			Includes external content into the page.
+		</description>
+		<title>title</title>
+		<Panel>
+			<name>default</name>
+			<label>Include article fields</label>
+
+			<FieldGroup name="title" />
+			<FieldGroup name="include" />
+
+		</Panel>
+	</ArticleType>
+
+	<ArticleType>
+		<name>static</name>
+		<label>Static article</label>
+		<description>
+			Information article with static content.
+		</description>
+		<title>title</title>
+		<Panel>
+			<name>default</name>
+			<label>Static article fields</label>
+
+			<FieldGroup name="title" />
+			<FieldGroup name="body" />
+
+		</Panel>
+	</ArticleType>
+
+</IoTypeDef>

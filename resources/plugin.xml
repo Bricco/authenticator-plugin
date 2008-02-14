@@ -1,0 +1,30 @@
+<plugin-descriptor name="authenticator" label="Authenticator">
+	<description>Authenticator plugin</description>
+	<version>1.0</version>
+	<core version="4.3" />
+	<requires>
+		<class name="neo.xredsys.ldap.plugin.LDAPPluginEntry"
+			label="ECE core" error="The escenic core needs to be upgraded" />
+		<class
+			name="talentum.escenic.plugins.authenticator.AuthenticatorManager"
+			label="The main authenticator manager class"
+			error="The authenticator plugin classes cannot be found on the system CLASSPATH" />
+		<class name="com.escenic.plugin.PluginPermission"
+			label="ECE plugin libarary"
+			error="The ECE plugin library cannot be found on the system CLASSPATH" />
+		<class name="neo.util.CollectionUtil"
+			label="ECE common libarary"
+			error="The ece-common lib needs to be upgraded" />
+		<!--
+			// to be inserted into the action servlet of web.xml
+			<struts-config
+			where="escenic" :-)
+			name="config/forum"
+			label="abc" file="/WEB-INF/forum-plugin-struts-config.xml"/>
+		-->
+	</requires>
+	<parameter name="neo.phoenix.plugin.description" value="This page allows you to list logged in users" />
+	
+	<resource type="internal-link" target="admin" task="/index"
+		area="menu" label="Authenticator" uri="/plugins/authenticator/index.jsp" roles="all" />
+</plugin-descriptor>

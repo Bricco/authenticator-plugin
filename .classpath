@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="buildjars/servlet-api.jar"/>
+	<classpathentry kind="lib" path="buildjars/struts.jar"/>
+	<classpathentry kind="lib" path="buildjars/escenic-servletsupport-classes.jar"/>
+	<classpathentry kind="lib" path="buildjars/escenic-common.jar"/>
+	<classpathentry kind="lib" path="buildjars/commons-logging.jar"/>
+	<classpathentry kind="lib" path="buildjars/escenic-io.jar"/>
+	<classpathentry kind="lib" path="buildjars/axis-ant.jar"/>
+	<classpathentry kind="lib" path="buildjars/axis.jar"/>
+	<classpathentry kind="lib" path="buildjars/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="buildjars/commons-discovery-0.2.jar"/>
+	<classpathentry kind="lib" path="buildjars/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="buildjars/saaj.jar"/>
+	<classpathentry kind="lib" path="buildjars/wsdl4j-1.5.1.jar"/>
+	<classpathentry kind="lib" path="buildjars/jsp-api.jar"/>
+	<classpathentry kind="lib" path="webapps/demo/WEB-INF/lib/jstl-1.1.2.jar"/>
+	<classpathentry kind="lib" path="webapps/demo/WEB-INF/lib/standard-1.1.2.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

@@ -1,5 +1,6 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -23,7 +24,7 @@ public class AuthenticatedUser {
 	
 	private Date lastChecked;
 	
-	private String[] roles;
+	private ArrayList roles = new ArrayList();
 
 	public boolean isAutologin() {
 		return autologin;
@@ -98,11 +99,11 @@ public class AuthenticatedUser {
 	}
 
 	public String[] getRoles() {
-		return roles;
+		return (String[]) roles.toArray(new String[roles.size()]);
 	}
 
 	public void setRoles(String[] roles) {
-		this.roles = roles;
+		this.roles.addAll(Arrays.asList(roles));
 	}
 	
 	public boolean hasRole(String role) {

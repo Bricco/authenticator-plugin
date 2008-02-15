@@ -2,14 +2,11 @@ package talentum.escenic.plugins.authenticator.authenticators;
 
 import net.kundservice.www.prenstatusws.login.LoginServiceLocator;
 import net.kundservice.www.prenstatusws.login.LoginServiceSoapStub;
+import net.kundservice.www.prenstatusws.login.ProductDto;
 import net.kundservice.www.prenstatusws.login.UserStatusDto;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import talentum.escenic.plugins.authenticator.authenticators.kundservice.ws.AuthorizationLocator;
-import talentum.escenic.plugins.authenticator.authenticators.kundservice.ws.AuthorizationSoapStub;
-import talentum.escenic.plugins.authenticator.authenticators.kundservice.ws.UserStruct;
 
 public class PressDataAuthenticator implements Authenticator {
 
@@ -22,13 +19,13 @@ public class PressDataAuthenticator implements Authenticator {
 			LoginServiceSoapStub binding = (LoginServiceSoapStub) new LoginServiceLocator()
 					.getLoginServiceSoap();
 			// TODO read product from properties file?
-			UserStatusDto status = binding.loginPublisher("AFFVAR", username, password);
+			UserStatusDto userSDto = binding.loginPublisher("AFFVAR", username, password);
 
-			if (!status.isIsLoginOk()) {
+			if (!userSDto.isIsLoginOk()) {
 				log.error("Authentication failed for user " + username);
 			} else {
 				// populate user object
-				user = populateUser(struct);
+				user = populateUser(userSDto);
 			}
 
 		} catch (Exception e) {
@@ -41,19 +38,19 @@ public class PressDataAuthenticator implements Authenticator {
 		AuthenticatedUser user = null;
 		try {
 			// call web service top authenticate
-			AuthorizationSoapStub binding = (AuthorizationSoapStub) new AuthorizationLocator()
-					.getAuthorizationSoap();
+//			AuthorizationSoapStub binding = (AuthorizationSoapStub) new AuthorizationLocator()
+//					.getAuthorizationSoap();
 			// TODO read product from properties file?
-			UserStruct struct = binding.verifyUser(token, "AFR");
-
-			if (struct.getErrorCode() > 0) {
-				log.error("Verification failed for user with token " + token
-						+ ". Error from web service: " + struct.getErrorCode()
-						+ " " + struct.getErrorDescription());
-			} else {
-				// populate user object
-				user = populateUser(struct);
-			}
+//			UserStruct struct = binding.verifyUser(token, "AFR");
+//
+//			if (struct.getErrorCode() > 0) {
+//				log.error("Verification failed for user with token " + token
+//						+ ". Error from web service: " + struct.getErrorCode()
+//						+ " " + struct.getErrorDescription());
+//			} else {
+//				// populate user object
+//				user = populateUser(struct);
+//			}
 
 		} catch (Exception e) {
 			log.error("verification failed", e);
@@ -61,19 +58,22 @@ public class PressDataAuthenticator implements Authenticator {
 		return user;
 	}
 
-	private AuthenticatedUser populateUser(UserStruct struct) {
+	private AuthenticatedUser populateUser(UserStatusDto userSDto) {
 		AuthenticatedUser user = new AuthenticatedUser();
-		user.setUserId(Integer.parseInt(struct.getUserId()));
-		user.setUserName(struct.getUserName());
+		user.setUserId(userSDto.getUserId());
+		user.setUserName(userSDto.getUsername());
 		user
-				.setName(struct.getFirstName() + " "
-						+ struct.getLastName());
-		user.setAutologin(Boolean.getBoolean(struct.getAutoLogin()));
-		user.setCompanyName(struct.getCompanyName());
-		user.setEmail(struct.getEMail());
-		user.setToken(struct.getToken());
-		user.setStatus(struct.getStatus());
-		user.setRoles(struct.getRoles());
+				.setName(userSDto.getFirstname() + " "
+						+ userSDto.getLastname());
+		user.setAutologin(userSDto.isAutologin());
+		user.setCompanyName(userSDto.getCompanyName());
+		user.setEmail(userSDto.getEmail());
+		user.setToken(userSDto.getToken());
+		//user.setStatus(userSDto.getStatus());
+		ProductDto[] prDto = userSDto.getProducts();
+		for (int i = 0; i < prDto.length; i++) {
+			user.setRoles(prDto[i].getRoles());
+		}
 		
 		return user;
 	}

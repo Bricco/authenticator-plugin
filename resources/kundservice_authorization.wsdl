@@ -8,6 +8,7 @@
             <s:element minOccurs="0" maxOccurs="1" name="publisher" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -17,10 +18,19 @@
             <s:element minOccurs="0" maxOccurs="1" name="LoginPublisherResult" type="tns:UserStatusDto" />
           </s:sequence>
         </s:complexType>
+
       </s:element>
       <s:complexType name="UserStatusDto">
         <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="UserId" type="s:int" />
           <s:element minOccurs="0" maxOccurs="1" name="Username" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Firstname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Lastname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CompanyName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+
+          <s:element minOccurs="0" maxOccurs="1" name="Token" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Autologin" type="s:boolean" />
           <s:element minOccurs="0" maxOccurs="1" name="Products" type="tns:ArrayOfProductDto" />
           <s:element minOccurs="1" maxOccurs="1" name="IsLoginOk" type="s:boolean" />
         </s:sequence>
@@ -28,17 +38,27 @@
       <s:complexType name="ArrayOfProductDto">
         <s:sequence>
           <s:element minOccurs="0" maxOccurs="unbounded" name="ProductDto" nillable="true" type="tns:ProductDto" />
+
         </s:sequence>
       </s:complexType>
       <s:complexType name="ProductDto">
         <s:sequence>
           <s:element minOccurs="0" maxOccurs="1" name="ProductId" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
-          <s:element minOccurs="1" maxOccurs="1" name="IsSubscriber" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Status" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Roles" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Token" type="s:string" />
+
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
         </s:sequence>
       </s:complexType>
     </s:schema>
   </wsdl:types>
+
   <wsdl:message name="LoginPublisherSoapIn">
     <wsdl:part name="parameters" element="tns:LoginPublisher" />
   </wsdl:message>
@@ -48,6 +68,7 @@
   <wsdl:portType name="LoginServiceSoap">
     <wsdl:operation name="LoginPublisher">
       <wsdl:input message="tns:LoginPublisherSoapIn" />
+
       <wsdl:output message="tns:LoginPublisherSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
@@ -57,6 +78,7 @@
       <soap:operation soapAction="http://www.kundservice.net/prenstatusws/login/LoginPublisher" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
+
       </wsdl:input>
       <wsdl:output>
         <soap:body use="literal" />
@@ -66,6 +88,7 @@
   <wsdl:binding name="LoginServiceSoap12" type="tns:LoginServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="LoginPublisher">
+
       <soap12:operation soapAction="http://www.kundservice.net/prenstatusws/login/LoginPublisher" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
@@ -75,6 +98,7 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
+
   <wsdl:service name="LoginService">
     <wsdl:port name="LoginServiceSoap" binding="tns:LoginServiceSoap">
       <soap:address location="https://www.kundservice.net/prenstatusws/LoginService.asmx" />

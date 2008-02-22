@@ -102,8 +102,9 @@ public class AuthenticatedUser {
 		return (String[]) roles.toArray(new String[roles.size()]);
 	}
 
-	public void setRoles(String[] roles) {
-		this.roles.addAll(Arrays.asList(roles));
+	public void addRole(String role) {
+		if(!roles.contains(role))
+			roles.add(role);
 	}
 	
 	public boolean hasRole(String role) {

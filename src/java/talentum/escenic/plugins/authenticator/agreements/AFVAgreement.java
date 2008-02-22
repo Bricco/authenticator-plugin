@@ -31,7 +31,9 @@ public class AFVAgreement implements AgreementPartner {
 
 	public static final String COOKIE_NAME = "pressdata_user";
 	public static final String ROLE_PAPER = "T";
-	public static final String ROLE_SMALLCAP = "S";
+	public static final String ROLE_WEB = "TWE";
+	public static final String ROLE_REAL1 = "R1";
+	public static final String ROLE_REAL2 = "R2";
 	
 	public AFVAgreement() {
 		allowedRoles = new ArrayList();

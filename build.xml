@@ -195,6 +195,7 @@ context-root: /${demo-publication}
 	
 	<target name="clean" description="Removes generated directories.">
 		<delete failonerror="false" dir="build" />
+		<delete failonerror="false" dir="dist" />
 		<delete failonerror="false">
 			<fileset dir="dist">
 				<include name="*" />

@@ -10,6 +10,18 @@
   
   <function>
     <description>
+      Get authenticated user.
+    </description>
+    <name>authenticatedUser</name>
+    <function-class>talentum.escenic.plugins.authenticator.taglib.AuthenticatorUtil</function-class>
+    <function-signature>talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser getAuthenticatedUser(java.lang.String)</function-signature>
+    <example>
+      &lt;c:out value="${authenticateUser('32423234234234')}">
+    </example>
+  </function>
+
+  <function>
+    <description>
       Checks if user is authenticated.
     </description>
     <name>checkToken</name>

@@ -31,7 +31,7 @@ public class LogoutAction extends Action {
 		
 		Cookie[] allCookies = request.getCookies();
 		for (int i = 0; i < allCookies.length; i++) {
-			if(allCookies[i].getName() == AFVAgreement.COOKIE_NAME) {
+			if(allCookies[i].getName().equals(AFVAgreement.COOKIE_NAME)) {
 				cookie = allCookies[i];
 			}
 		}

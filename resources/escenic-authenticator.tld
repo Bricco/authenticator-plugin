@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd"
+  version="2.0">
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>authenticator</short-name>
+  <uri>http://www.talentum.com/taglib/escenic-authenticator</uri>
+  
+  <function>
+    <description>
+      Get authenticated user.
+    </description>
+    <name>authenticatedUser</name>
+    <function-class>talentum.escenic.plugins.authenticator.taglib.AuthenticatorUtil</function-class>
+    <function-signature>talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser getAuthenticatedUser(java.lang.String)</function-signature>
+    <example>
+      &lt;c:out value="${authenticateUser('32423234234234')}">
+    </example>
+  </function>
+
+  <function>
+    <description>
+      Checks if user is authenticated.
+    </description>
+    <name>checkToken</name>
+    <function-class>talentum.escenic.plugins.authenticator.taglib.AuthenticatorUtil</function-class>
+    <function-signature>boolean checkToken(java.lang.String, java.lang.String)</function-signature>
+    <example>
+      &lt;c:out value="${auth:checkToken('32423234234234', 'T')}">
+    </example>
+  </function>
+
+</taglib>

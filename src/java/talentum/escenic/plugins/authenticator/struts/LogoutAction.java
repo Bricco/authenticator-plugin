@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
-import talentum.escenic.plugins.authenticator.agreements.AFVAgreement;
 
 /**
  * Struts action that performs a logout of the current user.
@@ -31,7 +30,8 @@ public class LogoutAction extends Action {
 		
 		Cookie[] allCookies = request.getCookies();
 		for (int i = 0; i < allCookies.length; i++) {
-			if(allCookies[i].getName().equals(AFVAgreement.COOKIE_NAME)) {
+			if (allCookies[i].getName().equals(
+					AuthenticatorManager.getInstance().getCookieName())) {
 				cookie = allCookies[i];
 			}
 		}

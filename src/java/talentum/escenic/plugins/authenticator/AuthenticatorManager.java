@@ -23,6 +23,9 @@ public class AuthenticatorManager {
 	
 	private static AuthenticatorManager manager;
 	private Authenticator authenticator;
+	private String cookieName;
+	private String cookieDomain = "";
+	
 	private HashMap userMap = new HashMap();
 	
 	private AuthenticatorManager() {}
@@ -41,6 +44,22 @@ public class AuthenticatorManager {
 		this.authenticator = authenticator;
 	}
 	
+	public String getCookieDomain() {
+		return cookieDomain;
+	}
+
+	public void setCookieDomain(String cookieDomain) {
+		this.cookieDomain = cookieDomain;
+	}
+
+	public String getCookieName() {
+		return cookieName;
+	}
+
+	public void setCookieName(String cookieName) {
+		this.cookieName = cookieName;
+	}
+
 	/**
 	 * Auhtenticates a user with specified credentials
 	 * 
@@ -81,6 +100,7 @@ public class AuthenticatorManager {
 			// user not found
 			return null;
 		}
+		/*
 		Calendar cal = Calendar.getInstance(); 
 		cal.add(Calendar.MINUTE, -5);
 		if(user.getLastChecked().before(cal.getTime())) {
@@ -93,6 +113,7 @@ public class AuthenticatorManager {
 				userMap.put(user.getToken(), user);
 			}
 		}
+		*/
 		return user;
 	}
 }

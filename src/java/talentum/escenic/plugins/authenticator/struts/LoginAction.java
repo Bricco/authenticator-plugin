@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
-import talentum.escenic.plugins.authenticator.agreements.AFVAgreement;
 
 /**
  * Struts action that performs a login. It uses the AuthenticatorManager
@@ -38,9 +37,10 @@ public class LoginAction extends Action {
 
 		if (token != null) {
 
-			Cookie cookie = new Cookie(AFVAgreement.COOKIE_NAME, token);
-			// TODO set domain from config 
-			//cookie.setDomain("affarsvarlden.se");
+			Cookie cookie = new Cookie(AuthenticatorManager.getInstance()
+					.getCookieName(), token);
+			cookie.setDomain(AuthenticatorManager.getInstance()
+					.getCookieDomain());
 			cookie.setMaxAge(-1);
 			response.addCookie(cookie);
 

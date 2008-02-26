@@ -1,9 +1,6 @@
 package talentum.escenic.plugins.authenticator.agreements;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 import neo.xredsys.api.Section;
 import neo.xredsys.content.agreement.AgreementConfig;
@@ -26,21 +23,14 @@ public class AFVAgreement implements AgreementPartner {
 
 	String loginURL;
 	String unauthorizedURL;
-	List allowedRoles;
-	int edtionPublishingWeekday = 4;
-
-	public static final String COOKIE_NAME = "pressdata_user";
-	public static final String ROLE_PAPER = "T";
-	public static final String ROLE_WEB = "TWE";
-	public static final String ROLE_REAL1 = "R1";
-	public static final String ROLE_REAL2 = "R2";
+	String allowPublishedRole = "T";
+	int allowPublishedBeforeWeekday = 4;
 	
 	public AFVAgreement() {
-		allowedRoles = new ArrayList();
 		config = new AgreementConfig();
 		config.setAuthentication(true);
-		config.addCookieName(COOKIE_NAME);
-		config.addRequestAttributeName("article");
+		config.addCookieName(AuthenticatorManager.getInstance().getCookieName());
+		config.addRequestAttributeName("com.escenic.context.article");
 	}
 
 	public AgreementConfig getAgreementConfig() {
@@ -63,37 +53,37 @@ public class AFVAgreement implements AgreementPartner {
 		this.unauthorizedURL = unauthorizedURL;
 	}
 
-	public void setAllowedRoles(String[] roles) {
-		allowedRoles = Arrays.asList(roles);
-    }
-
-    public String[] getAllowedRoles() {
-        if(allowedRoles == null)
-            return new String[0];
-        else
-            return (String[]) allowedRoles.toArray(new String[allowedRoles.size()]);
-    }
-
-	public int getEdtionPublishingWeekday() {
-		return edtionPublishingWeekday;
+	public String getAllowPublishedRole() {
+		return allowPublishedRole;
 	}
 
-	public void setEdtionPublishingWeekday(int edtionPublishingWeekday) {
-		this.edtionPublishingWeekday = edtionPublishingWeekday;
+	public void setAllowPublishedRole(String allowPublishedRole) {
+		this.allowPublishedRole = allowPublishedRole;
+	}
+
+	public int getAllowPublishedBeforeWeekday() {
+		return allowPublishedBeforeWeekday;
+	}
+
+	public void setAllowPublishedBeforeWeekday(int edtionPublishingWeekday) {
+		this.allowPublishedBeforeWeekday = edtionPublishingWeekday;
 	}
 
 	public void service(AgreementRequest request, AgreementResponse response) {
 
-		//TODO FIIXXXX
-		//allowedRoles.contains(request.getAgreementText());
-		String agreementText = request.getAgreementText();
-		
+		String requestedRole = request.getAgreementText();
+
+		if(log.isDebugEnabled()) {
+			log.debug("servicing agreement " + requestedRole);
+			log.debug("article =  " + request.getRequestAttribute("com.escenic.context.article"));
+		}
+
 		// if the request is for an article and its publishing date is before last publishing weekday
 		// we allow the request and bypass the login.
-		PresentationArticleImpl article = (PresentationArticleImpl)request.getRequestAttribute("article");
-		if(article != null && agreementText.equals(ROLE_PAPER)) {
+		PresentationArticleImpl article = (PresentationArticleImpl)request.getRequestAttribute("com.escenic.context.article");
+		if(article != null && requestedRole.equals(getAllowPublishedRole())) {
 			Calendar cal = Calendar.getInstance();
-			while(cal.get(Calendar.DAY_OF_WEEK) != getEdtionPublishingWeekday()) {
+			while(cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
 				cal.add(Calendar.DATE, -1);
 			}
 			if(log.isDebugEnabled()) {
@@ -104,13 +94,13 @@ public class AFVAgreement implements AgreementPartner {
 				return;
 			}
 			// TODO check "override_agreement" field
-			if(log.isDebugEnabled()) {
-				log.debug("body: "+article.getFieldElement("override_agreement"));
-			}
 		}
 
 		// check the token from the cookie
-		AuthenticatedUser user = AuthenticatorManager.getInstance().getVerifiedUser(request.getCookie(COOKIE_NAME));
+		AuthenticatedUser user = AuthenticatorManager.getInstance()
+				.getVerifiedUser(
+						request.getCookie(AuthenticatorManager.getInstance()
+								.getCookieName()));
 		if (user == null) {
 			if (loginURL == null) {
 				log.error("Redirect URL not defined");
@@ -121,20 +111,9 @@ public class AFVAgreement implements AgreementPartner {
 				response.setRedirect(getContextPath(request) + loginURL);
 			}
 
-		} else {
-			// check if user has at least one of the required roles
-			boolean authorized = false;
-			String[] allowedRoles = getAllowedRoles();
-			for (int i = 0; i < allowedRoles.length; i++) {
-				if(user.hasRole(allowedRoles[i])) {
-					authorized = true;
-				}
-			}
+		} else if(user.hasRole(requestedRole)) {
 			// if user is logged in but is not authorized
-			if(!authorized) {
-				// redirect to unauthorized page
-				response.setRedirect(getContextPath(request) + unauthorizedURL);
-			}
+			response.setRedirect(getContextPath(request) + unauthorizedURL);
 			
 		}
 	}

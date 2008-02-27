@@ -1,9 +1,11 @@
 package talentum.escenic.plugins.authenticator;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.StringTokenizer;
+
+import javax.servlet.http.Cookie;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +22,8 @@ import talentum.escenic.plugins.authenticator.authenticators.Authenticator;
 public class AuthenticatorManager {
 
 	private static Log log = LogFactory.getLog(AuthenticatorManager.class);
+	
+	public static String AUTOLOGIN_COOKIE = "afv_autologin";
 	
 	private static AuthenticatorManager manager;
 	private Authenticator authenticator;
@@ -67,9 +71,9 @@ public class AuthenticatorManager {
 	 * @param password
 	 * @return the user token or null if not authenticated
 	 */
-	public String authenticate(String username, String password) {
+	public Cookie authenticate(String username, String password) {
 		
-		String token = null;
+		Cookie cookie = null;
 		// authenticate user with the configures Authenticator
 		AuthenticatedUser user = getAuthenticator().authenticate(username, password);
 		
@@ -77,43 +81,56 @@ public class AuthenticatorManager {
 		if(user != null) {
 			user.setLastChecked(new Date());
 			userMap.put(user.getToken(), user);
-			token = user.getToken();
+			
+			cookie = new Cookie(getCookieName(), user.getToken());
+			cookie.setDomain(getCookieDomain());
+			cookie.setPath("/");
 		}
 		
-		return token;
+		return cookie;
 	}
 	
+	public Cookie authenticateAuto(String encryptedUserInfo) {
+		// TODO unscramble user info
+		String userInfo = encryptedUserInfo;
+		
+		StringTokenizer tokenizer = new StringTokenizer(userInfo, "|");
+		String username = tokenizer.nextToken();
+		String password = tokenizer.nextToken();
+		
+		return authenticate(username, password);
+	}
+
+		
 	public Collection getLoggedInUsers() {
 		return userMap.values();
 	}
 	
-	public void evictUser(String token) {
+	public Cookie evictUser(String token) {
 		userMap.remove(token);
+		Cookie cookie = new Cookie(AuthenticatorManager.getInstance().getCookieName(), "");
+		cookie.setMaxAge(0);
+		cookie.setDomain(getCookieDomain());
+		cookie.setPath("/");
+		return cookie;
+	}
+	
+	public Cookie getAutologinCookie(String userName, String password) {
+		String cookieValue = userName + "|" + password;
+		// TODO scramble cookie value
+		
+		Cookie cookie = new Cookie(AUTOLOGIN_COOKIE, cookieValue);
+		int autoLoginExpire = (60 * 60 * 24) * 100; // 100 days
+		cookie.setDomain(getCookieDomain());
+		cookie.setPath("/");
+		cookie.setMaxAge(autoLoginExpire);
+		return cookie;
 	}
 	
 	public AuthenticatedUser getVerifiedUser(String token) {
 		if(token == null) {
 			return null;
 		}
-		AuthenticatedUser user = (AuthenticatedUser) userMap.get(token);
-		if(user == null) {
-			// user not found
-			return null;
-		}
-		/*
-		Calendar cal = Calendar.getInstance(); 
-		cal.add(Calendar.MINUTE, -5);
-		if(user.getLastChecked().before(cal.getTime())) {
-			user = authenticator.verifyUser(token);
-			if(user == null) {
-				userMap.remove(token);
-				return null;
-			} else {
-				user.setLastChecked(new Date());
-				userMap.put(user.getToken(), user);
-			}
-		}
-		*/
-		return user;
+		return (AuthenticatedUser) userMap.get(token);
 	}
 }

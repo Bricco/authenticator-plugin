@@ -26,25 +26,21 @@ public class LogoutAction extends Action {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		Cookie cookie = null;
-		
+		String token = null;
+
 		Cookie[] allCookies = request.getCookies();
 		for (int i = 0; i < allCookies.length; i++) {
 			if (allCookies[i].getName().equals(
 					AuthenticatorManager.getInstance().getCookieName())) {
-				cookie = allCookies[i];
+				token = allCookies[i].getValue();
 			}
 		}
-		if (cookie != null) {
+		if (token != null) {
 			if (log.isInfoEnabled()) {
-				log.info("User with token " + cookie.getValue() + " logging out");
+				log.info("User with token " + token + " logging out");
 			}
-			AuthenticatorManager.getInstance().evictUser(cookie.getValue());
-			cookie = new Cookie(AuthenticatorManager.getInstance().getCookieName(), "");
-			cookie.setMaxAge(0);
-			cookie.setDomain(AuthenticatorManager.getInstance()
-					.getCookieDomain());
-			cookie.setPath("/");
+			Cookie cookie = AuthenticatorManager.getInstance().evictUser(token);
+
 			response.addCookie(cookie);
 		}
 

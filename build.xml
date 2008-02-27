@@ -69,6 +69,7 @@
 		<delete failonerror="false" file="dist/${publication-jar.file}" />
 		<jar jarfile="dist/${publication-jar.file}">
 			<fileset dir="build">
+				<include name="talentum/escenic/plugins/authenticator/filter/*" />
 				<include name="talentum/escenic/plugins/authenticator/struts/*" />
 				<include name="talentum/escenic/plugins/authenticator/taglib/*" />
 			</fileset>

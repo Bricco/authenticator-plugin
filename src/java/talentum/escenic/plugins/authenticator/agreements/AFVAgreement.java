@@ -74,7 +74,7 @@ public class AFVAgreement implements AgreementPartner {
 		String requestedRole = request.getAgreementText();
 
 		if(log.isDebugEnabled()) {
-			log.debug("servicing agreement " + requestedRole);
+			log.debug("requested role " + requestedRole);
 			log.debug("article =  " + request.getRequestAttribute("com.escenic.context.article"));
 		}
 

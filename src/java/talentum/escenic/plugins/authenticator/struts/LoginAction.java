@@ -32,33 +32,38 @@ public class LoginAction extends Action {
 		LoginForm loginForm = (LoginForm) form;
 
 		// perform the actual authentication
-		String token = AuthenticatorManager.getInstance()
-				.authenticate(loginForm.getUsername(), loginForm.getPassword());
+		Cookie cookie = AuthenticatorManager.getInstance().authenticate(
+				loginForm.getUsername(), loginForm.getPassword());
 
-		if (token != null) {
+		if (cookie != null) {
 
-			Cookie cookie = new Cookie(AuthenticatorManager.getInstance()
-					.getCookieName(), token);
-			cookie.setDomain(AuthenticatorManager.getInstance()
-					.getCookieDomain());
-			cookie.setPath("/");
 			response.addCookie(cookie);
 
+			// user checked autologin
+			if (loginForm.isAutologin()) {
+				Cookie autoCookie = AuthenticatorManager.getInstance()
+						.getAutologinCookie(loginForm.getUsername(),
+								loginForm.getPassword());
+				response.addCookie(autoCookie);
+			}
 
 			if (log.isInfoEnabled()) {
-				log.info("User with token " + token + " logged in");
+				log.info("User with token " + cookie.getValue() + " logged in");
 			}
-			
+
 			// redirect to page found in session
-			String redirectToURL = (String) request.getSession().getAttribute("redirectToURL");
-			if(loginForm.getRedirectToURL() != null) {
+			String redirectToURL = (String) request.getSession().getAttribute(
+					"redirectToURL");
+			request.getSession().removeAttribute("redirectToURL");
+
+			if (loginForm.getRedirectToURL() != null
+					&& loginForm.getRedirectToURL().trim().length() > 0) {
 				redirectToURL = loginForm.getRedirectToURL();
 			}
-			if(redirectToURL != null) {
+			if (redirectToURL != null) {
 				return new ActionForward(redirectToURL, true);
 			}
-			
-			
+
 			return mapping.findForward("authenticated");
 		}
 

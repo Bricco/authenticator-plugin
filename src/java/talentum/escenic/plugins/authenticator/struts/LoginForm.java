@@ -13,6 +13,7 @@ public class LoginForm extends ActionForm {
 	String username;
 	String password;
 	String redirectToURL;
+	boolean autologin;
 	
 	public String getPassword() {
 		return password;
@@ -31,6 +32,12 @@ public class LoginForm extends ActionForm {
 	}
 	public void setRedirectToURL(String redirectToURL) {
 		this.redirectToURL = redirectToURL;
+	}
+	public boolean isAutologin() {
+		return autologin;
+	}
+	public void setAutologin(boolean autologin) {
+		this.autologin = autologin;
 	}
 	
 }

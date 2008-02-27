@@ -51,8 +51,8 @@ public class LoginAction extends Action {
 			
 			// redirect to page found in session
 			String redirectToURL = (String) request.getSession().getAttribute("redirectToURL");
-			if(request.getParameter("redirectToURL") != null) {
-				redirectToURL = request.getParameter("redirectToURL");
+			if(loginForm.getRedirectToURL() != null) {
+				redirectToURL = loginForm.getRedirectToURL();
 			}
 			if(redirectToURL != null) {
 				return new ActionForward(redirectToURL, true);

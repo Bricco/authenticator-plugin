@@ -40,9 +40,11 @@ public class LogoutAction extends Action {
 				log.info("User with token " + cookie.getValue() + " logging out");
 			}
 			AuthenticatorManager.getInstance().evictUser(cookie.getValue());
-			
-			cookie.setValue("");
+			cookie = new Cookie(AuthenticatorManager.getInstance().getCookieName(), "");
 			cookie.setMaxAge(0);
+			cookie.setDomain(AuthenticatorManager.getInstance()
+					.getCookieDomain());
+			cookie.setPath("/");
 			response.addCookie(cookie);
 		}
 

@@ -41,7 +41,7 @@ public class LoginAction extends Action {
 					.getCookieName(), token);
 			cookie.setDomain(AuthenticatorManager.getInstance()
 					.getCookieDomain());
-			cookie.setMaxAge(-1);
+			cookie.setPath("/");
 			response.addCookie(cookie);
 
 

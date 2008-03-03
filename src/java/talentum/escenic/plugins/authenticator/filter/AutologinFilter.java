@@ -36,7 +36,7 @@ public class AutologinFilter implements Filter {
 		Cookie userDataCookie = null;
 		Cookie autologinCookie = null;
 		Cookie[] allCookies = request.getCookies();
-		for (int i = 0; i < allCookies.length; i++) {
+		for (int i = 0; allCookies!= null && i < allCookies.length; i++) {
 			if (allCookies[i].getName().equals(
 					AuthenticatorManager.getInstance().getCookieName())) {
 				userDataCookie = allCookies[i];

@@ -91,9 +91,16 @@ public class AuthenticatorManager {
 	}
 	
 	public Cookie authenticateAuto(String encryptedUserInfo) {
-		// TODO unscramble user info
-		String userInfo = encryptedUserInfo;
-		
+		String userInfo;
+		try {
+			userInfo = PBEEncrypter.decrypt(encryptedUserInfo);
+		} catch (Exception e) {
+			log.error("Could not decrypt autologin cookie.", e);
+			return null;
+		}
+
+		if(userInfo.indexOf('|') < 0)
+			return null;
 		StringTokenizer tokenizer = new StringTokenizer(userInfo, "|");
 		String username = tokenizer.nextToken();
 		String password = tokenizer.nextToken();
@@ -117,7 +124,12 @@ public class AuthenticatorManager {
 	
 	public Cookie getAutologinCookie(String userName, String password) {
 		String cookieValue = userName + "|" + password;
-		// TODO scramble cookie value
+		try {
+			cookieValue = PBEEncrypter.encrypt(cookieValue);
+		} catch (Exception e) {
+			log.error("Could not encrypt autologin cookie.", e);
+			return null;
+		}
 		
 		Cookie cookie = new Cookie(AUTOLOGIN_COOKIE, cookieValue);
 		int autoLoginExpire = (60 * 60 * 24) * 100; // 100 days

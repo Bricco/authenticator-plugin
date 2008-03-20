@@ -1,5 +1,9 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
+import java.rmi.RemoteException;
+
+import javax.xml.rpc.ServiceException;
+
 import net.kundservice.www.prenstatusws.login.LoginServiceLocator;
 import net.kundservice.www.prenstatusws.login.LoginServiceSoapStub;
 import net.kundservice.www.prenstatusws.login.ProductDto;
@@ -8,11 +12,19 @@ import net.kundservice.www.prenstatusws.login.UserStatusDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import talentum.escenic.plugins.authenticator.AuthenticationException;
+
+/**
+ * Implements authentication through Pressdata web service.
+ * 
+ * @author stefan.norman
+ */
 public class PressDataAuthenticator implements Authenticator {
 
 	private static Log log = LogFactory.getLog(PressDataAuthenticator.class);
 
-	public AuthenticatedUser authenticate(String username, String password) {
+	public AuthenticatedUser authenticate(String username, String password)
+			throws AuthenticationException {
 		AuthenticatedUser user = null;
 		try {
 			// call web service top authenticate
@@ -28,36 +40,17 @@ public class PressDataAuthenticator implements Authenticator {
 				user = populateUser(userSDto);
 			}
 
-		} catch (Exception e) {
-			log.error("authentication failed", e);
+		} catch (ServiceException e) {
+			log.error("Authentication failed: Web Service not found", e);
+		} catch (RemoteException e) {
+			log.error("Authentication failed: Web Service not available", e);
+		}
+		if(user == null) {
+			throw new AuthenticationException("Authentication failed: User not found");			
 		}
 		return user;
 	}
 	
-	public AuthenticatedUser verifyUser(String token) {
-		AuthenticatedUser user = null;
-		try {
-			// call web service top authenticate
-//			AuthorizationSoapStub binding = (AuthorizationSoapStub) new AuthorizationLocator()
-//					.getAuthorizationSoap();
-			// TODO read product from properties file?
-//			UserStruct struct = binding.verifyUser(token, "AFR");
-//
-//			if (struct.getErrorCode() > 0) {
-//				log.error("Verification failed for user with token " + token
-//						+ ". Error from web service: " + struct.getErrorCode()
-//						+ " " + struct.getErrorDescription());
-//			} else {
-//				// populate user object
-//				user = populateUser(struct);
-//			}
-
-		} catch (Exception e) {
-			log.error("verification failed", e);
-		}
-		return user;
-	}
-
 	private AuthenticatedUser populateUser(UserStatusDto userSDto) {
 		AuthenticatedUser user = new AuthenticatedUser();
 		user.setUserId(userSDto.getUserId());

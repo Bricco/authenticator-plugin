@@ -38,6 +38,13 @@ public class PBEEncrypter {
 		return pbeCipher;
 	}
 
+	/**
+	 * Encrypts a String using PBE (Password Based Encryption) and Base64.
+	 * 
+	 * @param s String to encrypt
+	 * @return an encrypted String
+	 * @throws Exception if anything goes wrong
+	 */
 	public static String encrypt(String s) throws Exception {
 
 		// Encrypt the string
@@ -48,6 +55,13 @@ public class PBEEncrypter {
 
 	}
 
+	/**
+	 * Decrypts a String using PBE (Password Based Encryption) and Base64.
+	 * 
+	 * @param s String to decrypt
+	 * @return a decrypted String
+	 * @throws Exception if anything goes wrong
+	 */
 	public static String decrypt(String s) throws Exception {
 
 		// Decrypt the string

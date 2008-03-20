@@ -13,10 +13,18 @@ import neo.xredsys.presentation.PresentationArticleImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import talentum.escenic.plugins.authenticator.AuthenticationException;
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
 import talentum.escenic.plugins.authenticator.AuthorizationException;
+import talentum.escenic.plugins.authenticator.UserNotFoundException;
 
+/**
+ * Implementation of Escenic agreement parther interface.
+ * It is used by adding the partner to the AgreementManager and
+ * then adding the chosen parner name to a section.
+ * 
+ * @author stefan.norman
+ *
+ */
 public class AFVAgreement implements AgreementPartner {
 
 	private static Log log = LogFactory.getLog(AFVAgreement.class);
@@ -29,6 +37,11 @@ public class AFVAgreement implements AgreementPartner {
 
 	int allowPublishedBeforeWeekday = 4;
 
+	/**
+	 * Constructor.
+	 * It sets up the agreement configuration.
+	 *
+	 */
 	public AFVAgreement() {
 		urlMap = new HashMap();
 		config = new AgreementConfig();
@@ -63,6 +76,9 @@ public class AFVAgreement implements AgreementPartner {
 		this.allowPublishedBeforeWeekday = edtionPublishingWeekday;
 	}
 
+	/**
+	 * Handles agreement requests.
+	 */
 	public void service(AgreementRequest request, AgreementResponse response) {
 
 		String requestedRole = request.getAgreementText();
@@ -103,7 +119,7 @@ public class AFVAgreement implements AgreementPartner {
 			AuthenticatorManager.getInstance().getVerifiedUser(token,
 					requestedRole);
 
-		} catch (AuthenticationException e) {
+		} catch (UserNotFoundException e) {
 
 			// save url in session
 			response.setSessionAttribute("redirectToURL", request.getUrl());

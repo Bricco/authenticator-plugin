@@ -22,7 +22,7 @@ public class UserStatusAction  extends Action {
 			throws Exception {
 		
 		String token = request.getParameter("token");
-		AuthenticatedUser user = AuthenticatorManager.getInstance().getVerifiedUser(token);
+		AuthenticatedUser user = AuthenticatorManager.getInstance().getUser(token);
 		
 		if(user == null) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN);

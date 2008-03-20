@@ -16,6 +16,6 @@ public final class AuthenticatorUtil {
 	}
 	
 	public static AuthenticatedUser getAuthenticatedUser(String token) {
-		return AuthenticatorManager.getInstance().getVerifiedUser(token);
+		return AuthenticatorManager.getInstance().getUser(token);
 	}
 }

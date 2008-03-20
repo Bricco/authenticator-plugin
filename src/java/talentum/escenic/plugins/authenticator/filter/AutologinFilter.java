@@ -48,7 +48,7 @@ public class AutologinFilter implements Filter {
 		// (user cookie is missing OR token is invalid) AND there is an autologin cookie, then
 		// perform auto login
 		if ((userDataCookie == null || AuthenticatorManager.getInstance()
-				.getVerifiedUser(userDataCookie.getValue()) == null)
+				.getUser(userDataCookie.getValue()) == null)
 				&& autologinCookie != null) {
 			Cookie cookie = AuthenticatorManager.getInstance()
 					.authenticateAuto(autologinCookie.getValue());

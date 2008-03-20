@@ -78,18 +78,21 @@ public class AuthenticatorManager {
 	public Cookie authenticate(String username, String password) {
 
 		Cookie cookie = null;
-		// authenticate user with the configures Authenticator
-		AuthenticatedUser user = getAuthenticator().authenticate(username,
-				password);
-
-		// if user was found we set login time and add the him to the map
-		if (user != null) {
+		try {
+			// authenticate user with the configures Authenticator
+			AuthenticatedUser user = getAuthenticator().authenticate(username,
+					password);
+	
+			// if user was found we set login time and add the him to the map
 			user.setLastChecked(new Date());
 			userMap.put(user.getToken(), user);
 
 			cookie = new Cookie(getCookieName(), user.getToken());
 			cookie.setDomain(getCookieDomain());
 			cookie.setPath("/");
+
+		} catch (AuthenticationException e) {
+			log.error("Could not authenticate", e);
 		}
 
 		return cookie;
@@ -144,19 +147,33 @@ public class AuthenticatorManager {
 		return cookie;
 	}
 
-	public AuthenticatedUser getVerifiedUser(String token) {
+	/**
+	 * Retrieves a user
+	 * @param token String the token to look for
+	 * @return a valid user
+	 */
+	public AuthenticatedUser getUser(String token) {
 		if (token == null) {
 			return null;
 		}
 		return (AuthenticatedUser) userMap.get(token);
 	}
 
+	/**
+	 * Retrieves a verified user.
+	 * 
+	 * @param token String the token to look for
+	 * @param role String the role the user must be in
+	 * @return a valid user
+	 * @throws UserNotFoundException if the user is not found
+	 * @throws AuthorizationException if the user is not in specified role
+	 */
 	public AuthenticatedUser getVerifiedUser(String token, String role)
-			throws AuthenticationException, AuthorizationException {
+			throws UserNotFoundException, AuthorizationException {
 		
-		AuthenticatedUser user = getVerifiedUser(token);
+		AuthenticatedUser user = getUser(token);
 		if (user == null) {
-			throw new AuthenticationException("user with token " + token
+			throw new UserNotFoundException("user with token " + token
 					+ " not found");
 		} else if (!user.hasRole(role)) {
 			throw new AuthorizationException("user with token " + token

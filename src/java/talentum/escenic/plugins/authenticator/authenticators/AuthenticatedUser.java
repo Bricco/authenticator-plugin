@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+/**
+ * Internal representation of a valid user
+ * 
+ * @author stefan.norman
+ */
 public class AuthenticatedUser {
 
 	private int userId;

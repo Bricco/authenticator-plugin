@@ -1,6 +1,7 @@
 package talentum.escenic.plugins.authenticator.agreements;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 import neo.xredsys.api.Section;
 import neo.xredsys.content.agreement.AgreementConfig;
@@ -12,8 +13,9 @@ import neo.xredsys.presentation.PresentationArticleImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import talentum.escenic.plugins.authenticator.AuthenticationException;
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
-import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
+import talentum.escenic.plugins.authenticator.AuthorizationException;
 
 public class AFVAgreement implements AgreementPartner {
 
@@ -21,15 +23,19 @@ public class AFVAgreement implements AgreementPartner {
 
 	AgreementConfig config;
 
-	String loginURL;
-	String unauthorizedURL;
+	private HashMap urlMap;
+
 	String allowPublishedRole = "T";
+
 	int allowPublishedBeforeWeekday = 4;
-	
+
 	public AFVAgreement() {
+		urlMap = new HashMap();
 		config = new AgreementConfig();
 		config.setAuthentication(true);
-		config.addCookieName(AuthenticatorManager.getInstance().getCookieName());
+		config
+				.addCookieName(AuthenticatorManager.getInstance()
+						.getCookieName());
 		config.addRequestAttributeName("com.escenic.context.article");
 	}
 
@@ -37,20 +43,8 @@ public class AFVAgreement implements AgreementPartner {
 		return config;
 	}
 
-	public String getLoginURL() {
-		return loginURL;
-	}
-
-	public void setLoginURL(String loginURL) {
-		this.loginURL = loginURL;
-	}
-
-	public String getUnauthorizedURL() {
-		return unauthorizedURL;
-	}
-
-	public void setUnauthorizedURL(String unauthorizedURL) {
-		this.unauthorizedURL = unauthorizedURL;
+	public void addUrl(String pName, String pUrl) {
+		urlMap.put(pName, pUrl);
 	}
 
 	public String getAllowPublishedRole() {
@@ -73,54 +67,66 @@ public class AFVAgreement implements AgreementPartner {
 
 		String requestedRole = request.getAgreementText();
 
-		if(log.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			log.debug("requested role " + requestedRole);
-			log.debug("article =  " + request.getRequestAttribute("com.escenic.context.article"));
+			log
+					.debug("article =  "
+							+ request
+									.getRequestAttribute("com.escenic.context.article"));
 		}
 
-		// if the request is for an article and its publishing date is before last publishing weekday
+		// if the request is for an article and its publishing date is before
+		// last publishing weekday
 		// we allow the request and bypass the login.
-		PresentationArticleImpl article = (PresentationArticleImpl)request.getRequestAttribute("com.escenic.context.article");
-		if(article != null && requestedRole.equals(getAllowPublishedRole())) {
+		PresentationArticleImpl article = (PresentationArticleImpl) request
+				.getRequestAttribute("com.escenic.context.article");
+		if (article != null && requestedRole.equals(getAllowPublishedRole())) {
 			Calendar cal = Calendar.getInstance();
-			while(cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
+			while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
 				cal.add(Calendar.DATE, -1);
 			}
-			if(log.isDebugEnabled()) {
-				log.debug("article publishing date: "+article.getPublishedDateAsDate());
-				log.debug("last edition publishing date: "+cal.getTime());
+			if (log.isDebugEnabled()) {
+				log.debug("article publishing date: "
+						+ article.getPublishedDateAsDate());
+				log.debug("last edition publishing date: " + cal.getTime());
 			}
-			if(article.getPublishedDateAsDate().before(cal.getTime())) {
+			if (article.getPublishedDateAsDate().before(cal.getTime())) {
 				return;
 			}
 			// TODO check "override_agreement" field
 		}
 
-		// check the token from the cookie
-		AuthenticatedUser user = AuthenticatorManager.getInstance()
-				.getVerifiedUser(
-						request.getCookie(AuthenticatorManager.getInstance()
-								.getCookieName()));
-		if (user == null) {
-			if (loginURL == null) {
-				log.error("Redirect URL not defined");
-			} else {
-				// save url in session
-				response.setSessionAttribute("redirectToURL", request.getUrl());
-				// redirect to login page
-				response.setRedirect(getContextPath(request) + loginURL);
-			}
+		// get the token from the cookie
+		String token = request.getCookie(AuthenticatorManager.getInstance()
+				.getCookieName());
+		try {
+			AuthenticatorManager.getInstance().getVerifiedUser(token,
+					requestedRole);
 
-		} else if(user.hasRole(requestedRole)) {
+		} catch (AuthenticationException e) {
+
+			// save url in session
+			response.setSessionAttribute("redirectToURL", request.getUrl());
+			// redirect to login page
+			response.setRedirect(getContextPath(request)
+					+ urlMap.get("loginform"));
+
+		} catch (AuthorizationException e) {
+
 			// if user is logged in but is not authorized
-			response.setRedirect(getContextPath(request) + unauthorizedURL);
-			
+			response.setRedirect(getContextPath(request)
+					+ urlMap.get("unauthorized"));
+
+			// } catch (OtherUserLoggedInException e) {
+
 		}
+
 	}
-	
+
 	private String getContextPath(AgreementRequest request) {
-		
+
 		Section sec = request.getSection();
-		return  sec.getUrl().substring(0, sec.getUrl().lastIndexOf(sec.getDirectoryPath()));
+		return sec.getUrl().substring(0,
+				sec.getUrl().lastIndexOf(sec.getDirectoryPath()));
 	}
 }

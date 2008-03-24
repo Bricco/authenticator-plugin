@@ -120,4 +120,10 @@ public class AuthenticatedUser {
 		return getUserId() + " " + getUserName();
 	}
 
+	public boolean equals(Object obj) {
+		return getUserId() == ((AuthenticatedUser)obj).getUserId();
+	}
+	
+	
+
 }

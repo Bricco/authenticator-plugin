@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
 import talentum.escenic.plugins.authenticator.AuthorizationException;
+import talentum.escenic.plugins.authenticator.OtherUserLoggedInException;
 import talentum.escenic.plugins.authenticator.UserNotFoundException;
 
 /**
@@ -133,8 +134,11 @@ public class AFVAgreement implements AgreementPartner {
 			response.setRedirect(getContextPath(request)
 					+ urlMap.get("unauthorized"));
 
-			// } catch (OtherUserLoggedInException e) {
+		} catch (OtherUserLoggedInException e) {
 
+			// if the user has been evicted and another user is using the account
+			response.setRedirect(getContextPath(request)
+					+ urlMap.get("rejected"));
 		}
 
 	}

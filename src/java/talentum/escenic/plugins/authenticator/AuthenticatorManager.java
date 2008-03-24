@@ -3,6 +3,7 @@ package talentum.escenic.plugins.authenticator;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.Cookie;
@@ -33,7 +34,9 @@ public class AuthenticatorManager {
 
 	private String cookieDomain = "";
 
-	private HashMap userMap = new HashMap();
+	private HashMap validUsers = new HashMap();
+
+	private HashMap evictedUsers = new HashMap();
 
 	private AuthenticatorManager() {
 	}
@@ -83,9 +86,19 @@ public class AuthenticatorManager {
 			AuthenticatedUser user = getAuthenticator().authenticate(username,
 					password);
 	
-			// if user was found we set login time and add the him to the map
+			// if user is already logged in move him to the evicted list
+			for (Iterator iter = validUsers.keySet().iterator(); iter.hasNext();) {
+				String token = (String) iter.next();
+				if(((AuthenticatedUser)validUsers.get(token)).getUserId()==user.getUserId()) {
+					evictedUsers.put(token, validUsers.remove(token));
+					break;
+				}
+				
+			}
+			
+			// if user was found we set login time and add him to the map
 			user.setLastChecked(new Date());
-			userMap.put(user.getToken(), user);
+			validUsers.put(user.getToken(), user);
 
 			cookie = new Cookie(getCookieName(), user.getToken());
 			cookie.setDomain(getCookieDomain());
@@ -117,11 +130,11 @@ public class AuthenticatorManager {
 	}
 
 	public Collection getLoggedInUsers() {
-		return userMap.values();
+		return validUsers.values();
 	}
 
 	public Cookie evictUser(String token) {
-		userMap.remove(token);
+		validUsers.remove(token);
 		Cookie cookie = new Cookie(AuthenticatorManager.getInstance()
 				.getCookieName(), "");
 		cookie.setMaxAge(0);
@@ -156,7 +169,7 @@ public class AuthenticatorManager {
 		if (token == null) {
 			return null;
 		}
-		return (AuthenticatedUser) userMap.get(token);
+		return (AuthenticatedUser) validUsers.get(token);
 	}
 
 	/**
@@ -169,12 +182,18 @@ public class AuthenticatorManager {
 	 * @throws AuthorizationException if the user is not in specified role
 	 */
 	public AuthenticatedUser getVerifiedUser(String token, String role)
-			throws UserNotFoundException, AuthorizationException {
+			throws UserNotFoundException, AuthorizationException, OtherUserLoggedInException {
 		
 		AuthenticatedUser user = getUser(token);
 		if (user == null) {
-			throw new UserNotFoundException("user with token " + token
-					+ " not found");
+			if(evictedUsers.containsKey(token)) {
+				throw new OtherUserLoggedInException("user with token " + token
+						+ " was rejected, another user was logged in");
+				
+			} else {
+				throw new UserNotFoundException("user with token " + token
+						+ " not found");
+			}
 		} else if (!user.hasRole(role)) {
 			throw new AuthorizationException("user with token " + token
 					+ " is not in role " + role);

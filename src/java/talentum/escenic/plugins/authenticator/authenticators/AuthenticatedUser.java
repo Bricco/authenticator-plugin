@@ -27,6 +27,8 @@ public class AuthenticatedUser {
 	
 	private String token;
 	
+	private String productId;
+	
 	private Date lastChecked;
 	
 	private ArrayList roles = new ArrayList();
@@ -93,6 +95,14 @@ public class AuthenticatedUser {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 
 	public Date getLastChecked() {

@@ -61,15 +61,13 @@ public class PressDataAuthenticator implements Authenticator {
 		user.setAutologin(userSDto.isAutologin());
 		user.setCompanyName(userSDto.getCompanyName());
 		user.setEmail(userSDto.getEmail());
-		// TODO set Token when Pressdata fix ws
-		//user.setToken(userSDto.getToken());
-		//user.setStatus(userSDto.getStatus());
 		ProductDto[] prDto = userSDto.getProducts();
 		for (int i = 0; i < prDto.length; i++) {
 			String[] roles = prDto[i].getRoles();
 			for (int j = 0; j < roles.length; j++) {
 				user.addRole(roles[j].trim());
 			}
+			user.setProductId(prDto[i].getProductId());
 			user.setToken(prDto[i].getToken());
 		}
 		

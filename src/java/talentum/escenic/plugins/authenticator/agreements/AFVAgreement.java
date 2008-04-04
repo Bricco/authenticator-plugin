@@ -121,7 +121,9 @@ public class AFVAgreement implements AgreementPartner {
 					requestedRole);
 
 		} catch (UserNotFoundException e) {
-
+			if(log.isDebugEnabled()) {
+				log.debug("User not found", e);
+			}
 			// save url in session
 			response.setSessionAttribute("redirectToURL", request.getUrl());
 			// redirect to login page
@@ -129,13 +131,17 @@ public class AFVAgreement implements AgreementPartner {
 					+ urlMap.get("loginform"));
 
 		} catch (AuthorizationException e) {
-
+			if(log.isDebugEnabled()) {
+				log.debug("User not authorized", e);
+			}
 			// if user is logged in but is not authorized
 			response.setRedirect(getContextPath(request)
 					+ urlMap.get("unauthorized"));
 
 		} catch (OtherUserLoggedInException e) {
-
+			if(log.isDebugEnabled()) {
+				log.debug("Other user is logged in", e);
+			}
 			// if the user has been evicted and another user is using the account
 			response.setRedirect(getContextPath(request)
 					+ urlMap.get("rejected"));

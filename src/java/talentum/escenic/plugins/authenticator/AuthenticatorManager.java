@@ -194,7 +194,7 @@ public class AuthenticatorManager {
 				throw new UserNotFoundException("user with token " + token
 						+ " not found");
 			}
-		} else if (!user.hasRole(role)) {
+		} else if (role != null && !user.hasRole(role)) {
 			throw new AuthorizationException("user with token " + token
 					+ " is not in role " + role);
 		}

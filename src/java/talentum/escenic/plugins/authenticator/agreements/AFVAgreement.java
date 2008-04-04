@@ -97,7 +97,7 @@ public class AFVAgreement implements AgreementPartner {
 		// we allow the request and bypass the login.
 		PresentationArticleImpl article = (PresentationArticleImpl) request
 				.getRequestAttribute("com.escenic.context.article");
-		if (article != null && requestedRole.equals(getAllowPublishedRole())) {
+		if (article != null && requestedRole != null && requestedRole.equals(getAllowPublishedRole())) {
 			Calendar cal = Calendar.getInstance();
 			while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
 				cal.add(Calendar.DATE, -1);

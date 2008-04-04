@@ -123,7 +123,7 @@ public class AuthenticatedUser {
 	}
 	
 	public boolean hasRole(String role) {
-		return Arrays.binarySearch(getRoles(), role) > 0;
+		return Arrays.binarySearch(getRoles(), role) >= 0;
 	}
 
 	public String toString() {

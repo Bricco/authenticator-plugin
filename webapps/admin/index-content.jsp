@@ -19,14 +19,29 @@ request.setAttribute("authenticatorManager", manager);
 <logic:present name="authenticatorManager">
 	<table cellspacing="1" cellpadding="1" border="1">
 		<tr>
-			<th align="left" colspan="7">Logged in users</th>
+			<th align="left" colspan="8">Logged in users</th>
 		</tr>
+        <tr>
+          <th>ID</th>
+          <th>USERNAME</th>
+          <th>NAME</th>
+          <th>COMPANY</th>
+          <th>ROLES</th>
+          <th>EMAIL</th>
+          <th>LOGGED IN</th>
+          <th></th>
+        </tr>
 		<logic:iterate id="user" name="authenticatorManager" property="loggedInUsers">
 			<tr>
 				<td><bean:write name="user" property="userId" /></td>
 				<td><bean:write name="user" property="userName" /></td>
 				<td><bean:write name="user" property="name" /></td>
 				<td><bean:write name="user" property="companyName" /></td>
+                <td>
+                  <logic:iterate id="role" name="user" property="roles">
+                    <bean:write name="role" />
+                  </logic:iterate>
+                </td>
 				<td><a href="mailto:<bean:write name="user" property="email" />"><bean:write name="user" property="email" /></a></td>
 				<td><bean:write name="user" property="lastChecked" format="yyyy-MM-dd hh:mm" /></td>
 				<td><a href="index.jsp?evictUser=<bean:write name="user" property="token" />">EVICT</a></td>

@@ -1,6 +1,6 @@
 <plugin-descriptor name="authenticator" label="Authenticator">
 	<description>Authenticator plugin</description>
-	<version>1.1</version>
+	<version>1.2</version>
 	<core version="4.3" />
 	<requires>
 		<class name="neo.xredsys.ldap.plugin.LDAPPluginEntry"

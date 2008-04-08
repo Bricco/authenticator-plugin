@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
+import talentum.escenic.plugins.authenticator.taglib.CookieUtil;
 
 /**
  * Struts action that performs a login. It uses the AuthenticatorManager
@@ -41,9 +42,9 @@ public class LoginAction extends Action {
 
 			// user checked autologin
 			if (loginForm.isAutologin()) {
-				Cookie autoCookie = AuthenticatorManager.getInstance()
-						.getAutologinCookie(loginForm.getUsername(),
-								loginForm.getPassword());
+				Cookie autoCookie = CookieUtil.getAutologinCookie(loginForm
+						.getUsername(), loginForm.getPassword(),
+						AuthenticatorManager.getInstance().getCookieDomain());
 				response.addCookie(autoCookie);
 			}
 

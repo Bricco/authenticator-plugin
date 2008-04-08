@@ -133,31 +133,8 @@ public class AuthenticatorManager {
 		return validUsers.values();
 	}
 
-	public Cookie evictUser(String token) {
+	public void evictUser(String token) {
 		validUsers.remove(token);
-		Cookie cookie = new Cookie(AuthenticatorManager.getInstance()
-				.getCookieName(), "");
-		cookie.setMaxAge(0);
-		cookie.setDomain(getCookieDomain());
-		cookie.setPath("/");
-		return cookie;
-	}
-
-	public Cookie getAutologinCookie(String userName, String password) {
-		String cookieValue = userName + "|" + password;
-		try {
-			cookieValue = PBEEncrypter.encrypt(cookieValue);
-		} catch (Exception e) {
-			log.error("Could not encrypt autologin cookie.", e);
-			return null;
-		}
-
-		Cookie cookie = new Cookie(AUTOLOGIN_COOKIE, cookieValue);
-		int autoLoginExpire = (60 * 60 * 24) * 100; // 100 days
-		cookie.setDomain(getCookieDomain());
-		cookie.setPath("/");
-		cookie.setMaxAge(autoLoginExpire);
-		return cookie;
 	}
 
 	/**

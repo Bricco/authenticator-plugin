@@ -32,7 +32,7 @@ public class AFVAgreement implements AgreementPartner {
 
 	private HashMap urlMap;
 
-	String allowPublishedRole = "T";
+	String allowPublishedSection = "ece_tidningen";
 
 	int allowPublishedBeforeWeekday = 4;
 
@@ -59,12 +59,12 @@ public class AFVAgreement implements AgreementPartner {
 		urlMap.put(pName, pUrl);
 	}
 
-	public String getAllowPublishedRole() {
-		return allowPublishedRole;
+	public String getAllowPublishedSection() {
+		return allowPublishedSection;
 	}
 
-	public void setAllowPublishedRole(String allowPublishedRole) {
-		this.allowPublishedRole = allowPublishedRole;
+	public void setAllowPublishedSection(String allowPublishedSection) {
+		this.allowPublishedSection = allowPublishedSection;
 	}
 
 	public int getAllowPublishedBeforeWeekday() {
@@ -84,10 +84,8 @@ public class AFVAgreement implements AgreementPartner {
 
 		if (log.isDebugEnabled()) {
 			log.debug("requested role " + requestedRole);
-			log
-					.debug("article =  "
-							+ request
-									.getRequestAttribute("com.escenic.context.article"));
+			log.debug("article =  "
+							+ request.getRequestAttribute("com.escenic.context.article"));
 		}
 
 		// if the request is for an article and its publishing date is before
@@ -95,8 +93,10 @@ public class AFVAgreement implements AgreementPartner {
 		// we allow the request and bypass the login.
 		PresentationArticleImpl article = (PresentationArticleImpl) request
 				.getRequestAttribute("com.escenic.context.article");
-		if (article != null && requestedRole != null
-				&& requestedRole.equals(getAllowPublishedRole())) {
+		if (article != null
+				&& article.getHomeSection() != null
+				&& article.getHomeSection().getUniqueName().equals(
+						getAllowPublishedSection())) {
 			Calendar cal = Calendar.getInstance();
 			while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
 				cal.add(Calendar.DATE, -1);
@@ -117,11 +117,13 @@ public class AFVAgreement implements AgreementPartner {
 				.getRequestAttribute("authenticatedUser");
 
 		if (user == null) {
-			
+
 			// get the token from the cookie and check if user has been evicted
 			String token = request.getCookie(AuthenticatorManager.getInstance()
 					.getCookieName());
-			if(token != null && AuthenticatorManager.getInstance().userHasBeenEvicted(token)) {
+			if (token != null
+					&& AuthenticatorManager.getInstance().userHasBeenEvicted(
+							token)) {
 				if (log.isDebugEnabled()) {
 					log.debug("User " + user
 							+ " was rejected, another user was logged in");
@@ -134,22 +136,24 @@ public class AFVAgreement implements AgreementPartner {
 				if (log.isDebugEnabled()) {
 					log.debug("User " + user + " not found");
 				}
-				// if the user is not found save url in session and redirect to login page
+				// if the user is not found save url in session and redirect to
+				// login page
 				response.setSessionAttribute("redirectToURL", request.getUrl());
 				response.setRedirect(getContextPath(request)
 						+ urlMap.get("loginform"));
 			}
-			
+
 		} else if (requestedRole != null && !user.hasRole(requestedRole)) {
-			
+
 			if (log.isDebugEnabled()) {
-				log.debug("User " + user + " not authorized for role " + requestedRole);
+				log.debug("User " + user + " not authorized for role "
+						+ requestedRole);
 			}
 			// if user is logged in but not authorized send to unauthorized page
 			response.setRedirect(getContextPath(request)
 					+ urlMap.get("unauthorized"));
 		}
-		
+
 	}
 
 	private String getContextPath(AgreementRequest request) {

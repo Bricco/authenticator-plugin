@@ -65,7 +65,6 @@
 		<delete dir="tmp"/>
 
 		<mkdir dir="tmp/META_INF" />
-		<copyfile dest="tmp/META-INF/escenic-authenticator.tld" src="resources/escenic-authenticator.tld" />
 		<delete failonerror="false" file="dist/${publication-jar.file}" />
 		<jar jarfile="dist/${publication-jar.file}">
 			<fileset dir="build">

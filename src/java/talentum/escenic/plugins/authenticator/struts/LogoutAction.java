@@ -48,14 +48,10 @@ public class LogoutAction extends Action {
 			AuthenticatorManager.getInstance().evictUser(
 					userDataCookie.getValue());
 
-			response.addCookie(CookieUtil.getRemovalCookie(AuthenticatorManager
-					.getInstance().getCookieName(), AuthenticatorManager
-					.getInstance().getCookieDomain()));
+			response.addCookie(CookieUtil.removeSessionCookie());
 		}
 		if (autologinCookie != null) {
-			response.addCookie(CookieUtil.getRemovalCookie(autologinCookie
-					.getName(), AuthenticatorManager.getInstance()
-					.getCookieDomain()));
+			response.addCookie(CookieUtil.removeAutologinCookie());
 		}
 
 		return mapping.findForward("not-authenticated");

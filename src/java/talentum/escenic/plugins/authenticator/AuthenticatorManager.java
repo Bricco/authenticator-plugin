@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.Cookie;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -78,12 +76,12 @@ public class AuthenticatorManager {
 	 * @param password
 	 * @return the user token or null if not authenticated
 	 */
-	public Cookie authenticate(String username, String password) {
-
-		Cookie cookie = null;
+	public AuthenticatedUser authenticate(String username, String password) {
+		
+		AuthenticatedUser user = null;
 		try {
 			// authenticate user with the configures Authenticator
-			AuthenticatedUser user = getAuthenticator().authenticate(username,
+			user = getAuthenticator().authenticate(username,
 					password);
 	
 			// if user is already logged in move him to the evicted list
@@ -100,18 +98,15 @@ public class AuthenticatorManager {
 			user.setLastChecked(new Date());
 			validUsers.put(user.getToken(), user);
 
-			cookie = new Cookie(getCookieName(), user.getToken());
-			cookie.setDomain(getCookieDomain());
-			cookie.setPath("/");
 
 		} catch (AuthenticationException e) {
 			log.error("Could not authenticate", e);
 		}
 
-		return cookie;
+		return user;
 	}
 
-	public Cookie authenticateAuto(String encryptedUserInfo) {
+	public AuthenticatedUser authenticateAuto(String encryptedUserInfo) {
 		String userInfo;
 		try {
 			userInfo = PBEEncrypter.decrypt(encryptedUserInfo);
@@ -150,32 +145,12 @@ public class AuthenticatorManager {
 	}
 
 	/**
-	 * Retrieves a verified user.
+	 * Check whether a user has been evicted, due to another user using the account.
 	 * 
 	 * @param token String the token to look for
-	 * @param role String the role the user must be in
-	 * @return a valid user
-	 * @throws UserNotFoundException if the user is not found
-	 * @throws AuthorizationException if the user is not in specified role
+	 * @return true if the user with specified token has been evicted
 	 */
-	public AuthenticatedUser getVerifiedUser(String token, String role)
-			throws UserNotFoundException, AuthorizationException, OtherUserLoggedInException {
-		
-		AuthenticatedUser user = getUser(token);
-		if (user == null) {
-			if(evictedUsers.containsKey(token)) {
-				throw new OtherUserLoggedInException("user with token " + token
-						+ " was rejected, another user was logged in");
-				
-			} else {
-				throw new UserNotFoundException("user with token " + token
-						+ " not found");
-			}
-		} else if (role != null && !user.hasRole(role)) {
-			throw new AuthorizationException("user with token " + token
-					+ " is not in role " + role);
-		}
-
-		return user;
+	public boolean userHasBeenEvicted(String token)  {
+		return evictedUsers.containsKey(token);
 	}
 }

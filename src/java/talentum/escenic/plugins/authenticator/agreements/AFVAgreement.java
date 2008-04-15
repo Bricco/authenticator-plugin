@@ -14,17 +14,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
-import talentum.escenic.plugins.authenticator.AuthorizationException;
-import talentum.escenic.plugins.authenticator.OtherUserLoggedInException;
-import talentum.escenic.plugins.authenticator.UserNotFoundException;
+import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
 /**
- * Implementation of Escenic agreement parther interface.
- * It is used by adding the partner to the AgreementManager and
- * then adding the chosen parner name to a section.
+ * Implementation of Escenic agreement parther interface. It is used by adding
+ * the partner to the AgreementManager and then adding the chosen parner name to
+ * a section.
  * 
  * @author stefan.norman
- *
+ * 
  */
 public class AFVAgreement implements AgreementPartner {
 
@@ -39,9 +37,8 @@ public class AFVAgreement implements AgreementPartner {
 	int allowPublishedBeforeWeekday = 4;
 
 	/**
-	 * Constructor.
-	 * It sets up the agreement configuration.
-	 *
+	 * Constructor. It sets up the agreement configuration.
+	 * 
 	 */
 	public AFVAgreement() {
 		urlMap = new HashMap();
@@ -51,6 +48,7 @@ public class AFVAgreement implements AgreementPartner {
 				.addCookieName(AuthenticatorManager.getInstance()
 						.getCookieName());
 		config.addRequestAttributeName("com.escenic.context.article");
+		config.addRequestAttributeName("authenticatedUser");
 	}
 
 	public AgreementConfig getAgreementConfig() {
@@ -97,7 +95,8 @@ public class AFVAgreement implements AgreementPartner {
 		// we allow the request and bypass the login.
 		PresentationArticleImpl article = (PresentationArticleImpl) request
 				.getRequestAttribute("com.escenic.context.article");
-		if (article != null && requestedRole != null && requestedRole.equals(getAllowPublishedRole())) {
+		if (article != null && requestedRole != null
+				&& requestedRole.equals(getAllowPublishedRole())) {
 			Calendar cal = Calendar.getInstance();
 			while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
 				cal.add(Calendar.DATE, -1);
@@ -113,40 +112,44 @@ public class AFVAgreement implements AgreementPartner {
 			// TODO check "override_agreement" field
 		}
 
-		// get the token from the cookie
-		String token = request.getCookie(AuthenticatorManager.getInstance()
-				.getCookieName());
-		try {
-			AuthenticatorManager.getInstance().getVerifiedUser(token,
-					requestedRole);
+		// get the user that was set in the filter
+		AuthenticatedUser user = (AuthenticatedUser) request
+				.getRequestAttribute("authenticatedUser");
 
-		} catch (UserNotFoundException e) {
-			if(log.isDebugEnabled()) {
-				log.debug("User not found", e);
+		if (user == null) {
+			
+			// get the token from the cookie and check if user has been evicted
+			String token = request.getCookie(AuthenticatorManager.getInstance()
+					.getCookieName());
+			if(token != null && AuthenticatorManager.getInstance().userHasBeenEvicted(token)) {
+				if (log.isDebugEnabled()) {
+					log.debug("User " + user
+							+ " was rejected, another user was logged in");
+				}
+				// if the user has been evicted and another user is using the
+				// account
+				response.setRedirect(getContextPath(request)
+						+ urlMap.get("rejected"));
+			} else {
+				if (log.isDebugEnabled()) {
+					log.debug("User " + user + " not found");
+				}
+				// if the user is not found save url in session and redirect to login page
+				response.setSessionAttribute("redirectToURL", request.getUrl());
+				response.setRedirect(getContextPath(request)
+						+ urlMap.get("loginform"));
 			}
-			// save url in session
-			response.setSessionAttribute("redirectToURL", request.getUrl());
-			// redirect to login page
-			response.setRedirect(getContextPath(request)
-					+ urlMap.get("loginform"));
-
-		} catch (AuthorizationException e) {
-			if(log.isDebugEnabled()) {
-				log.debug("User not authorized", e);
+			
+		} else if (requestedRole != null && !user.hasRole(requestedRole)) {
+			
+			if (log.isDebugEnabled()) {
+				log.debug("User " + user + " not authorized for role " + requestedRole);
 			}
-			// if user is logged in but is not authorized
+			// if user is logged in but not authorized send to unauthorized page
 			response.setRedirect(getContextPath(request)
 					+ urlMap.get("unauthorized"));
-
-		} catch (OtherUserLoggedInException e) {
-			if(log.isDebugEnabled()) {
-				log.debug("Other user is logged in", e);
-			}
-			// if the user has been evicted and another user is using the account
-			response.setRedirect(getContextPath(request)
-					+ urlMap.get("rejected"));
 		}
-
+		
 	}
 
 	private String getContextPath(AgreementRequest request) {

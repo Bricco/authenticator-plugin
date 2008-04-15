@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
+import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
+import talentum.escenic.plugins.authenticator.taglib.CookieUtil;
 
 /**
  * J2EE Filter that checks if request iss missing user data cookie but has an
@@ -21,7 +23,7 @@ import talentum.escenic.plugins.authenticator.AuthenticatorManager;
  * @author stefan.norman
  * 
  */
-public class AutologinFilter implements Filter {
+public class AuthenticatorFilter implements Filter {
 
 	public void destroy() {
 	}
@@ -36,7 +38,7 @@ public class AutologinFilter implements Filter {
 		Cookie userDataCookie = null;
 		Cookie autologinCookie = null;
 		Cookie[] allCookies = request.getCookies();
-		for (int i = 0; allCookies!= null && i < allCookies.length; i++) {
+		for (int i = 0; allCookies != null && i < allCookies.length; i++) {
 			if (allCookies[i].getName().equals(
 					AuthenticatorManager.getInstance().getCookieName())) {
 				userDataCookie = allCookies[i];
@@ -45,17 +47,27 @@ public class AutologinFilter implements Filter {
 				autologinCookie = allCookies[i];
 			}
 		}
-		// (user cookie is missing OR token is invalid) AND there is an autologin cookie, then
-		// perform auto login
-		if ((userDataCookie == null || AuthenticatorManager.getInstance()
-				.getUser(userDataCookie.getValue()) == null)
-				&& autologinCookie != null) {
-			Cookie cookie = AuthenticatorManager.getInstance()
-					.authenticateAuto(autologinCookie.getValue());
-			if (cookie != null) {
-				response.addCookie(cookie);
+		AuthenticatedUser user = null;
+		// check the session cookie
+		if (userDataCookie != null) {
+			user = AuthenticatorManager.getInstance().getUser(
+					userDataCookie.getValue());
+		}
+		// (user cookie is missing OR token is invalid) AND there is an
+		// autologin cookie, then perform auto login
+		if (user == null && autologinCookie != null) {
+			user = AuthenticatorManager.getInstance().authenticateAuto(
+					autologinCookie.getValue());
+			if (user != null) {
+				response
+						.addCookie(CookieUtil.getSessionCookie(user.getToken()));
 			}
 		}
+		// if a user is found add it to the request for later use
+		if (user != null) {
+			request.setAttribute("authenticatedUser", user);
+		}
+
 		chain.doFilter(servletRequest, servletResponse);
 	}
 

@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
+import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 import talentum.escenic.plugins.authenticator.taglib.CookieUtil;
 
 /**
@@ -33,23 +34,23 @@ public class LoginAction extends Action {
 		LoginForm loginForm = (LoginForm) form;
 
 		// perform the actual authentication
-		Cookie cookie = AuthenticatorManager.getInstance().authenticate(
+		AuthenticatedUser user = AuthenticatorManager.getInstance().authenticate(
 				loginForm.getUsername(), loginForm.getPassword());
 
-		if (cookie != null) {
+		if (user != null) {
 
-			response.addCookie(cookie);
+			Cookie sessionCookie = CookieUtil.getSessionCookie(user.getToken());
+			response.addCookie(sessionCookie);
 
 			// user checked autologin
 			if (loginForm.isAutologin()) {
 				Cookie autoCookie = CookieUtil.getAutologinCookie(loginForm
-						.getUsername(), loginForm.getPassword(),
-						AuthenticatorManager.getInstance().getCookieDomain());
+						.getUsername(), loginForm.getPassword());
 				response.addCookie(autoCookie);
 			}
 
 			if (log.isInfoEnabled()) {
-				log.info("User with token " + cookie.getValue() + " logged in");
+				log.info("User with token " + user.getToken() + " logged in");
 			}
 
 			// redirect to page found in session

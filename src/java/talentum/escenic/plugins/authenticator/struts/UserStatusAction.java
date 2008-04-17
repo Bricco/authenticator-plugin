@@ -11,6 +11,12 @@ import org.apache.struts.action.ActionMapping;
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
 import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
+/**
+ * This action si called from SIX to verify the status of a user.
+ * 
+ * @author stefan.norman
+ *
+ */
 public class UserStatusAction  extends Action {
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,

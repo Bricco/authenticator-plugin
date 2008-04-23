@@ -1,5 +1,6 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
  * 
  * @author stefan.norman
  */
-public class AuthenticatedUser {
+public class AuthenticatedUser implements Serializable {
 
 	private int userId;
 

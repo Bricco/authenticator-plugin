@@ -175,6 +175,7 @@ context-root: /${demo-publication}
 		<copy file="buildjars/commons-discovery-0.2.jar" todir="tmp/${ant.project.name}/lib" />
 		<copy file="buildjars/saaj.jar" todir="tmp/${ant.project.name}/lib" />
 		<copy file="buildjars/wsdl4j-1.5.1.jar" todir="tmp/${ant.project.name}/lib" />
+		<copy file="buildjars/java_memcached-release_1.3.2.jar" todir="tmp/${ant.project.name}/lib" />
 		<copy todir="tmp/${ant.project.name}/misc/siteconfig">
 			<fileset dir="siteconfig">
 				<include name="**/*" />

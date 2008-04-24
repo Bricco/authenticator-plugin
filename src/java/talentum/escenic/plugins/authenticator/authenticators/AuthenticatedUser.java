@@ -12,6 +12,10 @@ import java.util.Date;
  */
 public class AuthenticatedUser implements Serializable {
 
+	public static final String STATUS_NORMAL = "NORMAL";
+	public static final String STATUS_PASSIVE = "PASSIVE";
+	public static final String STATUS_PENDING = "PENDING";
+
 	private int userId;
 
 	private String userName;
@@ -125,6 +129,10 @@ public class AuthenticatedUser implements Serializable {
 	
 	public boolean hasRole(String role) {
 		return Arrays.binarySearch(getRoles(), role) >= 0;
+	}
+	
+	public boolean isPassive() {
+		return getStatus() != null && getStatus().equals(STATUS_PASSIVE);
 	}
 
 	public String toString() {

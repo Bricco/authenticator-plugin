@@ -68,6 +68,7 @@ public class PressDataAuthenticator implements Authenticator {
 				user.addRole(roles[j].trim());
 			}
 			user.setProductId(prDto[i].getProductId());
+			user.setStatus(prDto[i].getStatus());
 			user.setToken(prDto[i].getToken());
 		}
 		

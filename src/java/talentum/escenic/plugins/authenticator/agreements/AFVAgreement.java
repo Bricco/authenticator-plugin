@@ -152,6 +152,17 @@ public class AFVAgreement implements AgreementPartner {
 			// if user is logged in but not authorized send to unauthorized page
 			response.setRedirect(getContextPath(request)
 					+ urlMap.get("unauthorized"));
+
+		} else if(user.isPassive()) {
+			
+			if (log.isDebugEnabled()) {
+				log.debug("User " + user + " has status "
+						+ AuthenticatedUser.STATUS_PASSIVE);
+			}
+			// if user is logged in but has status passive send to passive page
+			response.setRedirect(getContextPath(request)
+					+ urlMap.get("passive"));
+
 		}
 
 	}

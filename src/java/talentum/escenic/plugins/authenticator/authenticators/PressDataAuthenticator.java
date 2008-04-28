@@ -1,17 +1,11 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
 
 import javax.xml.rpc.ServiceException;
 
 import net.kundservice.www.prenstatusws.login.LoginServiceLocator;
 import net.kundservice.www.prenstatusws.login.LoginServiceSoapStub;
-import net.kundservice.www.prenstatusws.login.ProductDto;
 import net.kundservice.www.prenstatusws.login.UserStatusDto;
 
 import org.apache.commons.logging.Log;

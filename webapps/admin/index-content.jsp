@@ -43,7 +43,7 @@ request.setAttribute("authenticatorManager", manager);
                   </logic:iterate>
                 </td>
 				<td><a href="mailto:<bean:write name="user" property="email" />"><bean:write name="user" property="email" /></a></td>
-				<td><bean:write name="user" property="lastChecked" format="yyyy-MM-dd hh:mm" /></td>
+				<td><bean:write name="user" property="loggedInTime" format="yyyy-MM-dd hh:mm" /></td>
 				<td><a href="index.jsp?evictUser=<bean:write name="user" property="token" />">EVICT</a></td>
 			</tr>
 		</logic:iterate>

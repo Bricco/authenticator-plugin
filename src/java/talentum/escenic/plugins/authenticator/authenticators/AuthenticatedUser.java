@@ -1,8 +1,6 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -10,139 +8,60 @@ import java.util.Date;
  * 
  * @author stefan.norman
  */
-public class AuthenticatedUser implements Serializable {
+public interface AuthenticatedUser extends Serializable {
 
-	public static final String STATUS_NORMAL = "NORMAL";
-	public static final String STATUS_PASSIVE = "PASSIVE";
-	public static final String STATUS_PENDING = "PENDING";
-
-	private int userId;
-
-	private String userName;
-
-	private String email;
-
-	private String name;
-
-	private String status;
-
-	private boolean autologin;
-
-	private String companyName;
+	public int getUserId();
 	
-	private String token;
+	public String getToken();
+
+	/**
+	 * @return the username
+	 */
+	public String getUserName();
 	
-	private String productId;
+	/**
+	 * @return the name
+	 */
+	public String getName();
 	
-	private Date lastChecked;
+	/**
+	 * @return the company name
+	 */
+	public String getCompanyName();
 	
-	private ArrayList roles = new ArrayList();
-
-	public boolean isAutologin() {
-		return autologin;
-	}
-
-	public void setAutologin(boolean autologin) {
-		this.autologin = autologin;
-	}
-
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public String getProductId() {
-		return productId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-
-	public Date getLastChecked() {
-		return lastChecked;
-	}
-
-	public void setLastChecked(Date lastChecked) {
-		this.lastChecked = lastChecked;
-	}
-
-	public String[] getRoles() {
-		return (String[]) roles.toArray(new String[roles.size()]);
-	}
-
-	public void addRole(String role) {
-		if(!roles.contains(role))
-			roles.add(role);
-	}
+	/**
+	 * @return the roles of the user
+	 */
+	public String[] getRoles();
 	
-	public boolean hasRole(String role) {
-		return Arrays.binarySearch(getRoles(), role) >= 0;
-	}
+	/**
+	 * @return the email
+	 */
+	public String getEmail();
 	
-	public boolean isPassive() {
-		return getStatus() != null && getStatus().equals(STATUS_PASSIVE);
-	}
-
-	public String toString() {
-		return getUserId() + " " + getUserName();
-	}
-
-	public boolean equals(Object obj) {
-		return getUserId() == ((AuthenticatedUser)obj).getUserId();
-	}
+	/**
+	 * Sent to Pressdata to see My Page
+	 * @return the product id
+	 */
+	public String getProductId();
 	
+	/**
+	 * @return the date when the user was checked last time
+	 */
+	public Date getLoggedInTime();
 	
-
+	/**
+	 * The user has the requested role.
+	 * @param role the requested role
+	 * @return true if user has role
+	 */
+	public boolean hasRole(String role);
+	
+	/**
+	 * The user has passive status for the requested role.
+	 * @param role the requested role
+	 * @return true if user has passive status
+	 */
+	public boolean hasPassiveStatusForRole(String role);
+	
 }

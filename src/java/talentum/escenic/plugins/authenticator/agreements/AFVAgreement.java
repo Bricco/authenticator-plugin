@@ -153,11 +153,11 @@ public class AFVAgreement implements AgreementPartner {
 			response.setRedirect(getContextPath(request)
 					+ urlMap.get("unauthorized"));
 
-		} else if(user.isPassive()) {
+		} else if (requestedRole != null && user.hasPassiveStatusForRole(requestedRole)) {
 			
 			if (log.isDebugEnabled()) {
-				log.debug("User " + user + " has status "
-						+ AuthenticatedUser.STATUS_PASSIVE);
+				log.debug("User " + user + " has passive status for role "
+						+ requestedRole);
 			}
 			// if user is logged in but has status passive send to passive page
 			response.setRedirect(getContextPath(request)

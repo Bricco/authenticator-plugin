@@ -1,6 +1,11 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
 
 import javax.xml.rpc.ServiceException;
 
@@ -37,7 +42,7 @@ public class PressDataAuthenticator implements Authenticator {
 				log.error("Authentication failed for user " + username);
 			} else {
 				// populate user object
-				user = populateUser(userSDto);
+				user = new PressDataUser(userSDto);
 			}
 
 		} catch (ServiceException e) {
@@ -51,27 +56,4 @@ public class PressDataAuthenticator implements Authenticator {
 		return user;
 	}
 	
-	private AuthenticatedUser populateUser(UserStatusDto userSDto) {
-		AuthenticatedUser user = new AuthenticatedUser();
-		user.setUserId(userSDto.getUserId());
-		user.setUserName(userSDto.getUsername());
-		user
-				.setName(userSDto.getFirstname() + " "
-						+ userSDto.getLastname());
-		user.setAutologin(userSDto.isAutologin());
-		user.setCompanyName(userSDto.getCompanyName());
-		user.setEmail(userSDto.getEmail());
-		ProductDto[] prDto = userSDto.getProducts();
-		for (int i = 0; i < prDto.length; i++) {
-			String[] roles = prDto[i].getRoles();
-			for (int j = 0; j < roles.length; j++) {
-				user.addRole(roles[j].trim());
-			}
-			user.setProductId(prDto[i].getProductId());
-			user.setStatus(prDto[i].getStatus());
-			user.setToken(prDto[i].getToken());
-		}
-		
-		return user;
-	}
 }

@@ -85,7 +85,13 @@ public class PressDataUser implements AuthenticatedUser {
 	}
 
 	public boolean hasRole(String role) {
-		return Arrays.binarySearch(getRoles(), role) >= 0;
+		String roles[] = getRoles();
+		for (int i = 0; i < roles.length; i++) {
+			if(roles[i].equals(role)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -119,7 +125,10 @@ public class PressDataUser implements AuthenticatedUser {
 		public Product(String productId, String status, String[] roles) {
 			this.productId = productId;
 			this.status = status;
-			this.roles = roles;
+			this.roles = new String[roles.length];
+			for (int i = 0; i < roles.length; i++) {
+				this.roles[i] = roles[i].trim();
+			}
 		}
 
 		public String[] getRoles() {

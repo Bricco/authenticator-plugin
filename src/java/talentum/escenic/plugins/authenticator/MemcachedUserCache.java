@@ -32,14 +32,31 @@ public class MemcachedUserCache implements UserCache {
 		memCachedClient = new MemCachedClient();
         if(!SockIOPool.getInstance().isInitialized())
             SockIOPool.getInstance().initialize();
-        // add empty lists if they don't exist
-        memCachedClient.add(VALID_USERS, new String[0]);
-        memCachedClient.add(EVICTED_USERS, new String[0]);
+	}
+	
+	private String[] getValidUsers() {
+		String[] validUsers = (String[]) memCachedClient.get(VALID_USERS);
+		if(validUsers == null) {
+			validUsers = new String[0];
+	        // add empty list if it doesn't exist
+	        memCachedClient.add(VALID_USERS, validUsers);
+		}
+		return validUsers;
+	}
+	
+	private String[] getEvictedUsers() {
+		String[] evictedUsers = (String[]) memCachedClient.get(EVICTED_USERS);;
+		if(evictedUsers == null) {
+			evictedUsers = new String[0];
+	        // add empty list if it doesn't exist
+	        memCachedClient.add(EVICTED_USERS, evictedUsers);
+		}
+		return evictedUsers;
 	}
 	
 	public void addUser(AuthenticatedUser user) {
 		
-		String[] validUsers = (String[]) memCachedClient.get(VALID_USERS);
+		String[] validUsers = getValidUsers();
 		if(validUsers.length > 0) {
 			Map userMap = memCachedClient.getMulti(validUsers);
 			 
@@ -48,7 +65,7 @@ public class MemcachedUserCache implements UserCache {
 				String token = (String) iter.next();
 				AuthenticatedUser tmpUser = (AuthenticatedUser)userMap.get(token);
 				if(tmpUser.getUserId()==user.getUserId()) {
-					String[] evictedUsers = (String[]) memCachedClient.get(EVICTED_USERS);
+					String[] evictedUsers = getEvictedUsers();
 					evictedUsers = addStringToArray(evictedUsers, token);
 					memCachedClient.replace(EVICTED_USERS, evictedUsers);
 					break;
@@ -69,7 +86,7 @@ public class MemcachedUserCache implements UserCache {
 	
 	public Collection getAllUsers() {
 		Map userMap = new HashMap();
-		String[] validUsers = (String[]) memCachedClient.get(VALID_USERS);
+		String[] validUsers = getValidUsers();
 		if(validUsers.length > 0) {
 			userMap = memCachedClient.getMulti(validUsers);
 		}
@@ -78,14 +95,14 @@ public class MemcachedUserCache implements UserCache {
 	}
 
 	public void removeUser(String token) {
-		String[] validUsers = (String[]) memCachedClient.get(VALID_USERS);
+		String[] validUsers = getValidUsers();
 		memCachedClient.delete(token);
 		validUsers = removeStringFromArray(validUsers, token);
 		memCachedClient.replace(VALID_USERS, validUsers);
 	}
 	
 	public boolean userAsBeenRemoved(String token) {
-		String[] evictedUsers = (String[]) memCachedClient.get(EVICTED_USERS);
+		String[] evictedUsers = getEvictedUsers();
 		for (int i = 0; i < evictedUsers.length; i++) {
 			if(evictedUsers[i].equals(token)) {
 				return true;

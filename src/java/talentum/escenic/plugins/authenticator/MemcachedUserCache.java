@@ -65,6 +65,7 @@ public class MemcachedUserCache implements UserCache {
 				String token = (String) iter.next();
 				AuthenticatedUser tmpUser = (AuthenticatedUser)userMap.get(token);
 				if(tmpUser.getUserId()==user.getUserId()) {
+					removeStringFromArray(validUsers, tmpUser.getToken());
 					String[] evictedUsers = getEvictedUsers();
 					evictedUsers = addStringToArray(evictedUsers, token);
 					memCachedClient.replace(EVICTED_USERS, evictedUsers);
@@ -119,10 +120,10 @@ public class MemcachedUserCache implements UserCache {
 
 	}
 
-	private String[] removeStringFromArray(String[] stringArray, String stringToAdd) {
+	private String[] removeStringFromArray(String[] stringArray, String stringToRemove) {
 		List list = new ArrayList();
 		list.addAll(Arrays.asList(stringArray));
-		list.remove(stringToAdd);
+		list.remove(stringToRemove);
 		return (String[]) list.toArray(new String[list.size()]);
 
 	}

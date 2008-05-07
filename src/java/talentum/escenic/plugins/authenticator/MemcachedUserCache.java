@@ -1,12 +1,7 @@
 package talentum.escenic.plugins.authenticator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
@@ -21,7 +16,7 @@ import com.danga.MemCached.SockIOPool;
  * @author stefan.norman
  *
  */
-public class MemcachedUserCache implements UserCache {
+public class MemcachedUserCache extends HashMapUserCache {
 	
 	private static final String VALID_USERS = "validUsers";
 	private static final String EVICTED_USERS = "evictedUsers";
@@ -32,99 +27,49 @@ public class MemcachedUserCache implements UserCache {
 		memCachedClient = new MemCachedClient();
         if(!SockIOPool.getInstance().isInitialized())
             SockIOPool.getInstance().initialize();
-	}
-	
-	private String[] getValidUsers() {
-		String[] validUsers = (String[]) memCachedClient.get(VALID_USERS);
-		if(validUsers == null) {
-			validUsers = new String[0];
-	        // add empty list if it doesn't exist
-	        memCachedClient.add(VALID_USERS, validUsers);
+
+        if(memCachedClient.get(VALID_USERS) == null) {
+	        // add empty map if it doesn't exist
+	        memCachedClient.add(VALID_USERS, new HashMap());
 		}
-		return validUsers;
-	}
-	
-	private String[] getEvictedUsers() {
-		String[] evictedUsers = (String[]) memCachedClient.get(EVICTED_USERS);;
-		if(evictedUsers == null) {
-			evictedUsers = new String[0];
-	        // add empty list if it doesn't exist
-	        memCachedClient.add(EVICTED_USERS, evictedUsers);
+
+        if(memCachedClient.get(EVICTED_USERS) == null) {
+	        // add empty map if it doesn't exist
+	        memCachedClient.add(EVICTED_USERS, new HashMap());
 		}
-		return evictedUsers;
 	}
-	
+		
 	public void addUser(AuthenticatedUser user) {
 		
-		String[] validUsers = getValidUsers();
-		if(validUsers.length > 0) {
-			Map userMap = memCachedClient.getMulti(validUsers);
-			 
-			// if user is already logged in move him to the evicted list
-			for (Iterator iter = userMap.keySet().iterator(); iter.hasNext();) {
-				String token = (String) iter.next();
-				AuthenticatedUser tmpUser = (AuthenticatedUser)userMap.get(token);
-				if(tmpUser.getUserId()==user.getUserId()) {
-					removeStringFromArray(validUsers, tmpUser.getToken());
-					String[] evictedUsers = getEvictedUsers();
-					evictedUsers = addStringToArray(evictedUsers, token);
-					memCachedClient.replace(EVICTED_USERS, evictedUsers);
-					break;
-				}
-				
-			}
-		}
+		validUsers = (HashMap) memCachedClient.get(VALID_USERS);
+		evictedUsers = (HashMap) memCachedClient.get(EVICTED_USERS);
 		
-		// if user was found add him to memcached
-		memCachedClient.add(user.getToken(), user);
-		validUsers = addStringToArray(validUsers, user.getToken());
+		super.addUser(user);
+
 		memCachedClient.replace(VALID_USERS, validUsers);
+		memCachedClient.replace(EVICTED_USERS, evictedUsers);
+	
 	}
 	
 	public AuthenticatedUser getUser(String token) {
-		return (AuthenticatedUser) memCachedClient.get(token);
+		validUsers = (HashMap) memCachedClient.get(VALID_USERS);
+		return super.getUser(token);
 	}
 	
 	public Collection getAllUsers() {
-		Map userMap = new HashMap();
-		String[] validUsers = getValidUsers();
-		if(validUsers.length > 0) {
-			userMap = memCachedClient.getMulti(validUsers);
-		}
-		return userMap.values();
-		
+		validUsers = (HashMap) memCachedClient.get(VALID_USERS);
+		return super.getAllUsers();
 	}
 
 	public void removeUser(String token) {
-		String[] validUsers = getValidUsers();
-		memCachedClient.delete(token);
-		validUsers = removeStringFromArray(validUsers, token);
+		validUsers = (HashMap) memCachedClient.get(VALID_USERS);
+		super.removeUser(token);
 		memCachedClient.replace(VALID_USERS, validUsers);
 	}
 	
 	public boolean userAsBeenRemoved(String token) {
-		String[] evictedUsers = getEvictedUsers();
-		for (int i = 0; i < evictedUsers.length; i++) {
-			if(evictedUsers[i].equals(token)) {
-				return true;
-			}
-		}
-		return false;
+		evictedUsers = (HashMap) memCachedClient.get(EVICTED_USERS);
+		return super.userAsBeenRemoved(token);
 	}
 
-	private String[] addStringToArray(String[] stringArray, String stringToAdd) {
-		List list = new ArrayList();
-		list.addAll(Arrays.asList(stringArray));
-		list.add(stringToAdd);
-		return (String[]) list.toArray(new String[list.size()]);
-
-	}
-
-	private String[] removeStringFromArray(String[] stringArray, String stringToRemove) {
-		List list = new ArrayList();
-		list.addAll(Arrays.asList(stringArray));
-		list.remove(stringToRemove);
-		return (String[]) list.toArray(new String[list.size()]);
-
-	}
 }

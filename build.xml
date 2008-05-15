@@ -1,6 +1,6 @@
 <project name="authenticator" default="usage" basedir=".">
 
-	<property name="version" value="1.8" />
+	<property name="version" value="1.9" />
 
 	<property environment="env" />
 	<!-- set webapps.dir if TOMCAT_HOME env variable is set. CruiseControl sends this variable along -->

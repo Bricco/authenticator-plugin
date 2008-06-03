@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 
+import net.kundservice.www.WS.Authorization.UserStruct;
 import net.kundservice.www.prenstatusws.login.ProductDto;
 import net.kundservice.www.prenstatusws.login.UserStatusDto;
 
@@ -22,6 +23,10 @@ public class PressDataUser implements AuthenticatedUser {
 
 	private ArrayList products = new ArrayList();
 
+	/**
+	 * Constructs a user from the LoginService web service
+	 * @param userSDto
+	 */
 	public PressDataUser(UserStatusDto userSDto) {
 		this.userId = userSDto.getUserId();
 		this.userName = userSDto.getUsername();
@@ -37,6 +42,22 @@ public class PressDataUser implements AuthenticatedUser {
 			// productId of last product used as productId of user
 			this.productId = prDto[i].getProductId();
 		}
+	}
+	
+	/**
+	 * Constructs a user from the Authorization web service
+	 * @param userStruct
+	 * @param product
+	 */
+	public PressDataUser(UserStruct userStruct, String product) {
+		this.userId = Integer.parseInt(userStruct.getUserId());
+		this.userName = userStruct.getUserName();
+		this.name = userStruct.getFirstName() + " " + userStruct.getLastName();
+		this.companyName = userStruct.getCompanyName();
+		this.email = userStruct.getEMail();
+		this.token = userStruct.getToken();
+		// the basic ws has only one product
+		addProduct(product, userStruct.getStatus(), userStruct.getRoles());
 	}
 	
 	public int getUserId() {

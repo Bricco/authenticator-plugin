@@ -1,6 +1,6 @@
 <project name="authenticator" default="usage" basedir=".">
 
-	<property name="version" value="1.9" />
+	<property name="version" value="1.10" />
 
 	<property environment="env" />
 	<!-- set webapps.dir if TOMCAT_HOME env variable is set. CruiseControl sends this variable along -->
@@ -56,7 +56,7 @@
 				<include name="talentum/escenic/plugins/authenticator/*" />
 				<include name="talentum/escenic/plugins/authenticator/agreements/*" />
 				<include name="talentum/escenic/plugins/authenticator/authenticators/**" />
-				<include name="net/kundservice/www/prenstatusws/**" />
+				<include name="net/kundservice/www/**" />
 			</fileset>
 			<fileset dir="tmp">
 				<include name="com/escenic/plugin/*" />
@@ -146,13 +146,12 @@ context-root: /${demo-publication}
 		  output="src/java"
 		  testcase="true"
 		  verbose="true"
-		  url="resources/kundservice_authorization.wsdl" >
-			<!--
-		    <mapping
-		      namespace="https://www.kundservice.net/WS/Authorization"
-		      package="talentum.escenic.plugins.authenticator.authenticators.kundservice.ws" />
-		      -->
-		  </axis-wsdl2java>
+		  url="resources/kundservice_Authorization.wsdl" />
+		<axis-wsdl2java
+		  output="src/java"
+		  testcase="true"
+		  verbose="true"
+		  url="resources/kundservice_LoginService.wsdl" />
 	</target>
 
 	<target name="pack" depends="war">

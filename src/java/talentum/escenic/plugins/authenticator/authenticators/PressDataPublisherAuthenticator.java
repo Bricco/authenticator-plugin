@@ -14,13 +14,24 @@ import org.apache.commons.logging.LogFactory;
 import talentum.escenic.plugins.authenticator.AuthenticationException;
 
 /**
- * Implements authentication through Pressdata web service.
+ * Implements authentication through Pressdata LoginService web service.
  * 
  * @author stefan.norman
  */
-public class PressDataAuthenticator implements Authenticator {
+public class PressDataPublisherAuthenticator extends Authenticator {
 
-	private static Log log = LogFactory.getLog(PressDataAuthenticator.class);
+	private static Log log = LogFactory.getLog(PressDataPublisherAuthenticator.class);
+	
+	private String publisher;
+
+	
+	public String getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
 
 	public AuthenticatedUser authenticate(String username, String password)
 			throws AuthenticationException {
@@ -29,8 +40,8 @@ public class PressDataAuthenticator implements Authenticator {
 			// call web service top authenticate
 			LoginServiceSoapStub binding = (LoginServiceSoapStub) new LoginServiceLocator()
 					.getLoginServiceSoap();
-			// TODO read product from properties file?
-			UserStatusDto userSDto = binding.loginPublisher("AFFVAR", username, password);
+
+			UserStatusDto userSDto = binding.loginPublisher(publisher, username, password);
 
 			if (!userSDto.isIsLoginOk()) {
 				log.error("Authentication failed for user " + username);
@@ -49,5 +60,7 @@ public class PressDataAuthenticator implements Authenticator {
 		}
 		return user;
 	}
+	
+
 	
 }

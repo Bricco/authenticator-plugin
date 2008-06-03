@@ -12,7 +12,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
-import talentum.escenic.plugins.authenticator.taglib.CookieUtil;
 
 /**
  * Struts action that performs a logout of the current user.
@@ -27,16 +26,21 @@ public class LogoutAction extends Action {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
+		String publicationName = (String) request
+				.getAttribute("com.escenic.publication.name");
+
 		Cookie userDataCookie = null;
 		Cookie autologinCookie = null;
 
 		Cookie[] allCookies = request.getCookies();
 		for (int i = 0; i < allCookies.length; i++) {
 			if (allCookies[i].getName().equals(
-					AuthenticatorManager.getInstance().getCookieName())) {
+					AuthenticatorManager.getInstance().getCookieName(
+							publicationName))) {
 				userDataCookie = allCookies[i];
 			} else if (allCookies[i].getName().equals(
-					AuthenticatorManager.AUTOLOGIN_COOKIE)) {
+					AuthenticatorManager.getInstance().getAutoLoginCookieName(
+							publicationName))) {
 				autologinCookie = allCookies[i];
 			}
 		}
@@ -48,10 +52,12 @@ public class LogoutAction extends Action {
 			AuthenticatorManager.getInstance().evictUser(
 					userDataCookie.getValue());
 
-			response.addCookie(CookieUtil.removeSessionCookie());
+			response.addCookie(AuthenticatorManager.getInstance()
+					.removeSessionCookie(publicationName));
 		}
 		if (autologinCookie != null) {
-			response.addCookie(CookieUtil.removeAutologinCookie());
+			response.addCookie(AuthenticatorManager.getInstance()
+					.removeAutologinCookie(publicationName));
 		}
 
 		return mapping.findForward("not-authenticated");

@@ -24,7 +24,7 @@ Installation
 
 - Add to localconfig/neo/io/managers/AgreementManager.properties
 
-  agreementPartner.afv=/talentum/agreements/AFVAgreement
+  agreementPartner.afv=/talentum/escenic/plugins/authenticator/DefaultAgreement
 
 - Make sure that the correct memcached server is configured in localconfig/com/danga/SockIOPool.properties
 
@@ -39,16 +39,7 @@ Installation
 Usage in publication
 ====================
 
-In the publications web.xml the AuthenticatorFilter has to be added:
-	<filter>
-		<filter-name>AuthenticatorFilter</filter-name>
-		<filter-class>talentum.escenic.plugins.authenticator.filter.AuthenticatorFilter</filter-class>
-	</filter>
-	...
-	<filter-mapping>
-		<filter-name>AuthenticatorFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+The AuthenticatorFilter has to be added in the EscenicStandardFilterChain in the config.3xx range.
 
 The publication has to be deployed through Assembly Tool to pick up supporting jar file.
 

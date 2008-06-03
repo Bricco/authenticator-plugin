@@ -7,8 +7,36 @@ import talentum.escenic.plugins.authenticator.AuthenticationException;
  * 
  * @author stefan.norman
  */
-public interface Authenticator {
+public abstract class Authenticator {
 
+	private String cookieName;
+	private String cookieDomain = "";
+	private String autoLoginCookieName;
+
+	public String getCookieDomain() {
+		return cookieDomain;
+	}
+
+	public void setCookieDomain(String cookieDomain) {
+		this.cookieDomain = cookieDomain;
+	}
+
+	public String getCookieName() {
+		return cookieName;
+	}
+
+	public void setCookieName(String cookieName) {
+		this.cookieName = cookieName;
+	}
+	
+	public String getAutoLoginCookieName() {
+		return autoLoginCookieName;
+	}
+
+	public void setAutoLoginCookieName(String cookieName) {
+		this.autoLoginCookieName = cookieName;
+	}
+	
 	/**
 	 * Performs authentication.
 	 * 
@@ -17,6 +45,6 @@ public interface Authenticator {
 	 * @return a valid user
 	 * @throws AuthenticationException if authentication fails
 	 */
-	public AuthenticatedUser authenticate(String username, String password) throws AuthenticationException;
+	public abstract AuthenticatedUser authenticate(String username, String password) throws AuthenticationException;
 	
 }

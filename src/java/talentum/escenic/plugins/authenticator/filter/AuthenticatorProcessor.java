@@ -2,9 +2,7 @@ package talentum.escenic.plugins.authenticator.filter;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -18,26 +16,20 @@ import org.apache.commons.logging.LogFactory;
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
 import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
-/**
- * J2EE Filter that checks if request is missing user data cookie but has an
- * auto login cookie. If so an automatic login is performed.
- * 
- * @author stefan.norman
- * 
- */
-public class AuthenticatorFilter implements Filter {
+import com.escenic.presentation.servlet.GenericProcessor;
+import com.escenic.servlet.Constants;
 
-	private static Log log = LogFactory.getLog(AuthenticatorFilter.class);
+public class AuthenticatorProcessor extends GenericProcessor implements
+		Constants {
 
-	public void init(FilterConfig config) throws ServletException {
-	}
+	private static Log log = LogFactory.getLog(AuthenticatorProcessor.class);
 
-	public void doFilter(ServletRequest servletRequest,
-			ServletResponse servletResponse, FilterChain chain)
+	public boolean doBefore(ServletContext pContext,
+			ServletRequest pServletRequest, ServletResponse pServletResponse)
 			throws IOException, ServletException {
 
-		HttpServletRequest request = (HttpServletRequest) servletRequest;
-		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		HttpServletRequest request = (HttpServletRequest) pServletRequest;
+		HttpServletResponse response = (HttpServletResponse) pServletResponse;
 
 		String publicationName = (String) request
 				.getAttribute("com.escenic.publication.name");
@@ -81,10 +73,7 @@ public class AuthenticatorFilter implements Filter {
 			request.setAttribute("authenticatedUser", user);
 		}
 
-		chain.doFilter(servletRequest, servletResponse);
-	}
-
-	public void destroy() {
+		return true;
 	}
 
 }

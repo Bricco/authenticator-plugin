@@ -1,7 +1,12 @@
 package talentum.escenic.plugins.authenticator;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.StringTokenizer;
+
+import javax.servlet.http.Cookie;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,15 +24,9 @@ public class AuthenticatorManager {
 
 	private static Log log = LogFactory.getLog(AuthenticatorManager.class);
 
-	public static String AUTOLOGIN_COOKIE = "afv_autologin";
-	
 	private static AuthenticatorManager manager;
 
-	private Authenticator authenticator;
-
-	private String cookieName;
-
-	private String cookieDomain = "";
+	private HashMap authenticators = new HashMap();
 
 	UserCache userCache;
 
@@ -40,12 +39,12 @@ public class AuthenticatorManager {
 		return manager;
 	}
 
-	public Authenticator getAuthenticator() {
-		return authenticator;
+	public void addAuthenticator(String publicationName, Authenticator authenticator) {
+		authenticators.put(publicationName, authenticator);
 	}
-
-	public void setAuthenticator(Authenticator authenticator) {
-		this.authenticator = authenticator;
+	
+	private Authenticator getAuthenticator(String publicationName) {
+		return (Authenticator) authenticators.get(publicationName);
 	}
 
 	public UserCache getUserCache() {
@@ -56,20 +55,13 @@ public class AuthenticatorManager {
 		this.userCache = userCache;
 	}
 
-	public String getCookieDomain() {
-		return cookieDomain;
-	}
-
-	public void setCookieDomain(String cookieDomain) {
-		this.cookieDomain = cookieDomain;
-	}
-
-	public String getCookieName() {
-		return cookieName;
-	}
-
-	public void setCookieName(String cookieName) {
-		this.cookieName = cookieName;
+	public String[] getCookieNames() {
+		ArrayList al = new ArrayList();
+		for (Iterator iter = authenticators.values().iterator(); iter.hasNext();) {
+			Authenticator authenticator = (Authenticator) iter.next();
+			al.add(authenticator.getCookieName());
+		}
+		return (String[]) al.toArray(new String[al.size()]);
 	}
 
 	/**
@@ -79,12 +71,12 @@ public class AuthenticatorManager {
 	 * @param password
 	 * @return the user token or null if not authenticated
 	 */
-	public AuthenticatedUser authenticate(String username, String password) {
+	public AuthenticatedUser authenticate(String publicationName, String username, String password) {
 		
 		AuthenticatedUser user = null;
 		try {
 			// authenticate user with the configured Authenticator
-			user = getAuthenticator().authenticate(username,
+			user = getAuthenticator(publicationName).authenticate(username,
 					password);
 			// if user was found add him to cache
 			userCache.addUser(user);
@@ -96,7 +88,7 @@ public class AuthenticatorManager {
 		return user;
 	}
 
-	public AuthenticatedUser authenticateAuto(String encryptedUserInfo) {
+	public AuthenticatedUser authenticateAuto(String authenticatorName, String encryptedUserInfo) {
 		String userInfo;
 		try {
 			userInfo = PBEEncrypter.decrypt(encryptedUserInfo);
@@ -111,7 +103,7 @@ public class AuthenticatorManager {
 		String username = tokenizer.nextToken();
 		String password = tokenizer.nextToken();
 
-		return authenticate(username, password);
+		return authenticate(authenticatorName, username, password);
 	}
 
 	public Collection getLoggedInUsers() {
@@ -144,5 +136,50 @@ public class AuthenticatorManager {
 		return userCache.userAsBeenRemoved(token);
 	}
 	
+	public String getCookieName(String publicationName) {
+		return getAuthenticator(publicationName).getCookieName();
+	}
+	
+	public String getAutoLoginCookieName(String publicationName) {
+		return getAuthenticator(publicationName).getAutoLoginCookieName();
+	}
+	
+	public Cookie getSessionCookie(String publicationName, String token) {
+		Cookie cookie = new Cookie(getCookieName(publicationName), token);
+		cookie.setDomain(getAuthenticator(publicationName).getCookieDomain());
+		cookie.setPath("/");
+		return cookie;
+	}
 
+	public Cookie getAutologinCookie(String publicationName, String userName, String password) {
+		String cookieValue = userName + "|" + password;
+		try {
+			cookieValue = PBEEncrypter.encrypt(cookieValue);
+		} catch (Exception e) {
+			return null;
+		}
+
+		Cookie cookie = new Cookie(getAutoLoginCookieName(publicationName), cookieValue);
+		int autoLoginExpire = (60 * 60 * 24) * 100; // 100 days
+		cookie.setDomain(getAuthenticator(publicationName).getCookieDomain());
+		cookie.setPath("/");
+		cookie.setMaxAge(autoLoginExpire);
+		return cookie;
+	}
+
+	public Cookie removeSessionCookie(String publicationName) {
+		Cookie cookie = new Cookie(getCookieName(publicationName), "");
+		cookie.setMaxAge(0);
+		cookie.setDomain(getAuthenticator(publicationName).getCookieDomain());
+		cookie.setPath("/");
+		return cookie;
+	}
+
+	public Cookie removeAutologinCookie(String publicationName) {
+		Cookie cookie = new Cookie(getAutoLoginCookieName(publicationName), "");
+		cookie.setMaxAge(0);
+		cookie.setDomain(getAuthenticator(publicationName).getCookieDomain());
+		cookie.setPath("/");
+		return cookie;
+	}
 }

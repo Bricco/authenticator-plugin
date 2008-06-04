@@ -43,8 +43,15 @@ public class PressDataProductAuthenticator extends Authenticator {
 
 			UserStruct userStruct = binding.login(username, password, product);
 
-			// populate user object
-			user = new PressDataUser(userStruct, product);
+			if (userStruct.getErrorCode() != 0) {
+				log.error("Authentication failed for user " + username
+						+ ". Error from web service (error code "
+						+ userStruct.getErrorCode() + "): "
+						+ userStruct.getErrorDescription());
+			} else {
+				// populate user object
+				user = new PressDataUser(userStruct, product);
+			}
 
 		} catch (ServiceException e) {
 			log.error("Authentication failed: Web Service not found", e);

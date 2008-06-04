@@ -56,6 +56,7 @@ public class PressDataUser implements AuthenticatedUser {
 		this.companyName = userStruct.getCompanyName();
 		this.email = userStruct.getEMail();
 		this.token = userStruct.getToken();
+		this.productId = product;
 		// the basic ws has only one product
 		addProduct(product, userStruct.getStatus(), userStruct.getRoles());
 	}

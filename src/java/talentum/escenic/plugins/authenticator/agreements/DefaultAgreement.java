@@ -34,7 +34,9 @@ public class DefaultAgreement implements AgreementPartner {
 
 	String allowPublishedSection = "ece_tidningen";
 
-	int allowPublishedBeforeWeekday = 4;
+	int allowPublishedBeforeDays = 0;
+
+	int allowPublishedBeforeWeekday = 0;
 
 	/**
 	 * Constructor. It sets up the agreement configuration.
@@ -71,12 +73,20 @@ public class DefaultAgreement implements AgreementPartner {
 		this.allowPublishedSection = allowPublishedSection;
 	}
 
+	public int getAllowPublishedBeforeDays() {
+		return allowPublishedBeforeDays;
+	}
+
+	public void setAllowPublishedBeforeDays(int allowPublishedBeforeDays) {
+		this.allowPublishedBeforeDays = allowPublishedBeforeDays;
+	}
+
 	public int getAllowPublishedBeforeWeekday() {
 		return allowPublishedBeforeWeekday;
 	}
 
-	public void setAllowPublishedBeforeWeekday(int edtionPublishingWeekday) {
-		this.allowPublishedBeforeWeekday = edtionPublishingWeekday;
+	public void setAllowPublishedBeforeWeekday(int allowPublishedBeforeWeekday) {
+		this.allowPublishedBeforeWeekday = allowPublishedBeforeWeekday;
 	}
 
 	/**
@@ -104,13 +114,21 @@ public class DefaultAgreement implements AgreementPartner {
 				&& article.getHomeSection().getUniqueName().equals(
 						getAllowPublishedSection())) {
 			Calendar cal = Calendar.getInstance();
-			while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
-				cal.add(Calendar.DATE, -1);
+			// first set time to 23:59
+			cal.set(Calendar.HOUR_OF_DAY, 23);
+			cal.set(Calendar.MINUTE, 59);
+			// roll calendar back preferred days
+			cal.add(Calendar.DATE, (0-getAllowPublishedBeforeDays()));
+			// if configured, roll calendar back to the closest matching weekday
+			if(getAllowPublishedBeforeWeekday() > 0) {
+				while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
+					cal.add(Calendar.DATE, -1);
+				}
 			}
 			if (log.isDebugEnabled()) {
 				log.debug("article publishing date: "
 						+ article.getPublishedDateAsDate());
-				log.debug("last edition publishing date: " + cal.getTime());
+				log.debug("configured edition publishing date: " + cal.getTime());
 			}
 			if (article.getPublishedDateAsDate().before(cal.getTime())) {
 				return;

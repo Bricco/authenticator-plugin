@@ -2,6 +2,7 @@ package talentum.escenic.plugins.authenticator.agreements;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 import neo.xredsys.api.Section;
 import neo.xredsys.content.agreement.AgreementConfig;
@@ -37,6 +38,8 @@ public class DefaultAgreement implements AgreementPartner {
 	int allowPublishedBeforeDays = 0;
 
 	int allowPublishedBeforeWeekday = 0;
+
+	String allowPublishedBeforeTime = "23:59";
 
 	/**
 	 * Constructor. It sets up the agreement configuration.
@@ -89,6 +92,14 @@ public class DefaultAgreement implements AgreementPartner {
 		this.allowPublishedBeforeWeekday = allowPublishedBeforeWeekday;
 	}
 
+	public String getAllowPublishedBeforeTime() {
+		return allowPublishedBeforeTime;
+	}
+
+	public void setAllowPublishedBeforeTime(String allowPublishedBeforeTime) {
+		this.allowPublishedBeforeTime = allowPublishedBeforeTime;
+	} 
+
 	/**
 	 * Handles agreement requests.
 	 */
@@ -114,9 +125,10 @@ public class DefaultAgreement implements AgreementPartner {
 				&& article.getHomeSection().getUniqueName().equals(
 						getAllowPublishedSection())) {
 			Calendar cal = Calendar.getInstance();
-			// first set time to 23:59
-			cal.set(Calendar.HOUR_OF_DAY, 23);
-			cal.set(Calendar.MINUTE, 59);
+			// first set time
+			StringTokenizer tokenizer = new StringTokenizer(getAllowPublishedBeforeTime(), ":");
+			cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tokenizer.nextToken()));
+			cal.set(Calendar.MINUTE, Integer.parseInt(tokenizer.nextToken()));
 			// roll calendar back preferred days
 			cal.add(Calendar.DATE, (0-getAllowPublishedBeforeDays()));
 			// if configured, roll calendar back to the closest matching weekday

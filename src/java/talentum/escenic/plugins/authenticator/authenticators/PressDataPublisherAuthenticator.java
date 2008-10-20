@@ -18,7 +18,7 @@ import talentum.escenic.plugins.authenticator.AuthenticationException;
  * 
  * @author stefan.norman
  */
-public class PressDataPublisherAuthenticator extends Authenticator {
+public class PressDataPublisherAuthenticator extends WSAuthenticator {
 
 	private static Log log = LogFactory.getLog(PressDataPublisherAuthenticator.class);
 	
@@ -40,6 +40,8 @@ public class PressDataPublisherAuthenticator extends Authenticator {
 			// call web service top authenticate
 			LoginServiceSoapStub binding = (LoginServiceSoapStub) new LoginServiceLocator()
 					.getLoginServiceSoap();
+
+			binding.setTimeout(getTimeout());
 
 			UserStatusDto userSDto = binding.loginPublisher(publisher, username, password);
 

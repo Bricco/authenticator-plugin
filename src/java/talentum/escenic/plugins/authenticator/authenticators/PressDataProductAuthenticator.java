@@ -37,6 +37,10 @@ public class PressDataProductAuthenticator extends WSAuthenticator {
 	public AuthenticatedUser authenticate(String username, String password)
 			throws AuthenticationException {
 		AuthenticatedUser user = null;
+		if(username == null || username.trim().length() == 0 || password == null || password.trim().length() == 0)
+		{
+			return user;
+		}
 		try {
 			// call web service top authenticate
 			AuthorizationSoapStub binding = (AuthorizationSoapStub) new AuthorizationLocator()

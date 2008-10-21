@@ -46,5 +46,5 @@ public abstract class Authenticator {
 	 * @throws AuthenticationException if authentication fails
 	 */
 	public abstract AuthenticatedUser authenticate(String username, String password) throws AuthenticationException;
-	
+
 }

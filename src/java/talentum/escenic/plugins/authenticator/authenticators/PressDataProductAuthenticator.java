@@ -11,8 +11,6 @@ import net.kundservice.www.WS.Authorization.UserStruct;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import talentum.escenic.plugins.authenticator.AuthenticationException;
-
 /**
  * Implements authentication through Pressdata Authorization web service.
  * 
@@ -34,41 +32,29 @@ public class PressDataProductAuthenticator extends WSAuthenticator {
 		this.product = product;
 	}
 
-	public AuthenticatedUser authenticate(String username, String password)
-			throws AuthenticationException {
+	public AuthenticatedUser performLogin(String username, String password)
+			throws ServiceException, RemoteException {
+		
 		AuthenticatedUser user = null;
-		if(username == null || username.trim().length() == 0 || password == null || password.trim().length() == 0)
-		{
-			return user;
-		}
-		try {
-			// call web service top authenticate
-			AuthorizationSoapStub binding = (AuthorizationSoapStub) new AuthorizationLocator()
-					.getAuthorizationSoap();
-			
-			binding.setTimeout(getTimeout());
 
-			UserStruct userStruct = binding.login(username, password, product);
+		// call web service to authenticate
+		AuthorizationSoapStub binding = (AuthorizationSoapStub) new AuthorizationLocator()
+				.getAuthorizationSoap();
+		
+		binding.setTimeout(getTimeout());
 
-			if (userStruct.getErrorCode() != 0) {
-				log.error("Authentication failed for user " + username
-						+ ". Error from web service (error code "
-						+ userStruct.getErrorCode() + "): "
-						+ userStruct.getErrorDescription());
-			} else {
-				// populate user object
-				user = new PressDataUser(userStruct, product);
-			}
+		UserStruct userStruct = binding.login(username, password, product);
 
-		} catch (ServiceException e) {
-			log.error("Authentication failed: Web Service not found", e);
-		} catch (RemoteException e) {
-			log.error("Authentication failed: Web Service not available", e);
+		if (userStruct.getErrorCode() != 0) {
+			log.error("Authentication failed for user " + username
+					+ ". Error from web service (error code "
+					+ userStruct.getErrorCode() + "): "
+					+ userStruct.getErrorDescription());
+		} else {
+			// populate user object
+			user = new PressDataUser(userStruct, product);
 		}
-		if (user == null) {
-			throw new AuthenticationException(
-					"Authentication failed: User not found");
-		}
+
 		return user;
 	}
 

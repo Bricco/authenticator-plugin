@@ -31,7 +31,7 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 		this.publisher = publisher;
 	}
 
-	public AuthenticatedUser performLogin(String username, String password)
+	public AuthenticatedUser performLogin(String username, String password, String ipaddress)
 			throws ServiceException, RemoteException {
 
 		AuthenticatedUser user = null;

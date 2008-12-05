@@ -13,7 +13,7 @@ public class LoginForm extends ActionForm {
 	String username;
 	String password;
 	String redirectToURL;
-	boolean autologin;
+	boolean autologin = true;
 	
 	public String getPassword() {
 		return password;

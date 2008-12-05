@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.ReminderException;
 
 /**
  * Abstract WebService authenticator.
@@ -16,9 +17,8 @@ import talentum.escenic.plugins.authenticator.AuthenticationException;
  */
 public abstract class WSAuthenticator extends Authenticator {
 
-	private static Log log = LogFactory
-		.getLog(WSAuthenticator.class);
-	
+	private static Log log = LogFactory.getLog(WSAuthenticator.class);
+
 	private int timeout = 15000;
 
 	public int getTimeout() {
@@ -29,8 +29,8 @@ public abstract class WSAuthenticator extends Authenticator {
 		this.timeout = timeout;
 	}
 
-	public AuthenticatedUser authenticate(String username, String password)
-			throws AuthenticationException {
+	public AuthenticatedUser authenticate(String username, String password,
+			String ipaddress) throws AuthenticationException {
 		AuthenticatedUser user = null;
 		if (username == null || username.trim().length() == 0
 				|| password == null || password.trim().length() == 0) {
@@ -38,8 +38,8 @@ public abstract class WSAuthenticator extends Authenticator {
 					"Authentication failed: Invalid arguments");
 		}
 		try {
-			
-			user = performLogin(username, password);
+
+			user = performLogin(username, password, ipaddress);
 
 		} catch (ServiceException e) {
 			log.error("Authentication failed: Web Service not found", e);
@@ -53,8 +53,52 @@ public abstract class WSAuthenticator extends Authenticator {
 		return user;
 	}
 
-	protected abstract AuthenticatedUser performLogin(String username, String password)
-			throws ServiceException, RemoteException;
-	
+	public void logout(String token) {
+
+		if (token == null || token.trim().length() == 0) {
+			return;
+		}
+		try {
+			performLogout(token);
+
+		} catch (ServiceException e) {
+			log.error("Logout failed: Web Service not found", e);
+		} catch (RemoteException e) {
+			log.error("Logout failed: Web Service not available", e);
+		}
+	}
+
+	public void passwordReminder(String emailAddress) throws ReminderException {
+
+		if (emailAddress == null || emailAddress.trim().length() == 0) {
+			return;
+		}
+		boolean reminderOK = false;
+		try {
+			reminderOK = performPasswordReminder(emailAddress);
+
+		} catch (ServiceException e) {
+			log.error("Logout failed: Web Service not found", e);
+		} catch (RemoteException e) {
+			log.error("Logout failed: Web Service not available", e);
+		}
+		if (!reminderOK) {
+			throw new ReminderException("Password reminder failed");
+		}
+	}
+
+	protected abstract AuthenticatedUser performLogin(String username,
+			String password, String ipaddress) throws ServiceException,
+			RemoteException;
+
+	protected void performLogout(String token) throws ServiceException,
+			RemoteException {
+		// do nothing
+	}
+
+	protected boolean performPasswordReminder(String emailAddress)
+			throws ServiceException, RemoteException {
+		return true;
+	}
 
 }

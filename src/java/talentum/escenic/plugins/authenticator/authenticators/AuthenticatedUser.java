@@ -64,4 +64,11 @@ public interface AuthenticatedUser extends Serializable {
 	 */
 	public boolean hasPassiveStatusForRole(String role);
 	
+	/**
+	 * Get a URL configured in the Authenticator. It will be used to redirect to, after logging in.
+	 * 
+	 * @return A URL String
+	 */
+	public String getMyPage();
+
 }

@@ -1,6 +1,7 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.ReminderException;
 
 /**
  * Implements authentication functionality.
@@ -42,9 +43,24 @@ public abstract class Authenticator {
 	 * 
 	 * @param username String the username
 	 * @param password String the password
+	 * @param ipaddress String the ip address
 	 * @return a valid user
 	 * @throws AuthenticationException if authentication fails
 	 */
-	public abstract AuthenticatedUser authenticate(String username, String password) throws AuthenticationException;
+	public abstract AuthenticatedUser authenticate(String username, String password, String ipaddress) throws AuthenticationException;
+
+	/**
+	 * Performs logout.
+	 * 
+	 * @param token String the token
+	 */
+	public abstract void logout(String token);
+
+	/**
+	 * Performs forgot password action.
+	 * 
+	 * @param token String the token
+	 */
+	public abstract void passwordReminder(String emailAddress) throws ReminderException;
 
 }

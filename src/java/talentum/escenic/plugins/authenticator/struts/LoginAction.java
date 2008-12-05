@@ -38,7 +38,7 @@ public class LoginAction extends Action {
 		// perform the actual authentication
 		AuthenticatedUser user = AuthenticatorManager.getInstance()
 				.authenticate(publicationName, loginForm.getUsername(),
-						loginForm.getPassword());
+						loginForm.getPassword(), request.getRemoteAddr());
 
 		if (user != null) {
 
@@ -70,6 +70,9 @@ public class LoginAction extends Action {
 			}
 			if (redirectToURL != null) {
 				return new ActionForward(redirectToURL, true);
+			}
+			if (user.getMyPage() != null) {
+				return new ActionForward(user.getMyPage(), true);
 			}
 
 			return mapping.findForward("authenticated");

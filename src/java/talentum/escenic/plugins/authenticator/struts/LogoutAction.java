@@ -49,7 +49,8 @@ public class LogoutAction extends Action {
 				log.info("User with token " + userDataCookie.getValue()
 						+ " logging out");
 			}
-			AuthenticatorManager.getInstance().evictUser(
+
+			AuthenticatorManager.getInstance().evictUser(publicationName, 
 					userDataCookie.getValue());
 
 			response.addCookie(AuthenticatorManager.getInstance()

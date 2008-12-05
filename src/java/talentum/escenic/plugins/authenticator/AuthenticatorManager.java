@@ -71,13 +71,13 @@ public class AuthenticatorManager {
 	 * @param password
 	 * @return the user token or null if not authenticated
 	 */
-	public AuthenticatedUser authenticate(String publicationName, String username, String password) {
+	public AuthenticatedUser authenticate(String publicationName, String username, String password, String ipaddress) {
 		
 		AuthenticatedUser user = null;
 		try {
 			// authenticate user with the configured Authenticator
 			user = getAuthenticator(publicationName).authenticate(username,
-					password);
+					password, ipaddress);
 			// if user was found add him to cache
 			userCache.addUser(user);
 
@@ -88,7 +88,20 @@ public class AuthenticatorManager {
 		return user;
 	}
 
-	public AuthenticatedUser authenticateAuto(String authenticatorName, String encryptedUserInfo) {
+	public boolean passwordReminder(String publicationName, String emailAddress) {
+		
+		try {
+			getAuthenticator(publicationName).passwordReminder(emailAddress);
+			return true;
+
+		} catch (ReminderException e) {
+			log.error("Could not send reminder", e);
+		}
+
+		return false;
+	}
+
+	public AuthenticatedUser authenticateAuto(String authenticatorName, String encryptedUserInfo, String ipadress) {
 		String userInfo;
 		try {
 			userInfo = PBEEncrypter.decrypt(encryptedUserInfo);
@@ -103,7 +116,7 @@ public class AuthenticatorManager {
 		String username = tokenizer.nextToken();
 		String password = tokenizer.nextToken();
 
-		return authenticate(authenticatorName, username, password);
+		return authenticate(authenticatorName, username, password, ipadress);
 	}
 
 	public Collection getLoggedInUsers() {
@@ -112,6 +125,11 @@ public class AuthenticatorManager {
 
 	public void evictUser(String token) {
 		userCache.removeUser(token);
+	}
+
+	public void evictUser(String publicationName, String token) {
+		getAuthenticator(publicationName).logout(token);
+		evictUser(token);
 	}
 
 	/**

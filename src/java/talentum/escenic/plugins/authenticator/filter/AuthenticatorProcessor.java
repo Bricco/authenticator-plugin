@@ -62,7 +62,7 @@ public class AuthenticatorProcessor extends GenericProcessor implements
 		// autologin cookie, then perform auto login
 		if (user == null && autologinCookie != null) {
 			user = AuthenticatorManager.getInstance().authenticateAuto(
-					publicationName, autologinCookie.getValue());
+					publicationName, autologinCookie.getValue(), request.getRemoteAddr());
 			if (user != null) {
 				response.addCookie(AuthenticatorManager.getInstance()
 						.getSessionCookie(publicationName, user.getToken()));

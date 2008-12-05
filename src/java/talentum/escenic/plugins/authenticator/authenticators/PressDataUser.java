@@ -134,6 +134,10 @@ public class PressDataUser implements AuthenticatedUser {
 		return false;
 	}
 
+	public String getMyPage() {
+		return null;
+	}
+
 	private class Product implements Serializable {
 		
 		private static final String STATUS_NORMAL = "NORMAL";

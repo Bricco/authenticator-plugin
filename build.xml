@@ -40,7 +40,7 @@
 		<mkdir dir="build" />
 	</target>
 
-	<target name="compile" depends="init, generate-kundservice-client">
+	<target name="compile" depends="init, generate-webservice-clients">
 		<javac debug="on" srcdir="src/java" destdir="build">
 			<include name="talentum/**" />
 			<classpath refid="project.class.path" />
@@ -57,6 +57,7 @@
 				<include name="talentum/escenic/plugins/authenticator/agreements/*" />
 				<include name="talentum/escenic/plugins/authenticator/authenticators/**" />
 				<include name="net/kundservice/www/**" />
+				<include name="se/talentumhr/webservices/**" />
 			</fileset>
 			<fileset dir="tmp">
 				<include name="com/escenic/plugin/*" />
@@ -139,7 +140,7 @@ context-root: /${demo-publication}
 		</copy>
 	</target>
 	
-	<target name="generate-kundservice-client">
+	<target name="generate-webservice-clients">
 		<taskdef resource="axis-tasks.properties"
 		  classpathref="project.class.path" />
 		<axis-wsdl2java
@@ -152,6 +153,11 @@ context-root: /${demo-publication}
 		  testcase="true"
 		  verbose="true"
 		  url="resources/kundservice_LoginService.wsdl" />
+		<axis-wsdl2java
+		  output="src/java"
+		  testcase="true"
+		  verbose="true"
+		  url="resources/talentumhr_LoginAccountService.wsdl" />
 	</target>
 
 	<target name="pack" depends="war">

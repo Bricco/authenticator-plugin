@@ -32,7 +32,7 @@ public class PressDataProductAuthenticator extends WSAuthenticator {
 		this.product = product;
 	}
 
-	public AuthenticatedUser performLogin(String username, String password)
+	public AuthenticatedUser performLogin(String username, String password, String ipaddress)
 			throws ServiceException, RemoteException {
 		
 		AuthenticatedUser user = null;

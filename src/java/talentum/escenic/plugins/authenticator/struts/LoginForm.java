@@ -13,7 +13,8 @@ public class LoginForm extends ActionForm {
 	String username;
 	String password;
 	String redirectToURL;
-	boolean autologin = true;
+	// keep the autologin unset to make it work (FPO-88)
+	boolean autologin;
 	
 	public String getPassword() {
 		return password;

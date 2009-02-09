@@ -175,11 +175,9 @@ public class DefaultAgreement implements AgreementPartner {
 				if (log.isDebugEnabled()) {
 					log.debug("User " + user + " not found");
 				}
-				// if the user is not found save url in session and redirect to
-				// login page
-				response.setSessionAttribute("redirectToURL", request.getUrl());
+				// if the user is not found redirect to login page
 				response.setRedirect(getContextPath(request)
-						+ urlMap.get("loginform"));
+						+ urlMap.get("loginform") + "?redirectToURL=" + request.getUrl());
 			}
 
 		} else if (requestedRole != null && !user.hasRole(requestedRole)) {

@@ -59,17 +59,10 @@ public class LoginAction extends Action {
 				log.info("User with token " + user.getToken() + " logged in");
 			}
 
-			// redirect to page found in session
-			String redirectToURL = (String) request.getSession().getAttribute(
-					"redirectToURL");
-			request.getSession().removeAttribute("redirectToURL");
-
+			// redirect to page found in form
 			if (loginForm.getRedirectToURL() != null
 					&& loginForm.getRedirectToURL().trim().length() > 0) {
-				redirectToURL = loginForm.getRedirectToURL();
-			}
-			if (redirectToURL != null) {
-				return new ActionForward(redirectToURL, true);
+				return new ActionForward(loginForm.getRedirectToURL(), true);
 			}
 			if (user.getMyPage() != null) {
 				return new ActionForward(user.getMyPage(), true);

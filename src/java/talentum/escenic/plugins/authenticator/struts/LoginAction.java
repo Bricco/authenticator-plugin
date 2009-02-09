@@ -62,6 +62,9 @@ public class LoginAction extends Action {
 			// redirect to page found in form
 			if (loginForm.getRedirectToURL() != null
 					&& loginForm.getRedirectToURL().trim().length() > 0) {
+				if(log.isDebugEnabled()) {
+					log.debug("Redirecting user " + user.getName() + " to " + loginForm.getRedirectToURL());
+				}
 				return new ActionForward(loginForm.getRedirectToURL(), true);
 			}
 			if (user.getMyPage() != null) {

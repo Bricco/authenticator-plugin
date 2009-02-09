@@ -82,7 +82,10 @@ public class AuthenticatorManager {
 			userCache.addUser(user);
 
 		} catch (AuthenticationException e) {
-			log.error("Could not authenticate", e);
+			log.error("Could not authenticate:" + e.getMessage());
+			if(log.isDebugEnabled()) {
+				log.debug(e);
+			}
 		}
 
 		return user;
@@ -95,7 +98,10 @@ public class AuthenticatorManager {
 			return true;
 
 		} catch (ReminderException e) {
-			log.error("Could not send reminder", e);
+			log.error("Could not send reminder: " + e.getMessage());
+			if(log.isDebugEnabled()) {
+				log.debug(e);
+			}
 		}
 
 		return false;
@@ -106,7 +112,10 @@ public class AuthenticatorManager {
 		try {
 			userInfo = PBEEncrypter.decrypt(encryptedUserInfo);
 		} catch (Exception e) {
-			log.error("Could not decrypt autologin cookie.", e);
+			log.error("Could not decrypt autologin cookie: " + e.getMessage());
+			if(log.isDebugEnabled()) {
+				log.debug(e);
+			}
 			return null;
 		}
 

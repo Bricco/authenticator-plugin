@@ -42,9 +42,15 @@ public abstract class WSAuthenticator extends Authenticator {
 			user = performLogin(username, password, ipaddress);
 
 		} catch (ServiceException e) {
-			log.error("Authentication failed: Web Service not found", e);
+			log.error("Authentication failed: Web Service not found");
+			if(log.isDebugEnabled()) {
+				log.debug(e);
+			}
 		} catch (RemoteException e) {
-			log.error("Authentication failed: Web Service not available", e);
+			log.error("Authentication failed: Web Service not available");
+			if(log.isDebugEnabled()) {
+				log.debug(e);
+			}
 		}
 		if (user == null) {
 			throw new AuthenticationException(
@@ -62,9 +68,15 @@ public abstract class WSAuthenticator extends Authenticator {
 			performLogout(token);
 
 		} catch (ServiceException e) {
-			log.error("Logout failed: Web Service not found", e);
+			log.error("Logout failed: Web Service not found: " + e.getMessage());
+			if(log.isDebugEnabled()) {
+				log.debug(e);
+			}
 		} catch (RemoteException e) {
-			log.error("Logout failed: Web Service not available", e);
+			log.error("Logout failed: Web Service not available:" + e.getMessage());
+			if(log.isDebugEnabled()) {
+				log.debug(e);
+			}
 		}
 	}
 

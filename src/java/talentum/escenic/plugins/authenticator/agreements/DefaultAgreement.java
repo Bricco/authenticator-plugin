@@ -1,5 +1,7 @@
 package talentum.escenic.plugins.authenticator.agreements;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -177,7 +179,7 @@ public class DefaultAgreement implements AgreementPartner {
 				}
 				// if the user is not found redirect to login page
 				response.setRedirect(getContextPath(request)
-						+ urlMap.get("loginform") + "?redirectToURL=" + request.getUrl());
+						+ urlMap.get("loginform") + "?redirectToURL=" + encodeForUrl(request.getUrl()));
 			}
 
 		} else if (requestedRole != null && !user.hasRole(requestedRole)) {
@@ -210,5 +212,14 @@ public class DefaultAgreement implements AgreementPartner {
 		Section sec = request.getSection();
 		return sec.getUrl().substring(0,
 				sec.getUrl().lastIndexOf(sec.getDirectoryPath()));
+	}
+	
+	private String encodeForUrl(String s) {
+		try {
+			s = URLEncoder.encode(s, "iso-8859-1");
+		} catch (UnsupportedEncodingException e) {
+			log.error("Could not encode string", e);
+		}
+		return s;
 	}
 }

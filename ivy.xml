@@ -1,0 +1,6 @@
+<ivy-module version="1.0">
+    <info organisation="talentum" module="plugin.authenticator"/>
+    <publications>
+    	<artifact name="authenticator"/>
+    </publications>
+</ivy-module>

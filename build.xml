@@ -1,4 +1,4 @@
-<project name="authenticator" default="usage" basedir=".">
+<project name="authenticator" default="usage" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<property name="version" value="1.16" />
 
@@ -10,7 +10,7 @@
 	<property name="escenic_home" value="/opt/escenic/" />
 	<property name="jar.file" value="escenic-${ant.project.name}-classes.jar" />
 	<property name="publication-jar.file" value="escenic-${ant.project.name}-taglib.jar" />
-	<property name="plugin-jar.file" value="${ant.project.name}-${version}.jar" />
+	<property name="plugin-jar.file" value="${ant.project.name}.jar" />
 	<property name="demo-publication" value="${ant.project.name}-demo" />
 	<property name="demo-war.file" value="${demo-publication}.war" />
 	<path id="project.class.path">
@@ -50,7 +50,8 @@
 	<target name="jar" depends="compile">
 		<delete failonerror="false" file="dist/${jar.file}" />
 		<mkdir dir="tmp/com/escenic/plugin" />
-		<copyfile dest="tmp/com/escenic/plugin/plugin.xml" src="resources/plugin.xml" />
+		<filter token="plugin.version" value="${version}" />
+		<copy file="resources/plugin.xml" tofile="tmp/com/escenic/plugin/plugin.xml" filtering="true" />
 		<jar jarfile="dist/${jar.file}">
 			<fileset dir="build">
 				<include name="talentum/escenic/plugins/authenticator/*" />
@@ -64,7 +65,6 @@
 			</fileset>
 		</jar>
 		<delete dir="tmp"/>
-
 		<mkdir dir="tmp/META_INF" />
 		<delete failonerror="false" file="dist/${publication-jar.file}" />
 		<jar jarfile="dist/${publication-jar.file}">
@@ -206,7 +206,18 @@ context-root: /${demo-publication}
 		<unjar src="dist/${plugin-jar.file}" dest="${escenic_home}/engine/plugins" overwrite="true"></unjar>
 	</target>
 	
-	<target name="clean" description="Removes generated directories.">
+	<target name="publish-artefact" depends="pack">
+		<fail unless="version" message="Property version must be set."/>
+		<ivy:retrieve />
+		<ivy:publish
+			artifactspattern="${dist.dir}/[artifact].[ext]"
+			resolver="local"
+			pubrevision="${version}"
+			status="release"
+			overwrite="true"/>
+	</target>
+
+		<target name="clean" description="Removes generated directories.">
 		<delete failonerror="false" dir="build" />
 		<delete failonerror="false" dir="dist" />
 	</target>

@@ -213,7 +213,7 @@ context-root: /${demo-publication}
 		<fail unless="version" message="Property version must be set."/>
 		<ivy:retrieve />
 		<ivy:publish
-			artifactspattern="${dist.dir}/[artifact].[ext]"
+			artifactspattern="dist/[artifact].[ext]"
 			resolver="local"
 			pubrevision="${version}"
 			status="release"

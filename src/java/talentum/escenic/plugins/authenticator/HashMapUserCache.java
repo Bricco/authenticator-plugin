@@ -30,18 +30,32 @@ public class HashMapUserCache implements UserCache {
 		validUsers = removeOldUsers(validUsers);
 		evictedUsers = removeOldUsers(evictedUsers);
 
-		for (Iterator iter = validUsers.keySet().iterator(); iter.hasNext();) {
-			String token = (String) iter.next();
-			if(((AuthenticatedUser)validUsers.get(token)).getUserId()==user.getUserId()) {
-				evictedUsers.put(token, validUsers.remove(token));
-				break;
-			}
-			
-		}
+		String cheaterToken = findCheater(user);
+		if(cheaterToken != null) {
+			evictedUsers.put(cheaterToken, validUsers.remove(cheaterToken));
+		}		
 		
 		validUsers.put(user.getToken(), user);
 	}
 
+	/**
+	 * Loop existing users to see if the new user is already logged in
+	 * if so evict the the existing user
+	 * 
+	 * @return the token of the evicted user or null if no user was evicted
+	 */
+	protected String findCheater(AuthenticatedUser user) {
+		String token;
+		for (Iterator iter = validUsers.keySet().iterator(); iter.hasNext();) {
+			token = (String) iter.next();
+			if(((AuthenticatedUser)validUsers.get(token)).getUserId()==user.getUserId()) {
+				return token;
+			}
+		}
+		return null;
+	}
+	
+	
 	public Collection getAllUsers() {
 		return validUsers.values();
 	}
@@ -54,7 +68,7 @@ public class HashMapUserCache implements UserCache {
 		validUsers.remove(token);
 	}
 
-	public boolean userAsBeenRemoved(String token) {
+	public boolean userHasBeenRemoved(String token) {
 		return evictedUsers.containsKey(token);
 	}
 

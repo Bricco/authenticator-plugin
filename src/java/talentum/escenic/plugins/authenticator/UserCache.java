@@ -42,6 +42,6 @@ public interface UserCache {
 	 * @param token the token to check.
 	 * @return true if the user has bee previously removed.
 	 */
-	public boolean userAsBeenRemoved(String token);
+	public boolean userHasBeenRemoved(String token);
 	
 }

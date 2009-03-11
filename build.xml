@@ -1,42 +1,33 @@
-<project name="authenticator" default="usage" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="authenticator" default="pack" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<property name="version" value="1.17b" />
+	<property name="version" value="1.17" />
 
-	<property environment="env" />
-	<!-- set webapps.dir if TOMCAT_HOME env variable is set. CruiseControl sends this variable along -->
-	<available file="${env.TOMCAT_HOME}" property="webapps.dir" value="${env.TOMCAT_HOME}/webapps" />
-	<available file="${env.TOMCAT_HOME}" property="shared-lib.dir" value="${env.TOMCAT_HOME}/shared/lib" />
-	<available file="${env.ESCENIC_HOME}" property="escenic_home" value="${env.ESCENIC_HOME}" />
-	<property name="escenic_home" value="/opt/escenic/" />
+	<path id="path:antcontrib" path="buildjars/ant-contrib.jar" />
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="path:antcontrib" />
+
+	<path id="ivy.lib.path" path="buildjars/ivy-2.0.0-beta1.jar"/>
+	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+
+	<property name="escenic.major.version" value="4"/>
+	<if>
+		<equals arg1="${escenic.major.version}" arg2="5"/>
+		<then>
+			<property name="escenic_home" value="${escenic.deploy.dir}/escenic5" />
+		</then>
+		<else>
+			<property name="escenic_home" value="${escenic.deploy.dir}/escenic" />
+		</else>
+	</if>
+
 	<property name="jar.file" value="escenic-${ant.project.name}-classes.jar" />
 	<property name="publication-jar.file" value="escenic-${ant.project.name}-taglib.jar" />
 	<property name="plugin-jar.file" value="${ant.project.name}.jar" />
-	<property name="demo-publication" value="${ant.project.name}-demo" />
-	<property name="demo-war.file" value="${demo-publication}.war" />
 	<path id="project.class.path">
 		<fileset dir="buildjars">
 			<include name="*.jar" />
 		</fileset>
 	</path>
 
-	<path id="ivy.lib.path" path="buildjars/ivy-2.0.0-beta1.jar"/>
-	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
-
-	<target name="usage">
-		<echo>
-**************************************************
-* ${ant.project.name} builder.
-* 
-* Available targets:
-*
-*   usage       display this help
-*   deploy-jsp  copies JSPs to Tomcat
-*   war         create publication WAR file
-*   clean       clean up
-*
-**************************************************
-		</echo>
-	</target>
 
 	<target name="init" description="Initializes the build process.">
 		<mkdir dir="dist" />
@@ -83,66 +74,6 @@
 		<delete dir="tmp"/>
 	</target>
 
-	<target name="war" depends="clean, jar" description="Builds a demo WAR file into ./dist folder.">
-		<echo>Creating demo WAR file</echo>
-		<war destfile="dist/${demo-war.file}" webxml="resources/web.xml">
-			<fileset dir="webapps/demo">
-				<include name="**" />
-			</fileset>
-			<!-- add the JAR to WEB-INF/lib -->
-			<lib dir="dist">
-				<include name="${publication-jar.file}" />
-			</lib>
-		</war>
-		<echo>WAR file ${demo-war.file} created</echo>
-	</target>
-
-	<target name="publish-demo" depends="war" description="Calls the escenic-admin application and publishes the WAR to it.">
-		<echo>NOT IMPLEMENTED YET</echo>
-	</target>
-
-	<target name="deploy-demo" depends="install-plugin" if="webapps.dir" description="Deploys the WAR file to the application server webapps directory.">
-		<!-- delete the old unpacked war -->
-		<delete dir="${webapps.dir}/${demo-publication}" />
-
-		<!-- deploy the new war -->
-		<!--
-		<copy todir="${webapps.dir}" file="dist/${demo-war.file}" />
-		-->
-
-		<fail unless="escenic_home">
-			ESCENIC_HOME must be set in your environment.
-		</fail>
-		<property name="asseblytool.dir" value="${escenic_home}/assemblytool" />
-		<echo>Copying WAR to assemblytool</echo>
-		<copy todir="${asseblytool.dir}/publications" file="dist/${demo-war.file}" />
-		<echo>Creating properties file for assemblytool</echo>
-		<echo file="${asseblytool.dir}/publications/${demo-publication}.properties">
-name: ${demo-publication}
-source-war: ${demo-war.file}
-context-root: /${demo-publication}
-		</echo>
-		<echo>Running assebly tool</echo>
-		<ant dir="${asseblytool.dir}" target="clean" inheritall="false" />
-		<ant dir="${asseblytool.dir}" target="ear" inheritall="false" />
-		<echo>Deploying WAR to ${webapps.dir}</echo>
-		<copy todir="${webapps.dir}" file="${asseblytool.dir}/dist/war/${demo-war.file}" />
-	</target>
-
-	<target name="deploy-jsp" depends="init" if="webapps.dir" description="Copies all modified JSPs into the webapp folder of the application server.">
-		<echo>Deploying JSP files to ${webapps.dir}</echo>
-		<copy todir="${webapps.dir}/${demo-publication}">
-			<fileset dir="webapps/demo" includes="**/*.jsp" />
-		</copy>
-	</target>
-
-	<target name="deploy-jar" depends="jar" if="webapps.dir" description="Copies all modified JSPs into the webapp folder of the application server.">
-		<echo>Deploying JAR file to ${shared-lib.dir}</echo>
-		<copy todir="${shared-lib.dir}">
-			<fileset dir="dist" includes="${jar.file}" />
-		</copy>
-	</target>
-	
 	<target name="generate-webservice-clients">
 		<taskdef resource="axis-tasks.properties"
 		  classpathref="project.class.path" />
@@ -163,7 +94,7 @@ context-root: /${demo-publication}
 		  url="resources/talentumhr_LoginAccountService.wsdl" />
 	</target>
 
-	<target name="pack" depends="war">
+	<target name="pack" depends="clean,jar">
 		
 		<mkdir dir="tmp/${ant.project.name}"/>
 		<mkdir dir="tmp/${ant.project.name}/admin/webapp/plugins/${ant.project.name}"/>
@@ -190,7 +121,6 @@ context-root: /${demo-publication}
 			</fileset>
 		</copy>
 		<copy file="dist/${publication-jar.file}" todir="tmp/${ant.project.name}/publication/webapp/WEB-INF/lib" />
-		<copy file="dist/${demo-war.file}" todir="tmp/${ant.project.name}/wars" />
 		
 		<delete failonerror="false" file="dist/${plugin-jar.file}" />
 		<jar jarfile="dist/${plugin-jar.file}">
@@ -205,10 +135,16 @@ context-root: /${demo-publication}
 	</target>
 	
 	<target name="install-plugin" depends="pack">
-		<fail unless="escenic_home">
-			ESCENIC_HOME must be set in your environment.
+		<available file="${escenic_home}" property="escenic_home.exists"/>
+		<fail unless="escenic_home.exists">
+			Directory ${escenic_home} not found.
 		</fail>
 		<unjar src="dist/${plugin-jar.file}" dest="${escenic_home}/engine/plugins" overwrite="true"></unjar>
+		<copy todir="${escenic_home}/tomcat/shared/lib" overwrite="true">
+			<fileset dir="${escenic_home}/engine/plugins/${ant.project.name}/lib">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
 	</target>
 	
 	<target name="publish-artefact" depends="pack">
@@ -222,7 +158,7 @@ context-root: /${demo-publication}
 			overwrite="true"/>
 	</target>
 
-		<target name="clean" description="Removes generated directories.">
+	<target name="clean" description="Removes generated directories.">
 		<delete failonerror="false" dir="build" />
 		<delete failonerror="false" dir="dist" />
 	</target>

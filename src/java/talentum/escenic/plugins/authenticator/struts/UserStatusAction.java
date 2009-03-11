@@ -12,7 +12,7 @@ import talentum.escenic.plugins.authenticator.AuthenticatorManager;
 import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
 /**
- * This action si called from SIX to verify the status of a user.
+ * This action is called from SIX to verify the status of a user.
  * 
  * @author stefan.norman
  *

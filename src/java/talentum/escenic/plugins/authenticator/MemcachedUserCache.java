@@ -25,25 +25,43 @@ public class MemcachedUserCache extends HashMapUserCache {
 	
 	public MemcachedUserCache() {
 		memCachedClient = new MemCachedClient();
-        if(!SockIOPool.getInstance().isInitialized())
-            SockIOPool.getInstance().initialize();
+		SockIOPool pool = SockIOPool.getInstance();
+        if(!pool.isInitialized()) {
+        	pool.initialize();
+        }
 	}
 		
 	public void addUser(AuthenticatedUser user) {
 		
+		// remove any cheater first
+		String cheaterToken = findCheater(user);
+		if(cheaterToken != null) {
+			memCachedClient.delete(cheaterToken);
+		}
+		// add user to memcached
+		memCachedClient.add(user.getToken(), user);
+		
 		ensureValidUsers();
 		ensureEvictedUsers();
 		
+		// add user to HashMap
 		super.addUser(user);
 
+		// replace HashMaps in memcached
 		memCachedClient.replace(VALID_USERS, validUsers);
 		memCachedClient.replace(EVICTED_USERS, evictedUsers);
 	
 	}
 	
+	/**
+	 * Get user directly from memcached. If not found try in the HashMap.
+	 */
 	public AuthenticatedUser getUser(String token) {
-		ensureValidUsers();
-		return super.getUser(token);
+		AuthenticatedUser user = (AuthenticatedUser) memCachedClient.get(token);
+		if(user == null) {
+			user = super.getUser(token);
+		}
+		return user;
 	}
 	
 	public Collection getAllUsers() {
@@ -52,30 +70,33 @@ public class MemcachedUserCache extends HashMapUserCache {
 	}
 
 	public void removeUser(String token) {
+		memCachedClient.delete(token);
 		ensureValidUsers();
 		super.removeUser(token);
 		memCachedClient.replace(VALID_USERS, validUsers);
 	}
 	
-	public boolean userAsBeenRemoved(String token) {
+	public boolean userHasBeenRemoved(String token) {
 		ensureEvictedUsers();
-		return super.userAsBeenRemoved(token);
+		return super.userHasBeenRemoved(token);
 	}
 	
 	private void ensureValidUsers() {
-        if(memCachedClient.get(VALID_USERS) == null) {
-	        // add empty map if it doesn't exist
-	        memCachedClient.add(VALID_USERS, new HashMap());
-		}
         validUsers = (HashMap) memCachedClient.get(VALID_USERS);
+        if(validUsers == null) {
+	        // add empty map if it doesn't exist
+        	validUsers = new HashMap();
+	        memCachedClient.add(VALID_USERS, validUsers);
+		}
 	}
 
 	private void ensureEvictedUsers() {
-        if(memCachedClient.get(EVICTED_USERS) == null) {
+		evictedUsers = (HashMap) memCachedClient.get(EVICTED_USERS);
+        if(evictedUsers == null) {
 	        // add empty map if it doesn't exist
-	        memCachedClient.add(EVICTED_USERS, new HashMap());
+        	evictedUsers = new HashMap();
+	        memCachedClient.add(EVICTED_USERS, evictedUsers);
 		}
-        evictedUsers = (HashMap) memCachedClient.get(EVICTED_USERS);
 	}
 
 }

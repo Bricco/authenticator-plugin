@@ -31,6 +31,22 @@ public class AuthenticatorProcessor extends GenericProcessor implements
 		HttpServletRequest request = (HttpServletRequest) pServletRequest;
 		HttpServletResponse response = (HttpServletResponse) pServletResponse;
 
+		// check if it's static content, then skip it
+		String contextPath = (String) request.getAttribute("com.escenic.context.path");
+		if(contextPath != null && (
+				contextPath.startsWith("static") ||
+				contextPath.endsWith(".jpg") ||
+				contextPath.endsWith(".gif") ||
+				contextPath.endsWith(".png") ||
+				contextPath.endsWith(".js") ||
+				contextPath.endsWith(".css") ||
+				contextPath.endsWith(".swf") ||
+				contextPath.endsWith(".html")
+				)
+		) {
+			return true;
+		}
+		
 		String publicationName = (String) request
 				.getAttribute("com.escenic.publication.name");
 		if (publicationName == null) {
@@ -75,5 +91,4 @@ public class AuthenticatorProcessor extends GenericProcessor implements
 
 		return true;
 	}
-
 }

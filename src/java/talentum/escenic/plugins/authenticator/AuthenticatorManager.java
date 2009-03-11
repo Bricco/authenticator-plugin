@@ -160,7 +160,7 @@ public class AuthenticatorManager {
 	 * @return true if the user with specified token has been evicted
 	 */
 	public boolean userHasBeenEvicted(String token)  {
-		return userCache.userAsBeenRemoved(token);
+		return userCache.userHasBeenRemoved(token);
 	}
 	
 	public String getCookieName(String publicationName) {

@@ -1,7 +1,7 @@
 <%@ page
 	import="talentum.escenic.plugins.authenticator.AuthenticatorManager"%>
-<%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
-<%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 
 <h1>Authenticator</h1>
 

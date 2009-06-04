@@ -1,4 +1,4 @@
-<%@ taglib uri="/WEB-INF/escenic-template.tld" prefix="template" %>
+<%@ taglib uri="http://www.escenic.com/taglib/escenic-template" prefix="template" %>
 
 <!-- Calling frame -->
 <template:call file="/pages/base/frame.jsp">

@@ -3,6 +3,7 @@ package talentum.escenic.plugins.authenticator.agreements;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
@@ -11,7 +12,6 @@ import neo.xredsys.content.agreement.AgreementConfig;
 import neo.xredsys.content.agreement.AgreementPartner;
 import neo.xredsys.content.agreement.AgreementRequest;
 import neo.xredsys.content.agreement.AgreementResponse;
-import neo.xredsys.presentation.PresentationArticleImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -100,7 +100,7 @@ public class DefaultAgreement implements AgreementPartner {
 
 	public void setAllowPublishedBeforeTime(String allowPublishedBeforeTime) {
 		this.allowPublishedBeforeTime = allowPublishedBeforeTime;
-	} 
+	}
 
 	/**
 	 * Handles agreement requests.
@@ -120,34 +120,72 @@ public class DefaultAgreement implements AgreementPartner {
 		// if the request is for an article and its publishing date is before
 		// last publishing weekday
 		// we allow the request and bypass the login.
-		PresentationArticleImpl article = (PresentationArticleImpl) request
+		// NOTE: Using reflection to get by problem in ECE 5 where the
+		// PresentationArticle class is not available in the shared class loader
+		Object article = request
 				.getRequestAttribute("com.escenic.context.article");
-		if (article != null
-				&& article.getHomeSection() != null
-				&& article.getHomeSection().getUniqueName().equals(
-						getAllowPublishedSection())) {
-			Calendar cal = Calendar.getInstance();
-			// first set time
-			StringTokenizer tokenizer = new StringTokenizer(getAllowPublishedBeforeTime(), ":");
-			cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tokenizer.nextToken()));
-			cal.set(Calendar.MINUTE, Integer.parseInt(tokenizer.nextToken()));
-			// roll calendar back preferred days
-			cal.add(Calendar.DATE, (0-getAllowPublishedBeforeDays()));
-			// if configured, roll calendar back to the closest matching weekday
-			if(getAllowPublishedBeforeWeekday() > 0) {
-				while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
-					cal.add(Calendar.DATE, -1);
+		if (article != null) {
+
+			Object homeSection = null;
+			try {
+				homeSection = article.getClass().getMethod("getHomeSection",
+						null).invoke(article, null);
+			} catch (Exception e) {
+				log.error("Method invocation failed", e);
+			}
+
+			if (homeSection != null) {
+				String articleHomeSection = null;
+				try {
+					articleHomeSection = (String) homeSection.getClass()
+							.getMethod("getUniqueName", null).invoke(
+									homeSection, null);
+				} catch (Exception e) {
+					log.error("Method invocation failed", e);
+				}
+
+				if (articleHomeSection != null
+						&& articleHomeSection
+								.equals(getAllowPublishedSection())) {
+
+					Calendar cal = Calendar.getInstance();
+					// first set time
+					StringTokenizer tokenizer = new StringTokenizer(
+							getAllowPublishedBeforeTime(), ":");
+					cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tokenizer
+							.nextToken()));
+					cal.set(Calendar.MINUTE, Integer.parseInt(tokenizer
+							.nextToken()));
+					// roll calendar back preferred days
+					cal.add(Calendar.DATE, (0 - getAllowPublishedBeforeDays()));
+					// if configured, roll calendar back to the closest matching
+					// weekday
+					if (getAllowPublishedBeforeWeekday() > 0) {
+						while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
+							cal.add(Calendar.DATE, -1);
+						}
+					}
+
+					Date publishDate = null;
+					try {
+						publishDate = (Date) article.getClass().getMethod(
+								"getPublishedDateAsDate", null).invoke(article,
+								null);
+					} catch (Exception e) {
+						log.error("Method invocation failed", e);
+					}
+					if (log.isDebugEnabled()) {
+						log.debug("article publishing date: " + publishDate);
+						log.debug("configured edition publishing date: "
+								+ cal.getTime());
+					}
+					if (publishDate == null
+							|| publishDate.before(cal.getTime())) {
+						return;
+					}
+					// TODO check "override_agreement" field
 				}
 			}
-			if (log.isDebugEnabled()) {
-				log.debug("article publishing date: "
-						+ article.getPublishedDateAsDate());
-				log.debug("configured edition publishing date: " + cal.getTime());
-			}
-			if (article.getPublishedDateAsDate().before(cal.getTime())) {
-				return;
-			}
-			// TODO check "override_agreement" field
 		}
 
 		// get the user that was set in the filter
@@ -179,7 +217,8 @@ public class DefaultAgreement implements AgreementPartner {
 				}
 				// if the user is not found redirect to login page
 				response.setRedirect(getContextPath(request)
-						+ urlMap.get("loginform") + "?redirectToURL=" + encodeForUrl(request.getUrl()));
+						+ urlMap.get("loginform") + "?redirectToURL="
+						+ encodeForUrl(request.getUrl()));
 			}
 
 		} else if (requestedRole != null && !user.hasRole(requestedRole)) {
@@ -213,7 +252,7 @@ public class DefaultAgreement implements AgreementPartner {
 		return sec.getUrl().substring(0,
 				sec.getUrl().lastIndexOf(sec.getDirectoryPath()));
 	}
-	
+
 	private String encodeForUrl(String s) {
 		try {
 			s = URLEncoder.encode(s, "iso-8859-1");

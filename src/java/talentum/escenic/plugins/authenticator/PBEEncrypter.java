@@ -6,8 +6,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
-import neo.util.Base64;
-
 public class PBEEncrypter {
 
 	private static Cipher getPBECipher(int mode) throws Exception {
@@ -39,7 +37,8 @@ public class PBEEncrypter {
 	}
 
 	/**
-	 * Encrypts a String using PBE (Password Based Encryption) and Base64.
+	 * Encrypts a String using PBE (Password Based Encryption) and
+	 * encodes it using the characters abcdefghijklmnop.
 	 * 
 	 * @param s String to encrypt
 	 * @return an encrypted String
@@ -47,16 +46,21 @@ public class PBEEncrypter {
 	 */
 	public static String encrypt(String s) throws Exception {
 
-		// Encrypt the string
-		byte[] ciphertext = getPBECipher(Cipher.ENCRYPT_MODE).doFinal(
-				s.getBytes());
+		byte[] ciphertext = getPBECipher(Cipher.ENCRYPT_MODE).doFinal(s.getBytes());
 
-		return new String(Base64.encode(ciphertext));
+		char[] encoded = new char[ciphertext.length * 2];
 
+		for(int i = 0; i < ciphertext.length; i++) {
+			byte b = ciphertext[i];
+			encoded[i * 2] = (char)('a' + ((b >> 4) & 0xf));
+			encoded[i * 2 + 1] = (char)('a' + (b & 0xf));
+		}
+
+		return new String(encoded);
 	}
 
 	/**
-	 * Decrypts a String using PBE (Password Based Encryption) and Base64.
+	 * Decrypts a String which has been encrypted with encrypt(String).
 	 * 
 	 * @param s String to decrypt
 	 * @return a decrypted String
@@ -64,12 +68,18 @@ public class PBEEncrypter {
 	 */
 	public static String decrypt(String s) throws Exception {
 
-		// Decrypt the string
-		byte[] ciphertext = getPBECipher(Cipher.DECRYPT_MODE).doFinal(
-				Base64.decode(s.toCharArray()));
+		char[] encoded = s.toCharArray();
 
-		return new String(ciphertext);
+		byte[] ciphertext = new byte[encoded.length / 2];
 
+		for(int i = 0; i < ciphertext.length; i++) {
+			byte b = (byte)((encoded[i * 2] - 'a') << 4);
+			b |= (byte)(encoded[i * 2 + 1] - 'a');
+			ciphertext[i] = b;
+		}
+
+		byte[] cleartext = getPBECipher(Cipher.DECRYPT_MODE).doFinal(ciphertext);
+
+		return new String(cleartext);
 	}
-
 }

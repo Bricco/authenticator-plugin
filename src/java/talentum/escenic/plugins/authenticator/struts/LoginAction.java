@@ -35,10 +35,16 @@ public class LoginAction extends Action {
 		String publicationName = (String) request
 				.getAttribute("com.escenic.publication.name");
 
+		// get caller's ip from host header set in Varnish or by remote adress
+		String callerIP = request.getHeader("X-Forwarded-For");
+		if(callerIP == null || callerIP.length() == 0) {
+			callerIP = request.getRemoteAddr();
+		}
+		
 		// perform the actual authentication
 		AuthenticatedUser user = AuthenticatorManager.getInstance()
 				.authenticate(publicationName, loginForm.getUsername(),
-						loginForm.getPassword(), request.getRemoteAddr());
+						loginForm.getPassword(), callerIP);
 
 		if (user != null) {
 

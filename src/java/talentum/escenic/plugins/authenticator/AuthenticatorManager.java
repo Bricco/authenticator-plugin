@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -208,5 +209,24 @@ public class AuthenticatorManager {
 		cookie.setDomain(getAuthenticator(publicationName).getCookieDomain());
 		cookie.setPath("/");
 		return cookie;
+	}
+	
+	/**
+	 * Get the ip adress of the request. If Varnish is in front use HTTP headers
+	 * to figure out ip.
+	 * 
+	 * @param request the servlet request
+	 * @return the ip adress 
+	 */
+	public static String getRemoteAddress(HttpServletRequest request) {
+		// 
+		String callerIP = request.getRemoteAddr();
+		if(request.getHeader("x-varnish") != null) {
+			callerIP = request.getHeader("x-forwarded-for");
+			if(callerIP.indexOf(',') > 0) {
+				callerIP = callerIP.split(",")[0];
+			}
+		}
+		return callerIP;
 	}
 }

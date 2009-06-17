@@ -75,17 +75,13 @@ public class AuthenticatorProcessor extends GenericProcessor implements
 					userDataCookie.getValue());
 		}
 
-		// get caller's ip from host header set in Varnish or by remote adress
-		String callerIP = request.getHeader("X-Forwarded-For");
-		if(callerIP == null || callerIP.length() == 0) {
-			callerIP = request.getRemoteAddr();
-		}
+
 
 		// (user cookie is missing OR token is invalid) AND there is an
 		// autologin cookie, then perform auto login
 		if (user == null && autologinCookie != null) {
 			user = AuthenticatorManager.getInstance().authenticateAuto(
-					publicationName, autologinCookie.getValue(), callerIP);
+					publicationName, autologinCookie.getValue(), AuthenticatorManager.getRemoteAddress(request));
 			if (user != null) {
 				response.addCookie(AuthenticatorManager.getInstance()
 						.getSessionCookie(publicationName, user.getToken()));

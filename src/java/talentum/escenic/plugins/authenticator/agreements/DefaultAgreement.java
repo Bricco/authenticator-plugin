@@ -183,7 +183,20 @@ public class DefaultAgreement implements AgreementPartner {
 							|| publishDate.before(cal.getTime())) {
 						return;
 					}
-					// TODO check "override_agreement" field
+				}
+			}
+			// Check "override_agreement" field. Users can allow an article to pass
+			// agreement by checking a field in the article.
+			String fieldValue = null;
+			try {
+				fieldValue = (String) article.getClass().getMethod("getFieldElement",
+						new Class[] {String.class}).invoke(article, new Object[] {"override_agreement"});
+			} catch (Exception e) {
+				log.error("Method invocation failed", e);
+			}
+			if(fieldValue!=null) {
+				if(Boolean.valueOf(fieldValue).booleanValue()) {
+					return;
 				}
 			}
 		}

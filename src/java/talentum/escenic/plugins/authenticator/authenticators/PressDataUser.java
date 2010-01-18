@@ -7,8 +7,9 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.kundservice.www.WS.Authorization.UserStruct;
-import net.kundservice.www.prenstatusws.login.ProductDto;
-import net.kundservice.www.prenstatusws.login.UserStatusDto;
+import net.kundservice.www.prenstatusws.loginservice.ProductDto;
+import net.kundservice.www.prenstatusws.loginservice.UserStatusDto;
+
 
 public class PressDataUser implements AuthenticatedUser {
 

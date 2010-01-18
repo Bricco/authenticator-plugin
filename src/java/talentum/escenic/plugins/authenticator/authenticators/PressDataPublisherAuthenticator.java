@@ -4,9 +4,10 @@ import java.rmi.RemoteException;
 
 import javax.xml.rpc.ServiceException;
 
-import net.kundservice.www.prenstatusws.login.LoginServiceLocator;
-import net.kundservice.www.prenstatusws.login.LoginServiceSoapStub;
-import net.kundservice.www.prenstatusws.login.UserStatusDto;
+
+import net.kundservice.www.prenstatusws.loginservice.LoginServiceLocator;
+import net.kundservice.www.prenstatusws.loginservice.LoginServiceSoapStub;
+import net.kundservice.www.prenstatusws.loginservice.UserStatusDto;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

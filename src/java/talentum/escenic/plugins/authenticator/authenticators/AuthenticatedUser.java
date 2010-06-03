@@ -2,6 +2,7 @@ package talentum.escenic.plugins.authenticator.authenticators;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Internal representation of a valid user
@@ -69,6 +70,20 @@ public interface AuthenticatedUser extends Serializable {
 	 * 
 	 * @return A URL String
 	 */
-	public String getMyPage();
+	public String getAdminPage();
+	
+	/**
+	 * Products of a user. From Tiger.
+	 * 
+	 * @return a List of Products
+	 */
+	public List getProducts();
+	
+	/**
+	 * Product ids of a user. From Tiger.
+	 * 
+	 * @return a String[] of product ids
+	 */
+	public String[] getProductIds();
 
 }

@@ -3,6 +3,7 @@ package talentum.escenic.plugins.authenticator.authenticators;
 import java.rmi.RemoteException;
 
 import javax.xml.rpc.ServiceException;
+import javax.xml.rpc.holders.BooleanHolder;
 import javax.xml.rpc.holders.StringHolder;
 
 import org.apache.commons.logging.Log;
@@ -23,7 +24,7 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 
 	private String endPoint;
 
-	private String myPageURL;
+	private String adminPageURL;
 
 	public String getEndPoint() {
 		return endPoint;
@@ -33,12 +34,12 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 		this.endPoint = endPoint;
 	}
 
-	public String getMyPageURL() {
-		return myPageURL;
+	public String getAdminPageURL() {
+		return adminPageURL;
 	}
 
-	public void setMyPageURL(String myPageURL) {
-		this.myPageURL = myPageURL;
+	public void setAdminPageURL(String adminPageURL) {
+		this.adminPageURL = adminPageURL;
 	}
 
 	public AuthenticatedUser performLogin(String username, String password,
@@ -50,22 +51,76 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 		StringHolder name = new StringHolder();
 
 		// call web service to authenticate
-		int responseCode = getBinding().login(username, password, ipaddress,
-				artefact, name);
+		int responseCode = getLoginBinding().login(username, password,
+				ipaddress, artefact, name);
 
 		if (responseCode < 0) {
 			log.error("Authentication failed for user " + username
 					+ ". Error from web service (error code " + responseCode
 					+ ")");
 		} else {
+
 			// populate user object
 			user = new TalentumHRUser(artefact.value, name.value, username,
-					getMyPageURL());
+					getAdminPageURL());
 
 			if (log.isDebugEnabled()) {
 				log.debug("User " + user.getName()
 						+ " logged in and got artefact " + user.getToken());
 			}
+
+			// get further info for my page
+
+			StringHolder customerName = new StringHolder();
+			StringHolder companyName = new StringHolder();
+			StringHolder customerNo = new StringHolder();
+			BooleanHolder isLinkUser = new BooleanHolder();
+
+			responseCode = getLoginBinding().getUserInformation(
+					artefact.value, customerName, companyName, customerNo,
+					isLinkUser);
+			if (responseCode < 0) {
+				log.error("Getting user info for user " + username
+						+ ". Error from web service (error code "
+						+ responseCode + ")");
+			} else {
+				user.setCompanyName(companyName.value);
+				user.setLinkUser(isLinkUser.value);
+			}
+
+			StringHolder productLinkList = new StringHolder();
+
+			responseCode = getLoginBinding().getProductLinkList(
+					artefact.value, productLinkList);
+			if (responseCode < 0) {
+				log.error("Getting product links for user " + username
+						+ ". Error from web service (error code "
+						+ responseCode + ")");
+			} else {
+				// parse productLinkList.
+				// format: [product name]@[link to product]|[product name]@[link to product]
+				String[] products = productLinkList.value.split("\\|");
+				for (int i = 0; i < products.length; i++) {
+					String[] values = products[i].split("@");
+					user.addProduct(values[0], values[1]);
+				}
+			}
+
+			StringHolder filterList = new StringHolder();
+
+			responseCode = getLoginBinding().getProductIdFilter(
+					artefact.value, filterList);
+			if (responseCode < 0) {
+				log.error("Getting product filters for user " + username
+						+ ". Error from web service (error code "
+						+ responseCode + ")");
+			} else {
+				// parse productLinkList.
+				// format: [product id],[product id],[product id]
+				String[] productIDs = filterList.value.split(",");
+				user.setProductIds(productIDs);
+			}
+
 		}
 
 		return user;
@@ -75,7 +130,7 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 			RemoteException {
 
 		// call web service to log out
-		boolean logoutOK = getBinding().logout(artefact);
+		boolean logoutOK = getLoginBinding().logout(artefact);
 
 		if (!logoutOK) {
 			log.error("Logout failed for artefact " + artefact);
@@ -87,11 +142,12 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 			throws ServiceException, RemoteException {
 		// call web service to log out
 		// if method returns 0 everything is ok
-		return getBinding().forgotPassword(emailAddress) == 0;
+		return getLoginBinding().forgotPassword(emailAddress) == 0;
 
 	}
 
-	private LoginAccountServiceSoapStub getBinding() throws ServiceException {
+	private LoginAccountServiceSoapStub getLoginBinding()
+			throws ServiceException {
 
 		LoginAccountServiceLocator locator = new LoginAccountServiceLocator();
 

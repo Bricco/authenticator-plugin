@@ -36,6 +36,26 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="StudliLogin">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="userid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="fname" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lname" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="artefact" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StudliLoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="StudliLoginResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="artefact" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
       <s:element name="Logout">
         <s:complexType>
           <s:sequence>
@@ -70,6 +90,60 @@
       <s:element name="KeepAliveResponse">
         <s:complexType />
       </s:element>
+      <s:element name="GetUserInformation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="artefact" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="customerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="companyName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="customerNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="isLinkUser" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUserInformationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetUserInformationResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="customerName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="companyName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="customerNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="isLinkUser" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProductLinkList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="artefact" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="productLinkList" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProductLinkListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetProductLinkListResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="productLinkList" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProductIdFilter">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="artefact" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="filterList" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProductIdFilterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetProductIdFilterResult" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="filterList" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="HelloTigerSoapIn">
@@ -83,6 +157,12 @@
   </wsdl:message>
   <wsdl:message name="LoginSoapOut">
     <wsdl:part name="parameters" element="tns:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="StudliLoginSoapIn">
+    <wsdl:part name="parameters" element="tns:StudliLogin" />
+  </wsdl:message>
+  <wsdl:message name="StudliLoginSoapOut">
+    <wsdl:part name="parameters" element="tns:StudliLoginResponse" />
   </wsdl:message>
   <wsdl:message name="LogoutSoapIn">
     <wsdl:part name="parameters" element="tns:Logout" />
@@ -102,6 +182,24 @@
   <wsdl:message name="KeepAliveSoapOut">
     <wsdl:part name="parameters" element="tns:KeepAliveResponse" />
   </wsdl:message>
+  <wsdl:message name="GetUserInformationSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUserInformation" />
+  </wsdl:message>
+  <wsdl:message name="GetUserInformationSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUserInformationResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProductLinkListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProductLinkList" />
+  </wsdl:message>
+  <wsdl:message name="GetProductLinkListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProductLinkListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProductIdFilterSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProductIdFilter" />
+  </wsdl:message>
+  <wsdl:message name="GetProductIdFilterSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProductIdFilterResponse" />
+  </wsdl:message>
   <wsdl:portType name="LoginAccountServiceSoap">
     <wsdl:operation name="HelloTiger">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Skakar tass med Tiger</wsdl:documentation>
@@ -112,6 +210,11 @@
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Logga in från Portalen</wsdl:documentation>
       <wsdl:input message="tns:LoginSoapIn" />
       <wsdl:output message="tns:LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="StudliLogin">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Logga in från Portalen för studentlitteratur</wsdl:documentation>
+      <wsdl:input message="tns:StudliLoginSoapIn" />
+      <wsdl:output message="tns:StudliLoginSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="Logout">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Logga ut från Portalen</wsdl:documentation>
@@ -128,6 +231,21 @@
       <wsdl:input message="tns:KeepAliveSoapIn" />
       <wsdl:output message="tns:KeepAliveSoapOut" />
     </wsdl:operation>
+    <wsdl:operation name="GetUserInformation">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get user information</wsdl:documentation>
+      <wsdl:input message="tns:GetUserInformationSoapIn" />
+      <wsdl:output message="tns:GetUserInformationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProductLinkList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get product link list</wsdl:documentation>
+      <wsdl:input message="tns:GetProductLinkListSoapIn" />
+      <wsdl:output message="tns:GetProductLinkListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProductIdFilter">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get list of product ids. Separated by comma.</wsdl:documentation>
+      <wsdl:input message="tns:GetProductIdFilterSoapIn" />
+      <wsdl:output message="tns:GetProductIdFilterSoapOut" />
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="LoginAccountServiceSoap" type="tns:LoginAccountServiceSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -142,6 +260,15 @@
     </wsdl:operation>
     <wsdl:operation name="Login">
       <soap:operation soapAction="http://talentumhr.se/webservices/Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StudliLogin">
+      <soap:operation soapAction="http://talentumhr.se/webservices/StudliLogin" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -176,6 +303,33 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetUserInformation">
+      <soap:operation soapAction="http://talentumhr.se/webservices/GetUserInformation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProductLinkList">
+      <soap:operation soapAction="http://talentumhr.se/webservices/GetProductLinkList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProductIdFilter">
+      <soap:operation soapAction="http://talentumhr.se/webservices/GetProductIdFilter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="LoginAccountServiceSoap12" type="tns:LoginAccountServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -190,6 +344,15 @@
     </wsdl:operation>
     <wsdl:operation name="Login">
       <soap12:operation soapAction="http://talentumhr.se/webservices/Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StudliLogin">
+      <soap12:operation soapAction="http://talentumhr.se/webservices/StudliLogin" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -217,6 +380,33 @@
     </wsdl:operation>
     <wsdl:operation name="KeepAlive">
       <soap12:operation soapAction="http://talentumhr.se/webservices/KeepAlive" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserInformation">
+      <soap12:operation soapAction="http://talentumhr.se/webservices/GetUserInformation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProductLinkList">
+      <soap12:operation soapAction="http://talentumhr.se/webservices/GetProductLinkList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProductIdFilter">
+      <soap12:operation soapAction="http://talentumhr.se/webservices/GetProductIdFilter" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

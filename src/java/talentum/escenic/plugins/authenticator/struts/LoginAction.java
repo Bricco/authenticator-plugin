@@ -67,9 +67,11 @@ public class LoginAction extends Action {
 				}
 				return new ActionForward(loginForm.getRedirectToURL(), true);
 			}
-			if (user.getMyPage() != null) {
-				return new ActionForward(user.getMyPage(), true);
+			/*
+			if (user.getAdminPage() != null) {
+				return new ActionForward(user.getAdminPage(), true);
 			}
+			*/
 
 			return mapping.findForward("authenticated");
 		}

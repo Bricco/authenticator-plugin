@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import net.kundservice.www.WS.Authorization.UserStruct;
 import net.kundservice.www.prenstatusws.loginservice.ProductDto;
@@ -135,7 +136,7 @@ public class PressDataUser implements AuthenticatedUser {
 		return false;
 	}
 
-	public String getMyPage() {
+	public String getAdminPage() {
 		return null;
 	}
 
@@ -168,4 +169,13 @@ public class PressDataUser implements AuthenticatedUser {
 		
 	}
 
+	public String[] getProductIds() {
+		return null;
+	}
+
+	public List getProducts() {
+		return products;
+	}
+
+	
 }

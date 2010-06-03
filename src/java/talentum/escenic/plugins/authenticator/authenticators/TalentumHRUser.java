@@ -1,24 +1,30 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TalentumHRUser implements AuthenticatedUser {
 
 	private String artefact;
 	private String name;
 	private String userName;
-	private String myPage;
+	private String companyName;
+	private boolean isLinkUser;
+	private String adminPageURL;
 	private Date loggedInTime = new Date();
+	private List products = new ArrayList();
+	private String[] productIds;
 
 	/**
 	 * Constructs a user from the LoginService web service
 	 * @param userSDto
 	 */
-	public TalentumHRUser(String artefact, String name, String userName, String myPage) {
+	public TalentumHRUser(String artefact, String name, String userName, String adminPageURL) {
 		this.artefact = artefact;
 		this.name = name;
 		this.userName = userName;
-		this.myPage = myPage;
+		this.adminPageURL = adminPageURL;
 	}
 	
 	public int getUserId() {
@@ -37,16 +43,28 @@ public class TalentumHRUser implements AuthenticatedUser {
 		return name;
 	}
 
-	public String getCompanyName() {
-		return null;
-	}
-
 	public String getEmail() {
 		return null;
 	}
 
 	public String getProductId() {
 		return null;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public boolean isLinkUser() {
+		return isLinkUser;
+	}
+
+	public void setLinkUser(boolean isLinkUser) {
+		this.isLinkUser = isLinkUser;
 	}
 
 	public Date getLoggedInTime() {
@@ -68,9 +86,51 @@ public class TalentumHRUser implements AuthenticatedUser {
 		return false;
 	}
 
-	public String getMyPage() {
-		return myPage + "?artefact=" + getToken();
+	public String getAdminPage() {
+		if(isLinkUser()) {
+			// deny link users access to the admin page
+			return null;
+		}
+		return adminPageURL + "?artefact=" + getToken();
+	}
+	
+	public String[] getProductIds() {
+		return productIds;
 	}
 
+	public void setProductIds(String[] productIds) {
+		this.productIds = productIds;
+	}
+
+	public void addProduct(String name, String link) {
+		products.add(new Product(name, link));
+	}
+	
+	public List getProducts() {
+		return products;
+	}
+
+	public class Product {
+		String name;
+		String link;
+		public Product(String name, String link) {
+			super();
+			this.name = name;
+			this.link = link;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getLink() {
+			return link;
+		}
+		public void setLink(String link) {
+			this.link = link;
+		}
+		
+	}
 
 }

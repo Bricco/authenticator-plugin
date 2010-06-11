@@ -67,11 +67,11 @@ public class LoginAction extends Action {
 				}
 				return new ActionForward(loginForm.getRedirectToURL(), true);
 			}
-			/*
-			if (user.getAdminPage() != null) {
-				return new ActionForward(user.getAdminPage(), true);
+			
+			// ugly check on publication name
+			if (publicationName == "talentumhr" || publicationName == "legalandtax") {
+				return mapping.findForward("mypage");
 			}
-			*/
 
 			return mapping.findForward("authenticated");
 		}

@@ -1,5 +1,6 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -115,7 +116,7 @@ public class TalentumHRUser implements AuthenticatedUser {
 		return products;
 	}
 
-	public class Product {
+	public class Product implements Serializable{
 		String name;
 		String link;
 		public Product(String name, String link) {

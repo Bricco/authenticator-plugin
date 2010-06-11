@@ -22,6 +22,7 @@
             <s:element minOccurs="0" maxOccurs="1" name="userid" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="ipAddress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="branch" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="artefact" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
           </s:sequence>
@@ -207,7 +208,7 @@
       <wsdl:output message="tns:HelloTigerSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="Login">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Logga in från Portalen</wsdl:documentation>
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Logga in</wsdl:documentation>
       <wsdl:input message="tns:LoginSoapIn" />
       <wsdl:output message="tns:LoginSoapOut" />
     </wsdl:operation>
@@ -417,10 +418,10 @@
   </wsdl:binding>
   <wsdl:service name="LoginAccountService">
     <wsdl:port name="LoginAccountServiceSoap" binding="tns:LoginAccountServiceSoap">
-      <soap:address location="http://test.webservices.talentumhr.se/loginaccountservice/loginaccountservice.asmx" />
+      <soap:address location="http://localhost/LoginAccountService/LoginAccountService.asmx" />
     </wsdl:port>
     <wsdl:port name="LoginAccountServiceSoap12" binding="tns:LoginAccountServiceSoap12">
-      <soap12:address location="http://test.webservices.talentumhr.se/loginaccountservice/loginaccountservice.asmx" />
+      <soap12:address location="http://localhost/LoginAccountService/LoginAccountService.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

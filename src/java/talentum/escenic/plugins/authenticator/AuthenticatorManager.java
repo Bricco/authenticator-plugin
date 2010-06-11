@@ -41,6 +41,7 @@ public class AuthenticatorManager {
 	}
 
 	public void addAuthenticator(String publicationName, Authenticator authenticator) {
+		authenticator.setPublicationName(publicationName);
 		authenticators.put(publicationName, authenticator);
 	}
 	

@@ -51,8 +51,9 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 		StringHolder name = new StringHolder();
 
 		// call web service to authenticate
+		// send publicationName to differentiate on branch
 		int responseCode = getLoginBinding().login(username, password,
-				ipaddress, artefact, name);
+				ipaddress, getPublicationName(), artefact, name);
 
 		if (responseCode < 0) {
 			log.error("Authentication failed for user " + username
@@ -84,6 +85,7 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 						+ ". Error from web service (error code "
 						+ responseCode + ")");
 			} else {
+				user.setUserId(Integer.parseInt(customerNo.value));
 				user.setCompanyName(companyName.value);
 				user.setLinkUser(isLinkUser.value);
 			}

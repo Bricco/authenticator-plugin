@@ -10,9 +10,18 @@ import talentum.escenic.plugins.authenticator.ReminderException;
  */
 public abstract class Authenticator {
 
+	private String publicationName;
 	private String cookieName;
 	private String cookieDomain = "";
 	private String autoLoginCookieName;
+
+	public String getPublicationName() {
+		return publicationName;
+	}
+
+	public void setPublicationName(String publicationName) {
+		this.publicationName = publicationName;
+	}
 
 	public String getCookieDomain() {
 		return cookieDomain;

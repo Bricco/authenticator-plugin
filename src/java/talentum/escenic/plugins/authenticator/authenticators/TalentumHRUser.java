@@ -10,6 +10,7 @@ public class TalentumHRUser implements AuthenticatedUser {
 	private String name;
 	private String userName;
 	private String companyName;
+	private int userId = -1;
 	private boolean isLinkUser;
 	private String adminPageURL;
 	private Date loggedInTime = new Date();
@@ -28,7 +29,11 @@ public class TalentumHRUser implements AuthenticatedUser {
 	}
 	
 	public int getUserId() {
-		return -1;
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public String getToken() {

@@ -69,7 +69,7 @@ public class LoginAction extends Action {
 			}
 			
 			// ugly check on publication name
-			if (publicationName == "talentumhr" || publicationName == "legalandtax") {
+			if (publicationName.equalsIgnoreCase("talentumhr") || publicationName.equalsIgnoreCase("legalandtax")) {
 				if(log.isDebugEnabled()) {
 					log.debug("Redirecting user " + user.getName() + " to mypage in struts config");
 				}

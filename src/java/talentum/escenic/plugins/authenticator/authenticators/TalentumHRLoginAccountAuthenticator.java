@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 import se.talentumhr.webservices.LoginAccountServiceLocator;
 import se.talentumhr.webservices.LoginAccountServiceSoapStub;
+import talentum.escenic.plugins.authenticator.AuthenticationException;
 
 /**
  * Implements authentication through Talentum HR LoginAccount web service.
@@ -45,7 +46,7 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 	public AuthenticatedUser performLogin(String username, String password,
 			String ipaddress) throws ServiceException, RemoteException {
 
-		TalentumHRUser user = null;
+		AuthenticatedUser user = null;
 
 		StringHolder artefact = new StringHolder();
 		StringHolder name = new StringHolder();
@@ -62,68 +63,97 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 		} else {
 
 			// populate user object
-			user = new TalentumHRUser(artefact.value, name.value, username,
-					getAdminPageURL());
+			try {
+				user = authenticateUsingToken(artefact.value);
+			} catch (AuthenticationException e) {
+				log.error("Populating user failed.", e);
+			}
 
 			if (log.isDebugEnabled()) {
 				log.debug("User " + user.getName()
 						+ " logged in and got artefact " + user.getToken());
 			}
 
-			// get further info for my page
-
-			StringHolder customerName = new StringHolder();
-			StringHolder companyName = new StringHolder();
-			StringHolder customerNo = new StringHolder();
-			BooleanHolder isLinkUser = new BooleanHolder();
-
-			responseCode = getLoginBinding().getUserInformation(
-					artefact.value, customerName, companyName, customerNo,
-					isLinkUser);
-			if (responseCode < 0) {
-				log.error("Getting user info for user " + username
-						+ ". Error from web service (error code "
-						+ responseCode + ")");
-			} else {
-				user.setUserId(Integer.parseInt(customerNo.value));
-				user.setCompanyName(companyName.value);
-				user.setLinkUser(isLinkUser.value);
-			}
-
-			StringHolder productLinkList = new StringHolder();
-
-			responseCode = getLoginBinding().getProductLinkList(
-					artefact.value, productLinkList);
-			if (responseCode < 0) {
-				log.error("Getting product links for user " + username
-						+ ". Error from web service (error code "
-						+ responseCode + ")");
-			} else {
-				// parse productLinkList.
-				// format: [product name]@[link to product]|[product name]@[link to product]
-				String[] products = productLinkList.value.split("\\|");
-				for (int i = 0; i < products.length; i++) {
-					String[] values = products[i].split("@");
-					user.addProduct(values[0], values[1]);
-				}
-			}
-
-			StringHolder filterList = new StringHolder();
-
-			responseCode = getLoginBinding().getProductIdFilter(
-					artefact.value, filterList);
-			if (responseCode < 0) {
-				log.error("Getting product filters for user " + username
-						+ ". Error from web service (error code "
-						+ responseCode + ")");
-			} else {
-				// parse productLinkList.
-				// format: [product id],[product id],[product id]
-				String[] productIDs = filterList.value.split(",");
-				user.setProductIds(productIDs);
-			}
 
 		}
+
+		return user;
+	}
+
+	public AuthenticatedUser authenticateUsingToken(String token)
+		throws AuthenticationException {
+
+		TalentumHRUser user = null;
+		
+		StringHolder customerName = new StringHolder();
+		StringHolder companyName = new StringHolder();
+		StringHolder customerNo = new StringHolder();
+		BooleanHolder isLinkUser = new BooleanHolder();
+
+		int responseCode;
+		try {
+			responseCode = getLoginBinding().getUserInformation(
+					token, customerName, companyName, customerNo,
+					isLinkUser);
+		} catch (Exception e) {
+			log.error("GetUserInformation failed", e);
+			throw new AuthenticationException("GetUserInformation failed");
+		}
+		if (responseCode < 0) {
+			log.error("Getting user info for user with token " + token
+					+ ". Error from web service (error code "
+					+ responseCode + ")");
+		} else {
+			user = new TalentumHRUser(token, customerName.value, "",
+					getAdminPageURL());
+			user.setUserId(Integer.parseInt(customerNo.value));
+			user.setCompanyName(companyName.value);
+			user.setLinkUser(isLinkUser.value);
+		}
+
+		StringHolder productLinkList = new StringHolder();
+
+		try {
+			responseCode = getLoginBinding().getProductLinkList(
+					token, productLinkList);
+		} catch (Exception e) {
+			log.error("getProductLinkList failed", e);
+			throw new AuthenticationException("getProductLinkList failed");
+		}
+		if (responseCode < 0) {
+			log.error("Getting product links for user with token " + token
+					+ ". Error from web service (error code "
+					+ responseCode + ")");
+		} else {
+			// parse productLinkList.
+			// format: [product name]@[link to product]|[product name]@[link to product]
+			String[] products = productLinkList.value.split("\\|");
+			for (int i = 0; i < products.length; i++) {
+				String[] values = products[i].split("@");
+				user.addProduct(values[0], values[1]);
+			}
+		}
+
+		StringHolder filterList = new StringHolder();
+
+		try {
+			responseCode = getLoginBinding().getProductIdFilter(
+					token, filterList);
+		} catch (Exception e) {
+			log.error("getProductIdFilter failed", e);
+			throw new AuthenticationException("getProductIdFilter failed");
+		}
+		if (responseCode < 0) {
+			log.error("Getting product filters for user with token " + token
+					+ ". Error from web service (error code "
+					+ responseCode + ")");
+		} else {
+			// parse productLinkList.
+			// format: [product id],[product id],[product id]
+			String[] productIDs = filterList.value.split(",");
+			user.setProductIds(productIDs);
+		}
+
 
 		return user;
 	}

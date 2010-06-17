@@ -71,7 +71,7 @@ public class AuthenticatorManager {
 	 * 
 	 * @param username
 	 * @param password
-	 * @return the user token or null if not authenticated
+	 * @return the user or null if not authenticated
 	 */
 	public AuthenticatedUser authenticate(String publicationName, String username, String password, String ipaddress) {
 		
@@ -93,6 +93,31 @@ public class AuthenticatorManager {
 		return user;
 	}
 
+	/**
+	 * Auhtenticates a user with a token
+	 * 
+	 * @param token
+	 * @return the user or null if not authenticated
+	 */
+	public AuthenticatedUser authenticateUsingToken(String publicationName, String token) {
+		
+		AuthenticatedUser user = null;
+		try {
+			// authenticate user with the configured Authenticator
+			user = getAuthenticator(publicationName).authenticateUsingToken(token);
+			// if user was found add him to cache
+			userCache.addUser(user);
+
+		} catch (AuthenticationException e) {
+			log.error("Could not authenticate:" + e.getMessage());
+			if(log.isDebugEnabled()) {
+				log.debug(e);
+			}
+		}
+
+		return user;
+	}
+	
 	public boolean passwordReminder(String publicationName, String emailAddress) {
 		
 		try {

@@ -59,6 +59,18 @@ public abstract class Authenticator {
 	public abstract AuthenticatedUser authenticate(String username, String password, String ipaddress) throws AuthenticationException;
 
 	/**
+	 * Performs authentication using token.
+	 * 
+	 * @param token String the token
+	 * @return a valid user
+	 * @throws AuthenticationException if authentication fails
+	 */
+	public AuthenticatedUser authenticateUsingToken(String token)
+		throws AuthenticationException {
+		return null;
+	}
+
+	/**
 	 * Performs logout.
 	 * 
 	 * @param token String the token

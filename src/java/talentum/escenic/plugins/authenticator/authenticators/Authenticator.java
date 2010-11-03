@@ -82,6 +82,6 @@ public abstract class Authenticator {
 	 * 
 	 * @param token String the token
 	 */
-	public abstract void passwordReminder(String emailAddress) throws ReminderException;
+	public abstract void passwordReminder(String emailAddress, String publication) throws ReminderException;
 
 }

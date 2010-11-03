@@ -121,7 +121,7 @@ public class AuthenticatorManager {
 	public boolean passwordReminder(String publicationName, String emailAddress) {
 		
 		try {
-			getAuthenticator(publicationName).passwordReminder(emailAddress);
+			getAuthenticator(publicationName).passwordReminder(emailAddress, publicationName);
 			return true;
 
 		} catch (ReminderException e) {

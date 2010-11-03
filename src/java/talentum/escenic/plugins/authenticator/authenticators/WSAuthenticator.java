@@ -80,14 +80,14 @@ public abstract class WSAuthenticator extends Authenticator {
 		}
 	}
 
-	public void passwordReminder(String emailAddress) throws ReminderException {
+	public void passwordReminder(String emailAddress, String publication) throws ReminderException {
 
 		if (emailAddress == null || emailAddress.trim().length() == 0) {
 			return;
 		}
 		boolean reminderOK = false;
 		try {
-			reminderOK = performPasswordReminder(emailAddress);
+			reminderOK = performPasswordReminder(emailAddress, publication);
 
 		} catch (ServiceException e) {
 			log.error("Logout failed: Web Service not found", e);
@@ -108,7 +108,7 @@ public abstract class WSAuthenticator extends Authenticator {
 		// do nothing
 	}
 
-	protected boolean performPasswordReminder(String emailAddress)
+	protected boolean performPasswordReminder(String emailAddress, String publication)
 			throws ServiceException, RemoteException {
 		return true;
 	}

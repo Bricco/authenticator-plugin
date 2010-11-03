@@ -170,11 +170,11 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 
 	}
 
-	protected boolean performPasswordReminder(String emailAddress)
+	protected boolean performPasswordReminder(String emailAddress, String publication)
 			throws ServiceException, RemoteException {
 		// call web service to log out
 		// if method returns 0 everything is ok
-		return getLoginBinding().forgotPassword(emailAddress) == 0;
+		return getLoginBinding().forgotPassword(emailAddress, publication) == 0;
 
 	}
 

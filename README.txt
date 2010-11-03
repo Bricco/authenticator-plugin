@@ -14,7 +14,7 @@ Build plugin using ant. Target "pack" will produce a plugin jar file in dist dir
 Installation
 ============
 
-- Install memcached (http://danga.com/memcached/) on a server accessable from the Escenic server or on localhost.
+- Install memcached (http://danga.com/memcached/) on a server accessible from the Escenic server or on localhost.
 
 - Unpack jar file in escenic/engine/plugins.
 

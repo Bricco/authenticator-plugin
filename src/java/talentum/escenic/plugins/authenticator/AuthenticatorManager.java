@@ -40,11 +40,12 @@ public class AuthenticatorManager {
 		return manager;
 	}
 
-	public void addAuthenticator(String publicationName, Authenticator authenticator) {
+	public void addAuthenticator(String publicationName,
+			Authenticator authenticator) {
 		authenticator.setPublicationName(publicationName);
 		authenticators.put(publicationName, authenticator);
 	}
-	
+
 	private Authenticator getAuthenticator(String publicationName) {
 		return (Authenticator) authenticators.get(publicationName);
 	}
@@ -73,23 +74,24 @@ public class AuthenticatorManager {
 	 * @param password
 	 * @return the user or null if not authenticated
 	 */
-	public AuthenticatedUser authenticate(String publicationName, String username, String password, String ipaddress) {
-		
+	public AuthenticatedUser authenticate(String publicationName,
+			String username, String password, String ipaddress) {
+
 		AuthenticatedUser user = null;
 		try {
 			// authenticate user with the configured Authenticator
 			user = getAuthenticator(publicationName).authenticate(username,
 					password, ipaddress);
-			// if user was found add him to cache
-			userCache.addUser(user);
 
 		} catch (AuthenticationException e) {
 			log.error("Could not authenticate:" + e.getMessage());
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug(e);
 			}
 		}
-
+		if(user != null && !addUserToCache(user)) {
+			return null; // set user to null to keep previous error handling
+		}
 		return user;
 	}
 
@@ -99,34 +101,58 @@ public class AuthenticatorManager {
 	 * @param token
 	 * @return the user or null if not authenticated
 	 */
-	public AuthenticatedUser authenticateUsingToken(String publicationName, String token) {
-		
+	public AuthenticatedUser authenticateUsingToken(String publicationName,
+			String token) {
+
 		AuthenticatedUser user = null;
 		try {
 			// authenticate user with the configured Authenticator
-			user = getAuthenticator(publicationName).authenticateUsingToken(token);
-			// if user was found add him to cache
-			userCache.addUser(user);
+			user = getAuthenticator(publicationName).authenticateUsingToken(
+					token);
 
 		} catch (AuthenticationException e) {
 			log.error("Could not authenticate:" + e.getMessage());
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug(e);
 			}
+		}
+		if(user != null && !addUserToCache(user)) {
+			return null; // set user to null to keep previous error handling
 		}
 
 		return user;
 	}
 	
-	public boolean passwordReminder(String publicationName, String emailAddress) {
-		
+	/**
+	 * Stores the user to the cache
+	 * 
+	 * @param user the user to store 
+	 * @return succesful storage
+	 */
+	private boolean addUserToCache(AuthenticatedUser user) {
 		try {
-			getAuthenticator(publicationName).passwordReminder(emailAddress, publicationName);
+			userCache.addUser(user);
+		} catch (Exception e) {
+			log.error("User was authenticated, but storing the user in the cache failed. Memcached needs flush_all? Exception: "
+					+ e.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(e);
+			}
+			return false;
+		}
+		return true;
+	}
+
+	public boolean passwordReminder(String publicationName, String emailAddress) {
+
+		try {
+			getAuthenticator(publicationName).passwordReminder(emailAddress,
+					publicationName);
 			return true;
 
 		} catch (ReminderException e) {
 			log.error("Could not send reminder: " + e.getMessage());
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug(e);
 			}
 		}
@@ -134,13 +160,14 @@ public class AuthenticatorManager {
 		return false;
 	}
 
-	public AuthenticatedUser authenticateAuto(String authenticatorName, String encryptedUserInfo, String ipadress) {
+	public AuthenticatedUser authenticateAuto(String authenticatorName,
+			String encryptedUserInfo, String ipadress) {
 		String userInfo;
 		try {
 			userInfo = PBEEncrypter.decrypt(encryptedUserInfo);
 		} catch (Exception e) {
 			log.error("Could not decrypt autologin cookie: " + e.getMessage());
-			if(log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				log.debug(e);
 			}
 			return null;
@@ -170,7 +197,9 @@ public class AuthenticatorManager {
 
 	/**
 	 * Retrieves a user
-	 * @param token String the token to look for
+	 * 
+	 * @param token
+	 *            String the token to look for
 	 * @return a valid user
 	 */
 	public AuthenticatedUser getUser(String token) {
@@ -181,23 +210,25 @@ public class AuthenticatorManager {
 	}
 
 	/**
-	 * Check whether a user has been evicted, due to another user using the account.
+	 * Check whether a user has been evicted, due to another user using the
+	 * account.
 	 * 
-	 * @param token String the token to look for
+	 * @param token
+	 *            String the token to look for
 	 * @return true if the user with specified token has been evicted
 	 */
-	public boolean userHasBeenEvicted(String token)  {
+	public boolean userHasBeenEvicted(String token) {
 		return userCache.userHasBeenRemoved(token);
 	}
-	
+
 	public String getCookieName(String publicationName) {
 		return getAuthenticator(publicationName).getCookieName();
 	}
-	
+
 	public String getAutoLoginCookieName(String publicationName) {
 		return getAuthenticator(publicationName).getAutoLoginCookieName();
 	}
-	
+
 	public Cookie getSessionCookie(String publicationName, String token) {
 		Cookie cookie = new Cookie(getCookieName(publicationName), token);
 		cookie.setDomain(getAuthenticator(publicationName).getCookieDomain());
@@ -205,7 +236,8 @@ public class AuthenticatorManager {
 		return cookie;
 	}
 
-	public Cookie getAutologinCookie(String publicationName, String userName, String password) {
+	public Cookie getAutologinCookie(String publicationName, String userName,
+			String password) {
 		String cookieValue = userName + "|" + password;
 		try {
 			cookieValue = PBEEncrypter.encrypt(cookieValue);
@@ -213,7 +245,8 @@ public class AuthenticatorManager {
 			return null;
 		}
 
-		Cookie cookie = new Cookie(getAutoLoginCookieName(publicationName), cookieValue);
+		Cookie cookie = new Cookie(getAutoLoginCookieName(publicationName),
+				cookieValue);
 		int autoLoginExpire = (60 * 60 * 24) * 100; // 100 days
 		cookie.setDomain(getAuthenticator(publicationName).getCookieDomain());
 		cookie.setPath("/");
@@ -236,20 +269,21 @@ public class AuthenticatorManager {
 		cookie.setPath("/");
 		return cookie;
 	}
-	
+
 	/**
 	 * Get the ip adress of the request. If Varnish is in front use HTTP headers
 	 * to figure out ip.
 	 * 
-	 * @param request the servlet request
-	 * @return the ip adress 
+	 * @param request
+	 *            the servlet request
+	 * @return the ip adress
 	 */
 	public static String getRemoteAddress(HttpServletRequest request) {
-		// 
+		//
 		String callerIP = request.getRemoteAddr();
-		if(request.getHeader("x-varnish") != null) {
+		if (request.getHeader("x-varnish") != null) {
 			callerIP = request.getHeader("x-forwarded-for");
-			if(callerIP.indexOf(',') > 0) {
+			if (callerIP.indexOf(',') > 0) {
 				callerIP = callerIP.split(",")[0];
 			}
 		}

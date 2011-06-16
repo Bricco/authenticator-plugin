@@ -21,7 +21,7 @@ import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
 /**
  * Implementation of Escenic agreement parther interface. It is used by adding
- * the partner to the AgreementManager and then adding the chosen parner name to
+ * the partner to the AgreementManager and then adding the chosen partner name to
  * a section.
  * 
  * @author stefan.norman
@@ -34,8 +34,6 @@ public class DefaultAgreement implements AgreementPartner {
 	AgreementConfig config;
 
 	private HashMap urlMap;
-
-	String allowPublishedSection = "ece_tidningen";
 
 	int allowPublishedBeforeDays = 0;
 
@@ -68,14 +66,6 @@ public class DefaultAgreement implements AgreementPartner {
 
 	public void addUrl(String pName, String pUrl) {
 		urlMap.put(pName, pUrl);
-	}
-
-	public String getAllowPublishedSection() {
-		return allowPublishedSection;
-	}
-
-	public void setAllowPublishedSection(String allowPublishedSection) {
-		this.allowPublishedSection = allowPublishedSection;
 	}
 
 	public int getAllowPublishedBeforeDays() {
@@ -126,63 +116,42 @@ public class DefaultAgreement implements AgreementPartner {
 				.getRequestAttribute("com.escenic.context.article");
 		if (article != null) {
 
-			Object homeSection = null;
-			try {
-				homeSection = article.getClass().getMethod("getHomeSection",
-						null).invoke(article, null);
-			} catch (Exception e) {
-				log.error("Method invocation failed", e);
-			}
+			if (getAllowPublishedBeforeDays() > 0) {
 
-			if (homeSection != null) {
-				String articleHomeSection = null;
+				Calendar cal = Calendar.getInstance();
+				// first set time
+				StringTokenizer tokenizer = new StringTokenizer(
+						getAllowPublishedBeforeTime(), ":");
+				cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tokenizer
+						.nextToken()));
+				cal.set(Calendar.MINUTE, Integer.parseInt(tokenizer
+						.nextToken()));
+				// roll calendar back preferred days
+				cal.add(Calendar.DATE, (0 - getAllowPublishedBeforeDays()));
+				// if configured, roll calendar back to the closest matching
+				// weekday
+				if (getAllowPublishedBeforeWeekday() > 0) {
+					while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
+						cal.add(Calendar.DATE, -1);
+					}
+				}
+
+				Date publishDate = null;
 				try {
-					articleHomeSection = (String) homeSection.getClass()
-							.getMethod("getUniqueName", null).invoke(
-									homeSection, null);
+					publishDate = (Date) article.getClass().getMethod(
+							"getPublishedDateAsDate", null).invoke(article,
+							null);
 				} catch (Exception e) {
 					log.error("Method invocation failed", e);
 				}
-
-				if (articleHomeSection != null
-						&& articleHomeSection
-								.equals(getAllowPublishedSection())) {
-
-					Calendar cal = Calendar.getInstance();
-					// first set time
-					StringTokenizer tokenizer = new StringTokenizer(
-							getAllowPublishedBeforeTime(), ":");
-					cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tokenizer
-							.nextToken()));
-					cal.set(Calendar.MINUTE, Integer.parseInt(tokenizer
-							.nextToken()));
-					// roll calendar back preferred days
-					cal.add(Calendar.DATE, (0 - getAllowPublishedBeforeDays()));
-					// if configured, roll calendar back to the closest matching
-					// weekday
-					if (getAllowPublishedBeforeWeekday() > 0) {
-						while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
-							cal.add(Calendar.DATE, -1);
-						}
-					}
-
-					Date publishDate = null;
-					try {
-						publishDate = (Date) article.getClass().getMethod(
-								"getPublishedDateAsDate", null).invoke(article,
-								null);
-					} catch (Exception e) {
-						log.error("Method invocation failed", e);
-					}
-					if (log.isDebugEnabled()) {
-						log.debug("article publishing date: " + publishDate);
-						log.debug("configured edition publishing date: "
-								+ cal.getTime());
-					}
-					if (publishDate == null
-							|| publishDate.before(cal.getTime())) {
-						return;
-					}
+				if (log.isDebugEnabled()) {
+					log.debug("article publishing date: " + publishDate);
+					log.debug("configured edition publishing date: "
+							+ cal.getTime());
+				}
+				if (publishDate == null
+						|| publishDate.before(cal.getTime())) {
+					return;
 				}
 			}
 			// Check "override_agreement" field. Users can allow an article to pass

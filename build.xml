@@ -1,6 +1,6 @@
 <project name="authenticator" default="pack" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<property name="version" value="1.27" />
+	<property name="version" value="1.28" />
 
 	<path id="path:antcontrib" path="buildjars/ant-contrib.jar" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="path:antcontrib" />

@@ -21,8 +21,8 @@ import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
 /**
  * Implementation of Escenic agreement parther interface. It is used by adding
- * the partner to the AgreementManager and then adding the chosen partner name to
- * a section.
+ * the partner to the AgreementManager and then adding the chosen partner name
+ * to a section.
  * 
  * @author stefan.norman
  * 
@@ -101,73 +101,17 @@ public class DefaultAgreement implements AgreementPartner {
 
 		if (log.isDebugEnabled()) {
 			log.debug("requested role " + requestedRole);
-			log
-					.debug("article =  "
-							+ request
-									.getRequestAttribute("com.escenic.context.article"));
+			log.debug("article =  "
+					+ request
+							.getRequestAttribute("com.escenic.context.article"));
 		}
 
-		// if the request is for an article and its publishing date is before
-		// last publishing weekday
-		// we allow the request and bypass the login.
-		// NOTE: Using reflection to get by problem in ECE 5 where the
-		// PresentationArticle class is not available in the shared class loader
+		// If the request is for an article we allow the request and bypass the
+		// login.
 		Object article = request
 				.getRequestAttribute("com.escenic.context.article");
-		if (article != null) {
-
-			if (getAllowPublishedBeforeDays() > 0) {
-
-				Calendar cal = Calendar.getInstance();
-				// first set time
-				StringTokenizer tokenizer = new StringTokenizer(
-						getAllowPublishedBeforeTime(), ":");
-				cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(tokenizer
-						.nextToken()));
-				cal.set(Calendar.MINUTE, Integer.parseInt(tokenizer
-						.nextToken()));
-				// roll calendar back preferred days
-				cal.add(Calendar.DATE, (0 - getAllowPublishedBeforeDays()));
-				// if configured, roll calendar back to the closest matching
-				// weekday
-				if (getAllowPublishedBeforeWeekday() > 0) {
-					while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
-						cal.add(Calendar.DATE, -1);
-					}
-				}
-
-				Date publishDate = null;
-				try {
-					publishDate = (Date) article.getClass().getMethod(
-							"getPublishedDateAsDate", null).invoke(article,
-							null);
-				} catch (Exception e) {
-					log.error("Method invocation failed", e);
-				}
-				if (log.isDebugEnabled()) {
-					log.debug("article publishing date: " + publishDate);
-					log.debug("configured edition publishing date: "
-							+ cal.getTime());
-				}
-				if (publishDate == null
-						|| publishDate.before(cal.getTime())) {
-					return;
-				}
-			}
-			// Check "override_agreement" field. Users can allow an article to pass
-			// agreement by checking a field in the article.
-			String fieldValue = null;
-			try {
-				fieldValue = (String) article.getClass().getMethod("getFieldElement",
-						new Class[] {String.class}).invoke(article, new Object[] {"override_agreement"});
-			} catch (Exception e) {
-				log.error("Method invocation failed", e);
-			}
-			if(fieldValue!=null) {
-				if(Boolean.valueOf(fieldValue).booleanValue()) {
-					return;
-				}
-			}
+		if (articleIsAllowed(article)) {
+			return;
 		}
 
 		// get the user that was set in the filter
@@ -226,6 +170,78 @@ public class DefaultAgreement implements AgreementPartner {
 
 		}
 
+	}
+
+	/**
+	 * Check an article and its publishing date is before last publishing
+	 * weekday. Also check field override.
+	 * 
+	 * @param article
+	 *            Object Using reflection to get by problem in ECE 5 where the
+	 *            PresentationArticle class is not available in the shared class
+	 *            loader
+	 * @return boolean true if checks for publish date and override field pass
+	 */
+	public boolean articleIsAllowed(Object article) {
+		if (article != null) {
+
+			if (getAllowPublishedBeforeDays() > 0) {
+
+				Calendar cal = Calendar.getInstance();
+				// first set time
+				StringTokenizer tokenizer = new StringTokenizer(
+						getAllowPublishedBeforeTime(), ":");
+				cal.set(Calendar.HOUR_OF_DAY,
+						Integer.parseInt(tokenizer.nextToken()));
+				cal.set(Calendar.MINUTE,
+						Integer.parseInt(tokenizer.nextToken()));
+				// roll calendar back preferred days
+				cal.add(Calendar.DATE, (0 - getAllowPublishedBeforeDays()));
+				// if configured, roll calendar back to the closest matching
+				// weekday
+				if (getAllowPublishedBeforeWeekday() > 0) {
+					while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
+						cal.add(Calendar.DATE, -1);
+					}
+				}
+
+				Date publishDate = null;
+				try {
+					publishDate = (Date) article.getClass()
+							.getMethod("getPublishedDateAsDate", null)
+							.invoke(article, null);
+				} catch (Exception e) {
+					log.error("Method invocation failed", e);
+				}
+				if (log.isDebugEnabled()) {
+					log.debug("article publishing date: " + publishDate);
+					log.debug("configured edition publishing date: "
+							+ cal.getTime());
+				}
+				if (publishDate == null || publishDate.before(cal.getTime())) {
+					return true;
+				}
+			}
+			// Check "override_agreement" field. Users can allow an article to
+			// pass
+			// agreement by checking a field in the article.
+			String fieldValue = null;
+			try {
+				fieldValue = (String) article
+						.getClass()
+						.getMethod("getFieldElement",
+								new Class[] { String.class })
+						.invoke(article, new Object[] { "override_agreement" });
+			} catch (Exception e) {
+				log.error("Method invocation failed", e);
+			}
+			if (fieldValue != null) {
+				if (Boolean.valueOf(fieldValue).booleanValue()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private String getContextPath(AgreementRequest request) {

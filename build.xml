@@ -1,6 +1,6 @@
 <project name="authenticator" default="pack" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<property name="version" value="1.28" />
+	<property name="version" value="1.29" />
 
 	<path id="path:antcontrib" path="buildjars/ant-contrib.jar" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="path:antcontrib" />
@@ -59,7 +59,8 @@
 			</fileset>
 		</jar>
 		<delete dir="tmp"/>
-		<mkdir dir="tmp/META_INF" />
+		<mkdir dir="tmp/META-INF" />
+    <copy file="resources/authenticator.tld" todir="tmp/META-INF"/>    
 		<delete failonerror="false" file="dist/${publication-jar.file}" />
 		<jar jarfile="dist/${publication-jar.file}">
 			<fileset dir="build">

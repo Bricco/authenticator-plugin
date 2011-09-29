@@ -12,10 +12,24 @@
 		<name>checkAgreement</name>
 		<tag-class>talentum.escenic.plugins.authenticator.taglib.CheckAgreementTag</tag-class>
 		<body-content>empty</body-content>
+    <description>Check the agreement of an article</description>
     <attribute>
       <name>id</name>
       <required>true</required>
       <rtexprvalue>false</rtexprvalue>
+      <description>A page scope variable holding a boolean value. True if article is accepted.</description>
+    </attribute>
+    <attribute>
+      <name>article</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>An article object to test.</description>
+    </attribute>
+    <attribute>
+      <name>articleId</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description>The ID of an article to test.</description>
     </attribute>
 	</tag>
 

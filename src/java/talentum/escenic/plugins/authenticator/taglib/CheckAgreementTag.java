@@ -14,6 +14,9 @@ public class CheckAgreementTag extends AbstractArticleTag {
 	public int doStartTag() throws JspException {
 
 		PresentationArticle presentationArticle = getDefaultPresentationArticle();
+		if(presentationArticle == null) {
+			throw new JspException("No article found.");
+		}
 
 		boolean result = true;
 		if (presentationArticle.getHomeSection().isAgreementRequired()) {

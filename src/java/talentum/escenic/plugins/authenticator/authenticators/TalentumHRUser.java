@@ -81,7 +81,7 @@ public class TalentumHRUser implements AuthenticatedUser {
 		return new String[0];
 	}
 
-	public boolean hasRole(String role) {
+	public boolean hasRole(String[] roles) {
 		return false;
 	}
 

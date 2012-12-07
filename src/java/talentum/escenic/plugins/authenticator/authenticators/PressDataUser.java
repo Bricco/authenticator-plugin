@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.ListUtils;
+
 import net.kundservice.www.WS.Authorization.UserStruct;
 import net.kundservice.www.prenstatusws.loginservice.ProductDto;
 import net.kundservice.www.prenstatusws.loginservice.UserStatusDto;
@@ -108,32 +110,33 @@ public class PressDataUser implements AuthenticatedUser {
 		return (String[]) roles.toArray(new String[roles.size()]);
 	}
 
-	public boolean hasRole(String role) {
-		String roles[] = getRoles();
-		for (int i = 0; i < roles.length; i++) {
-			if(roles[i].equals(role)) {
-				return true;
-			}
-		}
-		return false;
+	public boolean hasRole(String[] roles) {
+		// intersecion() returns a new list containing all elements that are contained in both given lists
+		List diff = ListUtils.intersection(Arrays.asList(getRoles()), Arrays.asList(roles));
+		return !diff.isEmpty();
 	}
 
 	/**
-	 * @return true if one product has passive status and one of its roles matches
+	 * Check if user has passive role(s)
+	 * 
+	 * @return true If user has no active roles return and at least one matching passive role
 	 */
-	public boolean hasPassiveStatusForRole(String role) {
+	public boolean hasPassiveStatusForRole(String[] roles) {
+		int passiveRoleMatches = 0;
+		int activeRoleMatches = 0;
 		for (Iterator iter = products.iterator(); iter.hasNext();) {
 			Product product = (Product) iter.next();
-			if(product.isPassive()) {
-				String[] roles = product.getRoles();
-				for (int i = 0; i < roles.length; i++) {
-					if(roles[i].equals(role)) {
-						return true;
-					}
+			// intersecion() returns a new list containing all elements that are contained in both given lists
+			List diff = ListUtils.intersection(Arrays.asList(product.getRoles()), Arrays.asList(roles));
+			if(!diff.isEmpty()) {
+				if(product.isPassive()) {
+					passiveRoleMatches++;
+				} else {
+					activeRoleMatches++;
 				}
 			}
 		}
-		return false;
+		return (activeRoleMatches==0 && passiveRoleMatches > 0);
 	}
 
 	public String getAdminPage() {

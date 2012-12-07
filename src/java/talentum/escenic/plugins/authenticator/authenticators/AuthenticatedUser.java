@@ -52,18 +52,20 @@ public interface AuthenticatedUser extends Serializable {
 	public Date getLoggedInTime();
 	
 	/**
-	 * The user has the requested role.
-	 * @param role the requested role
+	 * The user has at least one of the requested roles.
+	 * 
+	 * @param roles the requested roles
 	 * @return true if user has role
 	 */
-	public boolean hasRole(String role);
+	public boolean hasRole(String[] roles);
 	
 	/**
-	 * The user has passive status for the requested role.
-	 * @param role the requested role
+	 * The user has passive status for any of the requested roles.
+	 * 
+	 * @param roles the requested roles
 	 * @return true if user has passive status
 	 */
-	public boolean hasPassiveStatusForRole(String role);
+	public boolean hasPassiveStatusForRole(String[] roles);
 	
 	/**
 	 * Get a URL configured in the Authenticator. It will be used to redirect to, after logging in.

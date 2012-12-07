@@ -100,7 +100,7 @@ public class DefaultAgreement implements AgreementPartner {
 		String requestedRole = request.getAgreementText();
 
 		if (log.isDebugEnabled()) {
-			log.debug("requested role " + requestedRole);
+			log.debug("requested role(s) " + requestedRole);
 			log.debug("article =  "
 					+ request
 							.getRequestAttribute("com.escenic.context.article"));
@@ -147,10 +147,10 @@ public class DefaultAgreement implements AgreementPartner {
 						+ encodeForUrl(request.getUrl()));
 			}
 
-		} else if (requestedRole != null && !user.hasRole(requestedRole)) {
+		} else if (requestedRole != null && !user.hasRole(splitCommaSeparatedString(requestedRole))) {
 
 			if (log.isDebugEnabled()) {
-				log.debug("User " + user + " not authorized for role "
+				log.debug("User " + user + " not authorized for role(s) "
 						+ requestedRole);
 			}
 			// if user is logged in but not authorized send to unauthorized page
@@ -158,7 +158,7 @@ public class DefaultAgreement implements AgreementPartner {
 					+ urlMap.get("unauthorized"));
 
 		} else if (requestedRole != null
-				&& user.hasPassiveStatusForRole(requestedRole)) {
+				&& user.hasPassiveStatusForRole(splitCommaSeparatedString(requestedRole))) {
 
 			if (log.isDebugEnabled()) {
 				log.debug("User " + user + " has passive status for role "
@@ -258,5 +258,13 @@ public class DefaultAgreement implements AgreementPartner {
 			log.error("Could not encode string", e);
 		}
 		return s;
+	}
+	
+	private String[] splitCommaSeparatedString(String s){
+	    String[] arr = null;
+	    if (s != null && s.indexOf(',') > 0) {
+	    	arr = s.split(",");
+	    }
+	    return arr;
 	}
 }

@@ -88,7 +88,7 @@ public class TalentumHRUser implements AuthenticatedUser {
 	/**
 	 * @return true if one product has passive status and one of its roles matches
 	 */
-	public boolean hasPassiveStatusForRole(String role) {
+	public boolean hasPassiveStatusForRole(String[] roles) {
 		return false;
 	}
 

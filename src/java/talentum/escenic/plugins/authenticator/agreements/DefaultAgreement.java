@@ -2,10 +2,7 @@ package talentum.escenic.plugins.authenticator.agreements;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.StringTokenizer;
 
 import neo.xredsys.api.Section;
 import neo.xredsys.content.agreement.AgreementConfig;
@@ -20,26 +17,20 @@ import talentum.escenic.plugins.authenticator.AuthenticatorManager;
 import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
 /**
- * Implementation of Escenic agreement parther interface. It is used by adding
+ * Implementation of Escenic agreement partner interface. It is used by adding
  * the partner to the AgreementManager and then adding the chosen partner name
  * to a section.
  * 
  * @author stefan.norman
  * 
  */
-public class DefaultAgreement implements AgreementPartner {
+public abstract class DefaultAgreement implements AgreementPartner {
 
 	private static Log log = LogFactory.getLog(DefaultAgreement.class);
 
 	AgreementConfig config;
 
 	private HashMap urlMap;
-
-	int allowPublishedBeforeDays = 0;
-
-	int allowPublishedBeforeWeekday = 0;
-
-	String allowPublishedBeforeTime = "23:59";
 
 	/**
 	 * Constructor. It sets up the agreement configuration.
@@ -56,6 +47,7 @@ public class DefaultAgreement implements AgreementPartner {
 		}
 
 		config.addRequestAttributeName("com.escenic.publication.name");
+		config.addRequestAttributeName("com.escenic.context");
 		config.addRequestAttributeName("com.escenic.context.article");
 		config.addRequestAttributeName("authenticatedUser");
 	}
@@ -66,30 +58,6 @@ public class DefaultAgreement implements AgreementPartner {
 
 	public void addUrl(String pName, String pUrl) {
 		urlMap.put(pName, pUrl);
-	}
-
-	public int getAllowPublishedBeforeDays() {
-		return allowPublishedBeforeDays;
-	}
-
-	public void setAllowPublishedBeforeDays(int allowPublishedBeforeDays) {
-		this.allowPublishedBeforeDays = allowPublishedBeforeDays;
-	}
-
-	public int getAllowPublishedBeforeWeekday() {
-		return allowPublishedBeforeWeekday;
-	}
-
-	public void setAllowPublishedBeforeWeekday(int allowPublishedBeforeWeekday) {
-		this.allowPublishedBeforeWeekday = allowPublishedBeforeWeekday;
-	}
-
-	public String getAllowPublishedBeforeTime() {
-		return allowPublishedBeforeTime;
-	}
-
-	public void setAllowPublishedBeforeTime(String allowPublishedBeforeTime) {
-		this.allowPublishedBeforeTime = allowPublishedBeforeTime;
 	}
 
 	/**
@@ -106,12 +74,20 @@ public class DefaultAgreement implements AgreementPartner {
 							.getRequestAttribute("com.escenic.context.article"));
 		}
 
-		// If the request is for an article we allow the request and bypass the
-		// login.
-		Object article = request
-				.getRequestAttribute("com.escenic.context.article");
-		if (articleIsAllowed(article)) {
-			return;
+		// Check the context and call implementing subclasses
+		String context = (String) request
+				.getRequestAttribute("com.escenic.context");
+		
+		if (context.equalsIgnoreCase("art")) {
+			Object article = request
+					.getRequestAttribute("com.escenic.context.article");
+			if (allowArticle(article)) {
+				return;
+			}
+		} else if (context.equalsIgnoreCase("sec")) {
+			if (allowSection()) {
+				return;
+			}
 		}
 
 		// get the user that was set in the filter
@@ -173,55 +149,24 @@ public class DefaultAgreement implements AgreementPartner {
 	}
 
 	/**
-	 * Check an article and its publishing date is before last publishing
-	 * weekday. Also check field override.
+	 * Check if an article should skip authorization 
 	 * 
-	 * @param article
-	 *            Object Using reflection to get by problem in ECE 5 where the
-	 *            PresentationArticle class is not available in the shared class
-	 *            loader
-	 * @return boolean true if checks for publish date and override field pass
+	 * @param article the article to check
+	 * 
+	 * @return boolean true if no further authorization should be done
 	 */
-	public boolean articleIsAllowed(Object article) {
+	public abstract boolean allowArticle(Object article);
+
+	/**
+	 * Check if a section should skip authorization 
+	 * 
+	 * @return boolean true if no further authorization should be done
+	 */
+	public abstract boolean allowSection();
+
+	protected boolean checkArticleField(Object article, String field_name) {
 		if (article != null) {
 
-			if (getAllowPublishedBeforeDays() > 0) {
-
-				Calendar cal = Calendar.getInstance();
-				// first set time
-				StringTokenizer tokenizer = new StringTokenizer(
-						getAllowPublishedBeforeTime(), ":");
-				cal.set(Calendar.HOUR_OF_DAY,
-						Integer.parseInt(tokenizer.nextToken()));
-				cal.set(Calendar.MINUTE,
-						Integer.parseInt(tokenizer.nextToken()));
-				// roll calendar back preferred days
-				cal.add(Calendar.DATE, (0 - getAllowPublishedBeforeDays()));
-				// if configured, roll calendar back to the closest matching
-				// weekday
-				if (getAllowPublishedBeforeWeekday() > 0) {
-					while (cal.get(Calendar.DAY_OF_WEEK) != getAllowPublishedBeforeWeekday()) {
-						cal.add(Calendar.DATE, -1);
-					}
-				}
-
-				Date publishDate = null;
-				try {
-					publishDate = (Date) article.getClass()
-							.getMethod("getPublishedDateAsDate", null)
-							.invoke(article, null);
-				} catch (Exception e) {
-					log.error("Method invocation failed", e);
-				}
-				if (log.isDebugEnabled()) {
-					log.debug("article publishing date: " + publishDate);
-					log.debug("configured edition publishing date: "
-							+ cal.getTime());
-				}
-				if (publishDate == null || publishDate.before(cal.getTime())) {
-					return true;
-				}
-			}
 			// Check "override_agreement" field. Users can allow an article to
 			// pass
 			// agreement by checking a field in the article.
@@ -231,7 +176,7 @@ public class DefaultAgreement implements AgreementPartner {
 						.getClass()
 						.getMethod("getFieldElement",
 								new Class[] { String.class })
-						.invoke(article, new Object[] { "override_agreement" });
+						.invoke(article, new Object[] { field_name });
 			} catch (Exception e) {
 				log.error("Method invocation failed", e);
 			}
@@ -243,7 +188,7 @@ public class DefaultAgreement implements AgreementPartner {
 		}
 		return false;
 	}
-
+	
 	private String getContextPath(AgreementRequest request) {
 
 		Section sec = request.getSection();

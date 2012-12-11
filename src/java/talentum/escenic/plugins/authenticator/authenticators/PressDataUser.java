@@ -139,7 +139,7 @@ public class PressDataUser implements AuthenticatedUser {
 	/**
 	 * Check if user has passive role(s)
 	 * 
-	 * @return true If user has no active roles return and at least one matching passive role
+	 * @return true If user has no active roles and at least one matching passive role
 	 */
 	public boolean hasPassiveStatusForRole(String[] roles) {
 		int passiveRoleMatches = 0;

@@ -35,7 +35,7 @@ public class CheckAgreementTag extends AbstractArticleTag {
 					BROWSER.error("Agreement "
 							+ agreementInfo.getAgreementInfo() + " not found");
 				} else {
-					result = agreement.articleIsAllowed(presentationArticle);
+					result = agreement.allowArticle(presentationArticle);
 				}
 			}
 

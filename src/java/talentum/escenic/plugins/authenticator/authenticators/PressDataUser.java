@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.collections.ListUtils;
 
 import net.kundservice.www.WS.Authorization.UserStruct;
+import net.kundservice.www.prenstatusws.loginservice.NTUserStatusDto;
 import net.kundservice.www.prenstatusws.loginservice.ProductDto;
 import net.kundservice.www.prenstatusws.loginservice.UserStatusDto;
 
@@ -46,6 +47,25 @@ public class PressDataUser implements AuthenticatedUser {
 			// productId of last product used as productId of user
 			this.productId = prDto[i].getProductId();
 		}
+	}
+
+	/**
+	 * Constructs a user from the NTLoginService web service
+	 * @param userSDto
+	 */
+	public PressDataUser(NTUserStatusDto userSDto) {
+		this.userId = userSDto.getUserId();
+		this.userName = userSDto.getUserName();
+		this.name = userSDto.getUserName();
+		this.companyName = userSDto.getComapanyName();
+		this.email = userSDto.getEmail();
+		
+		ProductDto prDto = userSDto.getProduct();
+		addProduct(prDto.getProductId(), prDto.getStatus(), prDto.getRoles());
+		// token of last product used as token of user
+		this.token = prDto.getToken();
+		// productId of last product used as productId of user
+		this.productId = prDto.getProductId();
 	}
 	
 	/**

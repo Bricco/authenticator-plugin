@@ -7,6 +7,7 @@ import javax.xml.rpc.ServiceException;
 
 import net.kundservice.www.prenstatusws.loginservice.LoginServiceLocator;
 import net.kundservice.www.prenstatusws.loginservice.LoginServiceSoapStub;
+import net.kundservice.www.prenstatusws.loginservice.NTUserStatusDto;
 import net.kundservice.www.prenstatusws.loginservice.UserStatusDto;
 
 import org.apache.commons.logging.Log;
@@ -46,11 +47,18 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 		UserStatusDto userSDto = binding.loginPublisher(publisher, username,
 				password);
 
-		if (!userSDto.isIsLoginOk()) {
-			log.error("Authentication failed for user " + username);
-		} else {
+		if (userSDto.isIsLoginOk()) {
 			// populate user object
-			user = new PressDataUser(userSDto);
+			user = new PressDataUser(userSDto);			
+		} else {
+			// fallback: check the LoginNTUser for authentication
+			NTUserStatusDto ntUserSDto = binding.loginNTUser(publisher, username, password);
+			if (ntUserSDto.isLoginOK()) {
+				// populate user object
+				user = new PressDataUser(ntUserSDto);			
+			} else {
+				log.error("Authentication failed for user " + username);
+			}
 		}
 
 		return user;

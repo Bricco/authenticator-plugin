@@ -51,6 +51,36 @@
           <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
         </s:sequence>
       </s:complexType>
+      <s:element name="LoginNTUser">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="publisher" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LoginNTUserResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LoginNTUserResult" type="tns:NTUserStatusDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="NTUserStatusDto">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="UserId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Firstname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Efternamn" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ComapanyName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Token" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Autologin" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Product" type="tns:ProductDto" />
+          <s:element minOccurs="1" maxOccurs="1" name="loginOK" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="LoginPublisherSoapIn">
@@ -59,16 +89,35 @@
   <wsdl:message name="LoginPublisherSoapOut">
     <wsdl:part name="parameters" element="tns:LoginPublisherResponse" />
   </wsdl:message>
+  <wsdl:message name="LoginNTUserSoapIn">
+    <wsdl:part name="parameters" element="tns:LoginNTUser" />
+  </wsdl:message>
+  <wsdl:message name="LoginNTUserSoapOut">
+    <wsdl:part name="parameters" element="tns:LoginNTUserResponse" />
+  </wsdl:message>
   <wsdl:portType name="LoginServiceSoap">
     <wsdl:operation name="LoginPublisher">
       <wsdl:input message="tns:LoginPublisherSoapIn" />
       <wsdl:output message="tns:LoginPublisherSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LoginNTUser">
+      <wsdl:input message="tns:LoginNTUserSoapIn" />
+      <wsdl:output message="tns:LoginNTUserSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="LoginServiceSoap" type="tns:LoginServiceSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="LoginPublisher">
       <soap:operation soapAction="http://www.kundservice.net/prenstatusws/loginservice/LoginPublisher" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LoginNTUser">
+      <soap:operation soapAction="http://www.kundservice.net/prenstatusws/loginservice/LoginNTUser" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -88,13 +137,22 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="LoginNTUser">
+      <soap12:operation soapAction="http://www.kundservice.net/prenstatusws/loginservice/LoginNTUser" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="LoginService">
     <wsdl:port name="LoginServiceSoap" binding="tns:LoginServiceSoap">
-      <soap:address location="https://www.kundservice.net/prenstatusws/Loginservice.asmx" />
+      <soap:address location="http://www.test.kundservice.net/prenstatusws/LoginService.asmx" />
     </wsdl:port>
     <wsdl:port name="LoginServiceSoap12" binding="tns:LoginServiceSoap12">
-      <soap12:address location="https://www.kundservice.net/prenstatusws/Loginservice.asmx" />
+      <soap12:address location="http://www.test.kundservice.net/prenstatusws/LoginService.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

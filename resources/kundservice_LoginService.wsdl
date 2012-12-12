@@ -73,7 +73,7 @@
           <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="Firstname" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="Efternamn" type="s:string" />
-          <s:element minOccurs="0" maxOccurs="1" name="ComapanyName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CompanyName" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="Token" type="s:string" />
           <s:element minOccurs="1" maxOccurs="1" name="Autologin" type="s:boolean" />

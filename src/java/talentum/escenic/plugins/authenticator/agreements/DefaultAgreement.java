@@ -205,10 +205,19 @@ public abstract class DefaultAgreement implements AgreementPartner {
 		return s;
 	}
 	
+	/**
+	 * Create a string array
+	 * @param s the string to split
+	 * @return at least an empty array
+	 */
 	private String[] splitCommaSeparatedString(String s){
-	    String[] arr = null;
-	    if (s != null && s.indexOf(',') > 0) {
-	    	arr = s.split(",");
+	    String[] arr = new String[0];
+	    if (s != null) {
+	    	if(s.indexOf(',') > 0) {
+	    		arr = s.trim().split(",");
+	    	} else {
+	    		arr = new String[] { s.trim() };
+	    	}
 	    }
 	    return arr;
 	}

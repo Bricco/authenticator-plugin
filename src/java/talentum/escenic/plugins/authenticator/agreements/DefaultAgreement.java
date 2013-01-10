@@ -50,6 +50,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 		config.addRequestAttributeName("com.escenic.context");
 		config.addRequestAttributeName("com.escenic.context.article");
 		config.addRequestAttributeName("authenticatedUser");
+		config.addRequestParameterName("showPopup");
 	}
 
 	public AgreementConfig getAgreementConfig() {
@@ -66,7 +67,9 @@ public abstract class DefaultAgreement implements AgreementPartner {
 	public void service(AgreementRequest request, AgreementResponse response) {
 
 		String requestedRole = request.getAgreementText();
-
+		if(request.getRequestParameter("showPopup") !=null) {
+			return;
+		}
 		if (log.isDebugEnabled()) {
 			log.debug("requested role(s) " + requestedRole);
 			log.debug("article =  "
@@ -118,9 +121,8 @@ public abstract class DefaultAgreement implements AgreementPartner {
 					log.debug("User " + user + " not found");
 				}
 				// if the user is not found redirect to login page
-				response.setRedirect(getContextPath(request)
-						+ urlMap.get("loginform") + "?redirectToURL="
-						+ encodeForUrl(request.getUrl()));
+				response.setRedirect(request.getUrl() + "?showPopup=" +
+						encodeForUrl((String)urlMap.get("loginform")));
 			}
 
 		} else if (requestedRole != null && !user.hasRole(splitCommaSeparatedString(requestedRole))) {

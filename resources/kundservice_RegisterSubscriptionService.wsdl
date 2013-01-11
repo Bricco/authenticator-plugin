@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.kundservice.net/registersubscriptionservicews/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.kundservice.net/registersubscriptionservicews/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.kundservice.net/registersubscriptionservicews/">
+      <s:element name="RegisterOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="order" type="tns:OrderDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OrderDto">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Product" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Couponno" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Copies" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Offerdescription" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Seller" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalOfferData1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalOfferData2" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Approved" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Company" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Department" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Firstname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Lastname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CareOf" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Streetaddress" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Postcode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Countrycode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Phone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mobilephone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Facsimile" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="CustomerNo" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExternalId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Personnummer" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalAddressData1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalAddressData2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalAddressData3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalAddressData4" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrgNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerCompany" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerDepartment" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerFirstname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerLastname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerCareOf" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerAddress" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerPostcode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerCity" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerCountrycode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerPhone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerMobilephone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerFacsimile" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerEmail" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerPersonnummer" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerTitle" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerOrgNo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Amount" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Paid" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="AccountNo" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExtraData1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExtraData2" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegisterOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegisterOrderResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterOrderWithEvent">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="dto" type="tns:EventDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="EventDto">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Order" type="tns:OrderDto" />
+          <s:element minOccurs="0" maxOccurs="1" name="EventFirstname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EventLastname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EventText" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="EventDate" nillable="true" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegisterOrderWithEventResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterOrderWithEventResult" type="tns:OrderIdDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="OrderIdDto">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="orderid" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="smno" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="postcode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="orderdate" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="roleInBit" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="product" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="cname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="aname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="fname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="couponno" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="paytype" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="descr" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="paymentStatus" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="externalId" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="periode" nillable="true" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="amount" nillable="true" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegisterSubscriptionOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="order" type="tns:OrderDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterSubscriptionOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterSubscriptionOrderResult" type="tns:OrderIdDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterSubscriptionFullOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="order" type="tns:FOrderDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="FOrderDto">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Database" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Product" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Couponno" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Copies" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Offerdescription" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Seller" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalOfferData1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalOfferData2" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Approved" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Company" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Department" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Firstname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Lastname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CareOf" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Streetaddress" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Postcode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Countrycode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Phone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mobilephone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Facsimile" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="CustomerNo" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExternalId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Personnummer" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalAddressData1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalAddressData2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalAddressData3" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OptionalAddressData4" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrgNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerCompany" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerDepartment" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerFirstname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerLastname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerCareOf" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerAddress" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerPostcode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerCity" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerCountrycode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerPhone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerMobilephone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerFacsimile" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerEmail" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerPersonnummer" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerTitle" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PayerOrgNo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Amount" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Paid" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="AccountNo" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExtraData1" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExtraData2" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Startissue" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Paytype" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegisterSubscriptionFullOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterSubscriptionFullOrderResult" type="tns:OrderIdDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterNTOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="orderDto" type="tns:NTOrderDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="NTOrderDto">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="UserName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Pwd" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Coupon" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Product" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegisterNTOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegisterNTOrderResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterFullOrder">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="order" type="tns:FOrderDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterFullOrderResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RegisterFullOrderResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="RegisterOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterOrder" />
+  </wsdl:message>
+  <wsdl:message name="RegisterOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterOrderWithEventSoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterOrderWithEvent" />
+  </wsdl:message>
+  <wsdl:message name="RegisterOrderWithEventSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterOrderWithEventResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterSubscriptionOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterSubscriptionOrder" />
+  </wsdl:message>
+  <wsdl:message name="RegisterSubscriptionOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterSubscriptionOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterSubscriptionFullOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterSubscriptionFullOrder" />
+  </wsdl:message>
+  <wsdl:message name="RegisterSubscriptionFullOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterSubscriptionFullOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterNTOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterNTOrder" />
+  </wsdl:message>
+  <wsdl:message name="RegisterNTOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterNTOrderResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterFullOrderSoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterFullOrder" />
+  </wsdl:message>
+  <wsdl:message name="RegisterFullOrderSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterFullOrderResponse" />
+  </wsdl:message>
+  <wsdl:portType name="RegisterSubscriptionServiceSoap">
+    <wsdl:operation name="RegisterOrder">
+      <wsdl:input message="tns:RegisterOrderSoapIn" />
+      <wsdl:output message="tns:RegisterOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterOrderWithEvent">
+      <wsdl:input message="tns:RegisterOrderWithEventSoapIn" />
+      <wsdl:output message="tns:RegisterOrderWithEventSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterSubscriptionOrder">
+      <wsdl:input message="tns:RegisterSubscriptionOrderSoapIn" />
+      <wsdl:output message="tns:RegisterSubscriptionOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterSubscriptionFullOrder">
+      <wsdl:input message="tns:RegisterSubscriptionFullOrderSoapIn" />
+      <wsdl:output message="tns:RegisterSubscriptionFullOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterNTOrder">
+      <wsdl:input message="tns:RegisterNTOrderSoapIn" />
+      <wsdl:output message="tns:RegisterNTOrderSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterFullOrder">
+      <wsdl:input message="tns:RegisterFullOrderSoapIn" />
+      <wsdl:output message="tns:RegisterFullOrderSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="RegisterSubscriptionServiceSoap" type="tns:RegisterSubscriptionServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegisterOrder">
+      <soap:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterOrderWithEvent">
+      <soap:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterOrderWithEvent" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterSubscriptionOrder">
+      <soap:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterSubscriptionOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterSubscriptionFullOrder">
+      <soap:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterSubscriptionFullOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterNTOrder">
+      <soap:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterNTOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterFullOrder">
+      <soap:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterFullOrder" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="RegisterSubscriptionServiceSoap12" type="tns:RegisterSubscriptionServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegisterOrder">
+      <soap12:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterOrderWithEvent">
+      <soap12:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterOrderWithEvent" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterSubscriptionOrder">
+      <soap12:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterSubscriptionOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterSubscriptionFullOrder">
+      <soap12:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterSubscriptionFullOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterNTOrder">
+      <soap12:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterNTOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterFullOrder">
+      <soap12:operation soapAction="http://www.kundservice.net/registersubscriptionservicews/RegisterFullOrder" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RegisterSubscriptionService">
+    <wsdl:port name="RegisterSubscriptionServiceSoap" binding="tns:RegisterSubscriptionServiceSoap">
+      <soap:address location="http://www.test.kundservice.net/prenstatusws/RegisterSubscriptionService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="RegisterSubscriptionServiceSoap12" binding="tns:RegisterSubscriptionServiceSoap12">
+      <soap12:address location="http://www.test.kundservice.net/prenstatusws/RegisterSubscriptionService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

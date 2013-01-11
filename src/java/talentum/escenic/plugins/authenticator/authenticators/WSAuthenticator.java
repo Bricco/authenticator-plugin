@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.ReminderException;
 
 /**
@@ -113,4 +114,8 @@ public abstract class WSAuthenticator extends Authenticator {
 		return true;
 	}
 
+	public void register(String username, String password)
+			throws RegistrationException {
+		// do nothing
+	}
 }

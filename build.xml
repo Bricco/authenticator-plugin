@@ -1,6 +1,6 @@
 <project name="authenticator" default="pack" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<property name="version" value="1.31" />
+	<property name="version" value="1.32" />
 
 	<path id="path:antcontrib" path="buildjars/ant-contrib.jar" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="path:antcontrib" />
@@ -88,6 +88,11 @@
 		  testcase="true"
 		  verbose="true"
 		  url="resources/kundservice_LoginService.wsdl" />
+		<axis-wsdl2java 
+		  output="src/java"
+		  testcase="true"
+		  verbose="true"
+		  url="resources/kundservice_RegisterSubscriptionService.wsdl" />
 		<axis-wsdl2java 
 		  output="src/java"
 		  testcase="true"

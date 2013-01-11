@@ -1,6 +1,7 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.ReminderException;
 
 /**
@@ -83,5 +84,14 @@ public abstract class Authenticator {
 	 * @param token String the token
 	 */
 	public abstract void passwordReminder(String emailAddress, String publication) throws ReminderException;
+
+	/**
+	 * Performs a registration of a user.
+	 * 
+	 * @param username String the username
+	 * @param password String the password
+	 * @throws RegistrationException if registration fails
+	 */
+	public abstract void register(String username, String password) throws RegistrationException;
 
 }

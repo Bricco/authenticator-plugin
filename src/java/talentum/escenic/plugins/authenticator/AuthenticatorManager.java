@@ -159,6 +159,22 @@ public class AuthenticatorManager {
 
 		return false;
 	}
+	
+	public boolean register(String publicationName, String username, String password) {
+		try {
+			getAuthenticator(publicationName).register(username,
+					password);
+			return true;
+
+		} catch (RegistrationException e) {
+			log.error("Could not register: " + e.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug(e);
+			}
+		}
+
+		return false;
+	}
 
 	public AuthenticatedUser authenticateAuto(String authenticatorName,
 			String encryptedUserInfo, String ipadress) {

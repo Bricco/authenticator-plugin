@@ -6,7 +6,8 @@
 	<core version="5.1" />
 	<core version="5.2" />
 	<core version="5.3" />
-	<core version="5.4" />
+  <core version="5.4" />
+  <core version="5.5" />
 	<requires>
 		<class
 			name="talentum.escenic.plugins.authenticator.AuthenticatorManager"

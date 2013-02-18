@@ -58,11 +58,10 @@ public class PressDataUser implements AuthenticatedUser {
 		this.userName = userSDto.getUserName();
 		this.name = userSDto.getUserName();
 		this.email = userSDto.getEmail();
+		this.token = userSDto.getToken();
 		
 		ProductDto prDto = userSDto.getProducts();
 		addProduct(prDto.getProductId(), prDto.getStatus(), prDto.getRoles());
-		// token of last product used as token of user
-		this.token = prDto.getToken();
 		// productId of last product used as productId of user
 		this.productId = prDto.getProductId();
 	}
@@ -132,7 +131,7 @@ public class PressDataUser implements AuthenticatedUser {
 	public boolean hasRole(String[] roles) {
 		// intersecion() returns a new list containing all elements that are contained in both given lists
 		List diff = ListUtils.intersection(Arrays.asList(getRoles()), Arrays.asList(roles));
-		return !diff.isEmpty();
+		return (String[]) diff.toArray(new String[diff.size()]);
 	}
 
 	/**

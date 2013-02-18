@@ -57,10 +57,9 @@ public class PressDataUser implements AuthenticatedUser {
 		this.userId = userSDto.getUserId();
 		this.userName = userSDto.getUserName();
 		this.name = userSDto.getUserName();
-		this.companyName = userSDto.getCompanyName();
 		this.email = userSDto.getEmail();
 		
-		ProductDto prDto = userSDto.getProduct();
+		ProductDto prDto = userSDto.getProducts();
 		addProduct(prDto.getProductId(), prDto.getStatus(), prDto.getRoles());
 		// token of last product used as token of user
 		this.token = prDto.getToken();

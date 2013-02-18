@@ -131,7 +131,7 @@ public class PressDataUser implements AuthenticatedUser {
 	public boolean hasRole(String[] roles) {
 		// intersecion() returns a new list containing all elements that are contained in both given lists
 		List diff = ListUtils.intersection(Arrays.asList(getRoles()), Arrays.asList(roles));
-		return (String[]) diff.toArray(new String[diff.size()]);
+		return !diff.isEmpty();
 	}
 
 	/**

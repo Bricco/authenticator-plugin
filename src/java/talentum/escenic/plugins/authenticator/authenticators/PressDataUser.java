@@ -128,11 +128,12 @@ public class PressDataUser implements AuthenticatedUser {
 		return (String[]) roles.toArray(new String[roles.size()]);
 	}
 
-	public boolean hasRole(String[] roles) {
+	public String[] matchingRoles(String[] roles) {
 		// intersecion() returns a new list containing all elements that are contained in both given lists
 		List diff = ListUtils.intersection(Arrays.asList(getRoles()), Arrays.asList(roles));
-		return !diff.isEmpty();
+		return (String[]) diff.toArray(new String[diff.size()]);
 	}
+
 
 	/**
 	 * Check if user has passive role(s)

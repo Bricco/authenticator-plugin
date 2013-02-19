@@ -52,12 +52,12 @@ public interface AuthenticatedUser extends Serializable {
 	public Date getLoggedInTime();
 	
 	/**
-	 * The user has at least one of the requested roles.
+	 * Roles of the user that matches the requested roles.
 	 * 
 	 * @param roles the requested roles
-	 * @return true if user has role
+	 * @return an array of roles that matches the user's roles
 	 */
-	public boolean hasRole(String[] roles);
+	public String[] matchingRoles(String[] roles);
 	
 	/**
 	 * The user has passive status for any of the requested roles.

@@ -16,10 +16,6 @@
 	<classpathentry kind="lib" path="buildjars/saaj.jar"/>
 	<classpathentry kind="lib" path="buildjars/wsdl4j-1.5.1.jar"/>
 	<classpathentry kind="lib" path="buildjars/jsp-api.jar"/>
-	<classpathentry kind="lib" path="webapps/demo/WEB-INF/lib/jstl-1.1.2.jar"/>
-	<classpathentry kind="lib" path="webapps/demo/WEB-INF/lib/standard-1.1.2.jar"/>
-	<classpathentry kind="lib" path="/opt/tomcat/common/lib/log4j.jar"/>
-	<classpathentry kind="lib" path="/escenic-src/lib/escenic-servlet.jar"/>
 	<classpathentry kind="lib" path="buildjars/java_memcached-release_1.3.2.jar"/>
 	<classpathentry kind="lib" path="buildjars/engine-taglib-5.1-3.jar"/>
 	<classpathentry kind="lib" path="buildjars/log4j.jar"/>

@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
-
 import net.kundservice.www.WS.Authorization.UserStruct;
 import net.kundservice.www.prenstatusws.loginservice.NTUserStatusDto;
 import net.kundservice.www.prenstatusws.loginservice.ProductDto;
 import net.kundservice.www.prenstatusws.loginservice.UserStatusDto;
+
+import org.apache.commons.collections.ListUtils;
 
 
 public class PressDataUser implements AuthenticatedUser {
@@ -24,6 +24,8 @@ public class PressDataUser implements AuthenticatedUser {
 	private String companyName;
 	private String email;
 	private String productId;
+	private int customerNumber = 0;
+	private Date createdTime;
 	private Date loggedInTime = new Date();
 
 	private ArrayList products = new ArrayList();
@@ -38,6 +40,9 @@ public class PressDataUser implements AuthenticatedUser {
 		this.name = userSDto.getFirstname() + " " + userSDto.getLastname();
 		this.companyName = userSDto.getCompanyName();
 		this.email = userSDto.getEmail();
+		// set smno as cutomer number
+		this.customerNumber = userSDto.getSmno();
+		
 		
 		ProductDto[] prDto = userSDto.getProducts();
 		for (int i = 0; i < prDto.length; i++) {
@@ -59,6 +64,7 @@ public class PressDataUser implements AuthenticatedUser {
 		this.name = userSDto.getUserName();
 		this.email = userSDto.getEmail();
 		this.token = userSDto.getToken();
+		this.createdTime = userSDto.getCreatedTime().getTime();
 		
 		ProductDto prDto = userSDto.getProducts();
 		addProduct(prDto.getProductId(), prDto.getStatus(), prDto.getRoles());
@@ -109,6 +115,14 @@ public class PressDataUser implements AuthenticatedUser {
 
 	public String getProductId() {
 		return productId;
+	}
+
+	public int getCustomerNumber() {
+		return customerNumber;
+	}
+
+	public Date getCreatedTime() {
+		return createdTime;
 	}
 
 	public Date getLoggedInTime() {

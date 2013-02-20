@@ -72,7 +72,14 @@ public class TalentumHRUser implements AuthenticatedUser {
 	public void setLinkUser(boolean isLinkUser) {
 		this.isLinkUser = isLinkUser;
 	}
+	
+	public int getCustomerNumber() {
+		return 0; // not used
+	}
 
+	public Date getCreatedTime() {
+		return null; // not used
+	}
 	public Date getLoggedInTime() {
 		return loggedInTime;
 	}

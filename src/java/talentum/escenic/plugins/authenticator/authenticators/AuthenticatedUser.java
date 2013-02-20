@@ -45,6 +45,17 @@ public interface AuthenticatedUser extends Serializable {
 	 * @return the product id
 	 */
 	public String getProductId();
+
+	/**
+	 * Customer number from backend subscription service
+	 * @return th customer number
+	 */
+	public int getCustomerNumber();
+	
+	/**
+	 * @return the date when the user was created
+	 */
+	public Date getCreatedTime();
 	
 	/**
 	 * @return the date when the user was checked last time

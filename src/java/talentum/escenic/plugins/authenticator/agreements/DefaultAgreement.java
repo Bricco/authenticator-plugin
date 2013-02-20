@@ -38,7 +38,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 	
 	private String freemiumRole;
 	private int freemiumNoOfFreeArticles;
-	private int freemiumDaysAsLoggedIn;
+	private int freemiumDays;
 
 	/**
 	 * Constructor. It sets up the agreement configuration.
@@ -85,12 +85,12 @@ public abstract class DefaultAgreement implements AgreementPartner {
 		this.freemiumNoOfFreeArticles = freemiumNoOfFreeArticles;
 	}
 
-	public int getFreemiumDaysAsLoggedIn() {
-		return freemiumDaysAsLoggedIn;
+	public int getFreemiumDays() {
+		return freemiumDays;
 	}
 
-	public void setFreemiumDaysAsLoggedIn(int freemiumDaysAsLoggedIn) {
-		this.freemiumDaysAsLoggedIn = freemiumDaysAsLoggedIn;
+	public void setFreemiumDays(int freemiumDays) {
+		this.freemiumDays = freemiumDays;
 	}
 
 	/**
@@ -162,11 +162,12 @@ public abstract class DefaultAgreement implements AgreementPartner {
 					// set articleId as identifier
 					response.setHeader("X-Paywall-Metered-Identifier", String.valueOf(articleID));
 					// set denied URL for redirecting user when he/she has no more clicks
-					response.setHeader("X-Paywall-Metered-Denied-Url", (String)urlMap.get("freemium_no_more_clicks"));
+					response.setHeader("X-Paywall-Metered-Denied-Url", url.getPath() + "?showPopup=" +
+							encodeForUrl((String)urlMap.get("freemium_no_more_clicks")));
 					// set expires for metered cookie to configured number of days from now
 					Calendar cal = Calendar.getInstance();
-					// TODO get days from config
-					cal.add(Calendar.DATE, 30);
+					// get number of days from config
+					cal.add(Calendar.DATE, getFreemiumDays());
 					DateFormat df = new SimpleDateFormat("EEE, d-MMM-yyyy HH:mm:ss z", java.util.Locale.UK);
 
 					response.setHeader("X-Paywall-Metered-Cookie-Expires", df.format(cal.getTime()));

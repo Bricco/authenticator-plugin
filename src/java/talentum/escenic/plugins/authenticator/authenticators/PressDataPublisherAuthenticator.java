@@ -29,6 +29,7 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 			.getLog(PressDataPublisherAuthenticator.class);
 
 	private String publisher;
+	private int ntuserValidDays = 0;
 
 	public String getPublisher() {
 		return publisher;
@@ -36,6 +37,14 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
+	}
+	
+	public int getNtuserValidDays() {
+		return ntuserValidDays;
+	}
+
+	public void setNtuserValidDays(int ntuserValidDays) {
+		this.ntuserValidDays = ntuserValidDays;
 	}
 
 	public AuthenticatedUser performLogin(String username, String password,
@@ -61,7 +70,7 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 					username, password);
 			if (ntUserSDto.isLoginOK()) {
 				// populate user object
-				user = new PressDataUser(ntUserSDto);
+				user = new PressDataUser(ntUserSDto, getNtuserValidDays());
 			} else {
 				log.error("Authentication failed for user " + username);
 			}

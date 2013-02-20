@@ -77,7 +77,7 @@ public class TalentumHRUser implements AuthenticatedUser {
 		return 0; // not used
 	}
 
-	public Date getCreatedTime() {
+	public Date getExpirationDate() {
 		return null; // not used
 	}
 	public Date getLoggedInTime() {

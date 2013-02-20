@@ -2,6 +2,7 @@ package talentum.escenic.plugins.authenticator.struts;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,6 +87,14 @@ public class AuthorizeAction  extends Action {
 			// if user is logged in but has status passive, return 406
 			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "user has passive status for role");
 			return null;
+		}
+		if(user.getExpirationDate() != null) {
+			Date now = new Date();
+			if(user.getExpirationDate().before(now)) {
+				// user has expired, return 401
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "user is too old");
+				return null;
+			}
 		}
 		
 		// all is well, return 200

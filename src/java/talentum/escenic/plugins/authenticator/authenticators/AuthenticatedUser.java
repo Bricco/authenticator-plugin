@@ -53,9 +53,9 @@ public interface AuthenticatedUser extends Serializable {
 	public int getCustomerNumber();
 	
 	/**
-	 * @return the date when the user was created
+	 * @return the date when the user expires
 	 */
-	public Date getCreatedTime();
+	public Date getExpirationDate();
 	
 	/**
 	 * @return the date when the user was checked last time

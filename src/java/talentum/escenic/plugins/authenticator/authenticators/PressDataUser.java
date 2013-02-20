@@ -3,6 +3,7 @@ package talentum.escenic.plugins.authenticator.authenticators;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +26,7 @@ public class PressDataUser implements AuthenticatedUser {
 	private String email;
 	private String productId;
 	private int customerNumber = 0;
-	private Date createdTime;
+	private Date expirationDate;
 	private Date loggedInTime = new Date();
 
 	private ArrayList products = new ArrayList();
@@ -57,14 +58,18 @@ public class PressDataUser implements AuthenticatedUser {
 	/**
 	 * Constructs a user from the NTLoginService web service
 	 * @param userSDto
+	 * @param ntuserValidDays how many days to add to createdtime to set expirationDate
 	 */
-	public PressDataUser(NTUserStatusDto userSDto) {
+	public PressDataUser(NTUserStatusDto userSDto, int ntuserValidDays) {
 		this.userId = userSDto.getUserId();
 		this.userName = userSDto.getUserName();
 		this.name = userSDto.getUserName();
 		this.email = userSDto.getEmail();
 		this.token = userSDto.getToken();
-		this.createdTime = userSDto.getCreatedTime().getTime();
+		// add configured number of days to createdTime set the expirationDate
+		Calendar expiration = userSDto.getCreatedTime();
+		expiration.add(Calendar.DATE, ntuserValidDays);
+		this.expirationDate = userSDto.getCreatedTime().getTime();
 		
 		ProductDto prDto = userSDto.getProducts();
 		addProduct(prDto.getProductId(), prDto.getStatus(), prDto.getRoles());
@@ -121,8 +126,8 @@ public class PressDataUser implements AuthenticatedUser {
 		return customerNumber;
 	}
 
-	public Date getCreatedTime() {
-		return createdTime;
+	public Date getExpirationDate() {
+		return expirationDate;
 	}
 
 	public Date getLoggedInTime() {

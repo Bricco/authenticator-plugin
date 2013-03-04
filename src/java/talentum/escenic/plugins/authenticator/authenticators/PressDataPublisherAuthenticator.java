@@ -2,7 +2,6 @@ package talentum.escenic.plugins.authenticator.authenticators;
 
 import java.rmi.RemoteException;
 
-import javax.imageio.spi.RegisterableService;
 import javax.xml.rpc.ServiceException;
 
 import net.kundservice.www.prenstatusws.loginservice.LoginServiceLocator;
@@ -29,6 +28,9 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 			.getLog(PressDataPublisherAuthenticator.class);
 
 	private String publisher;
+	private String product;
+	private int coupon;
+
 	private int ntuserValidDays = 0;
 
 	public String getPublisher() {
@@ -39,6 +41,22 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 		this.publisher = publisher;
 	}
 	
+	public String getProduct() {
+		return product;
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	public int getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(int coupon) {
+		this.coupon = coupon;
+	}
+
 	public int getNtuserValidDays() {
 		return ntuserValidDays;
 	}
@@ -85,9 +103,8 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 
 			RegisterSubscriptionServiceSoap binding = (RegisterSubscriptionServiceSoap) new RegisterSubscriptionServiceLocator()
 					.getRegisterSubscriptionServiceSoap();
-			// TODO send something else than 0 as coupon?
 			boolean success = binding.registerNTOrder(new NTOrderDto(username,
-					password, username, 0, publisher));
+					password, username, coupon, product));
 			if(!success) {
 				log.error("Registration failed. WS returned false.");
 			}

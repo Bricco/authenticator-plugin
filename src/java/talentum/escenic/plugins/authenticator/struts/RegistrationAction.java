@@ -30,21 +30,21 @@ public class RegistrationAction extends Action {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		RegistrationForm registationForm = (RegistrationForm) form;
+		RegistrationForm registrationForm = (RegistrationForm) form;
 
 		String publicationName = (String) request
 				.getAttribute("com.escenic.publication.name");
 
 		// perform the actual authentication
 		boolean success =  AuthenticatorManager.getInstance()
-				.register(publicationName, registationForm.getUsername(),
-						registationForm.getPassword());
+				.register(publicationName, registrationForm.getUsername(),
+						registrationForm.getPassword());
 		
 		if(success) {
 			// perform the authentication to automatically login
 			AuthenticatedUser user = AuthenticatorManager.getInstance()
-					.authenticate(publicationName, registationForm.getUsername(),
-							registationForm.getPassword(), AuthenticatorManager.getRemoteAddress(request));
+					.authenticate(publicationName, registrationForm.getUsername(),
+							registrationForm.getPassword(), AuthenticatorManager.getRemoteAddress(request));
 			
 
 			if (user != null) {

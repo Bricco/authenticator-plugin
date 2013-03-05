@@ -75,8 +75,8 @@ public class AuthorizeAction  extends Action {
 			log.debug("user.roles=" + Arrays.toString(user.getRoles()));
 		}
 		if(Collections.disjoint(Arrays.asList(user.getRoles()), Arrays.asList(DefaultAgreement.splitCommaSeparatedString(roles)))) {
-			// roles don't match, return 401
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "roles did not match");
+			// roles don't match, return 406
+			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "roles did not match");
 			return null;
 		} else if (user.hasPassiveStatusForRole(DefaultAgreement.splitCommaSeparatedString(roles))) {
 

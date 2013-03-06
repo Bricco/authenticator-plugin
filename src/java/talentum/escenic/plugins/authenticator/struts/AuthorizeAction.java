@@ -58,7 +58,7 @@ public class AuthorizeAction  extends Action {
 			
 			if (AuthenticatorManager.getInstance().userHasBeenEvicted(token)) {
 				if (log.isDebugEnabled()) {
-					log.debug("User " + user
+					log.debug("User " + user.getUserId()
 							+ " was rejected, another user was logged in");
 				}
 				// user was rejected, return 409

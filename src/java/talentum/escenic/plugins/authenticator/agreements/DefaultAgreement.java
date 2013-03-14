@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import neo.xredsys.api.Publication;
 import neo.xredsys.content.agreement.AgreementConfig;
 import neo.xredsys.content.agreement.AgreementPartner;
 import neo.xredsys.content.agreement.AgreementRequest;
@@ -53,10 +54,9 @@ public abstract class DefaultAgreement implements AgreementPartner {
 		for (int i = 0; i < cookieNames.length; i++) {
 			config.addCookieName(cookieNames[i]);
 		}
-
-		config.addRequestAttributeName("com.escenic.publication.name");
 		config.addRequestAttributeName("com.escenic.context");
 		config.addRequestAttributeName("com.escenic.context.article");
+		config.addRequestAttributeName("com.escenic.context.publication");
 		config.addRequestAttributeName("authenticatedUser");
 		config.addRequestParameterName("showPopup");
 	}
@@ -128,6 +128,9 @@ public abstract class DefaultAgreement implements AgreementPartner {
 		try {
 			URL url = new URL(request.getUrl());
 		
+			Publication publication = (Publication) request
+					.getRequestAttribute("com.escenic.context.publication");
+
 			// set headers for Varnish
 		
 			// which roles are allowed
@@ -139,6 +142,8 @@ public abstract class DefaultAgreement implements AgreementPartner {
 			response.setHeader("X-Paywall-Rejected-Url", (String)urlMap.get("rejected"));
 			// where should users with status passive be redirected
 			response.setHeader("X-Paywall-Passive-Url", (String)urlMap.get("passive"));
+			// where should we authorize users
+			response.setHeader("X-Paywall-Authorization-Url", publication.getUrl() + "/authorize.do");
 			
 			// if the configured freemium role is set and is required by the requested url,
 			// add headers for metered. Only for articles.

@@ -65,6 +65,14 @@ public class RegistrationAction extends Action {
 				if (log.isInfoEnabled()) {
 					log.info("User with token " + user.getToken() + " and email " + user.getEmail() + " logged in");
 				}
+
+				// redirect to page found in form
+				if (registrationForm.getRedirectToURL() != null	&& registrationForm.getRedirectToURL().trim().length() > 0) {
+					if(log.isDebugEnabled()) {
+						log.debug("Redirecting user " + user.getName() + " to " + registrationForm.getRedirectToURL());
+					}
+					return new ActionForward(registrationForm.getRedirectToURL(), true);
+				}
 						
 				return mapping.findForward("authenticated");
 			}

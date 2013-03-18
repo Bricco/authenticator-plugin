@@ -12,6 +12,7 @@ public class RegistrationForm extends ActionForm {
 
 	String username;
 	String password;
+	String redirectToURL;
 	
 	public String getPassword() {
 		return password;
@@ -24,6 +25,12 @@ public class RegistrationForm extends ActionForm {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getRedirectToURL() {
+		return redirectToURL;
+	}
+	public void setRedirectToURL(String redirectToURL) {
+		this.redirectToURL = redirectToURL;
 	}
 	
 }

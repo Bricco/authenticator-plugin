@@ -25,7 +25,8 @@ public class UserStatusAction  extends Action {
 		
 		String token = request.getParameter("token");
 		AuthenticatedUser user = AuthenticatorManager.getInstance().getUser(token);
-		
+		// allow ajax calls from all hosts (POC-869)
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		if(user == null) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN);
 			return null;

@@ -61,7 +61,7 @@ public class PressDataUser implements AuthenticatedUser {
 	 * @param ntuserValidDays how many days to add to createdtime to set expirationDate
 	 */
 	public PressDataUser(NTUserStatusDto userSDto, int ntuserValidDays) {
-		this.userId = userSDto.getUserId();
+		this.userId = userSDto.getUserId() + 10000000; //add 10 million to distinguish from normal user ids.
 		this.userName = userSDto.getUserName();
 		this.name = userSDto.getUserName();
 		this.email = userSDto.getEmail();

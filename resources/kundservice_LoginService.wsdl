@@ -155,10 +155,10 @@
   </wsdl:binding>
   <wsdl:service name="LoginService">
     <wsdl:port name="LoginServiceSoap" binding="tns:LoginServiceSoap">
-      <soap:address location="http://www.test.kundservice.net/prenstatusws/LoginService.asmx" />
+      <soap:address location="https://www.kundservice.net/prenstatusws/LoginService.asmx" />
     </wsdl:port>
     <wsdl:port name="LoginServiceSoap12" binding="tns:LoginServiceSoap12">
-      <soap12:address location="http://www.test.kundservice.net/prenstatusws/LoginService.asmx" />
+      <soap12:address location="https://www.kundservice.net/prenstatusws/LoginService.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

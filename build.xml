@@ -35,7 +35,7 @@
 	</target>
 
 	<target name="compile" depends="init, generate-webservice-clients">
-		<javac debug="on" srcdir="src/java" destdir="build">
+		<javac debug="on" srcdir="src/java" destdir="build" target="1.5">
 			<include name="talentum/**" />
 			<classpath refid="project.class.path" />
 		</javac>
@@ -120,7 +120,8 @@
 		<copy file="buildjars/commons-discovery-0.2.jar" todir="tmp/${ant.project.name}/lib" />
 		<copy file="buildjars/saaj.jar" todir="tmp/${ant.project.name}/lib" />
 		<copy file="buildjars/wsdl4j-1.5.1.jar" todir="tmp/${ant.project.name}/lib" />
-		<copy file="buildjars/java_memcached-release_1.3.2.jar" todir="tmp/${ant.project.name}/lib" />
+    <copy file="buildjars/java_memcached-release_1.3.2.jar" todir="tmp/${ant.project.name}/lib" />
+    <copy file="buildjars/opencsv-2.4.jar" todir="tmp/${ant.project.name}/lib" />
 		<copy todir="tmp/${ant.project.name}/misc/siteconfig">
 			<fileset dir="siteconfig">
 				<include name="**/*" />

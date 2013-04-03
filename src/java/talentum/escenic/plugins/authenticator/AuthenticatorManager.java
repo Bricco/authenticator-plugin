@@ -136,7 +136,7 @@ public class AuthenticatorManager {
 			log.error("User was authenticated, but storing the user in the cache failed. Memcached needs flush_all? Exception: "
 					+ e.getMessage());
 			if (log.isDebugEnabled()) {
-				log.debug(e);
+				log.debug(e.getMessage(), e);
 			}
 			return false;
 		}

@@ -35,7 +35,7 @@
 	</target>
 
 	<target name="compile" depends="init, generate-webservice-clients">
-		<javac debug="on" srcdir="src/java" destdir="build">
+		<javac debug="on" srcdir="src/java" destdir="build" target="1.5">
 			<include name="talentum/**" />
 			<classpath refid="project.class.path" />
 		</javac>

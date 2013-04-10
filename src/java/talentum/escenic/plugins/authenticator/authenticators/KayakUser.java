@@ -11,13 +11,15 @@ public class KayakUser implements AuthenticatedUser {
 	private String token;
 	private String customerNo;
 	private String postalCode;
+	private String status;
 	private Date loggedInTime = new Date();
 
-	public KayakUser(String customerNo, String postalCode) {
+	public KayakUser(String customerNo, String postalCode, String status) {
 		super();
 		this.token = customerNo + String.valueOf(System.currentTimeMillis());
 		this.customerNo = customerNo;
 		this.postalCode = postalCode;
+		this.status = status;
 	}
 
 	public int getUserId() {
@@ -71,8 +73,8 @@ public class KayakUser implements AuthenticatedUser {
 	}
 
 	public boolean hasPassiveStatusForRole(String[] roles) {
-		// TODO might need implementation
-		return false;
+		// all statuses that don't have "aktiv" are considered passive.
+		return !status.equals("aktiv");
 	}
 
 	public String getAdminPage() {

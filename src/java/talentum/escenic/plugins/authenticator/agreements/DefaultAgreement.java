@@ -136,8 +136,13 @@ public abstract class DefaultAgreement implements AgreementPartner {
 			// which roles are allowed
 			response.setHeader("X-Paywall-Roles", requestedRole);
 			// where should unauthorized users be redirected
-			response.setHeader("X-Paywall-Denied-Url", url.getPath() + "?showPopup=" +
-					encodeForUrl((String)urlMap.get("loginform")));
+			String loginUrl = (String)urlMap.get("loginform");
+			if(loginUrl.contains("showPopup")){
+			  response.setHeader("X-Paywall-Denied-Url", url.getPath() + encodeForUrl(loginUrl));
+			}
+			else{
+			  response.setHeader("X-Paywall-Denied-Url", loginUrl + "?redirectionUrl=" +encodeForUrl(url.getPath()));	
+			}
 			// where should evicted users be redirected
 			response.setHeader("X-Paywall-Rejected-Url", (String)urlMap.get("rejected"));
 			// where should users with status passive be redirected

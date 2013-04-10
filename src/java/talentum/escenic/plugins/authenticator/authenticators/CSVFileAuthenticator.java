@@ -65,7 +65,7 @@ public class CSVFileAuthenticator extends Authenticator {
 		} catch (Exception e) {
 			log.error("Authentication failed: Finding user failed");
 			if (log.isDebugEnabled()) {
-				log.debug(e);
+				log.debug(e.getMessage(), e);
 			}
 		}
 		if (user == null) {

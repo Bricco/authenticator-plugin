@@ -141,7 +141,14 @@ public abstract class DefaultAgreement implements AgreementPartner {
 			  response.setHeader("X-Paywall-Denied-Url", url.getPath() + encodeForUrl(loginUrl));
 			}
 			else{
-			  response.setHeader("X-Paywall-Denied-Url", loginUrl + "?redirectionUrl=" +encodeForUrl(url.getPath()));	
+				String contextPath = "/" + publication.getName();
+				String urlPath = url.getPath();
+				// if context path is not empty string and not / remove it.
+				// example: the url /nwt/kultur/ has context path /nwt so the url will be /kultur/
+				if(contextPath.length() > 1 && urlPath.startsWith(contextPath)) {
+					urlPath = urlPath.substring(contextPath.length());
+				}
+				response.setHeader("X-Paywall-Denied-Url", loginUrl + encodeForUrl(urlPath));	
 			}
 			// where should evicted users be redirected
 			response.setHeader("X-Paywall-Rejected-Url", (String)urlMap.get("rejected"));

@@ -13,6 +13,8 @@ public interface AuthenticatedUser extends Serializable {
 
 	public int getUserId();
 	
+	public int getSourceUserId();
+	
 	public String getToken();
 
 	/**

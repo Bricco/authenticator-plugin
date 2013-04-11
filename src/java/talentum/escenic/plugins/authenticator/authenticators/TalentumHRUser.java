@@ -33,6 +33,10 @@ public class TalentumHRUser implements AuthenticatedUser {
 		return userId;
 	}
 
+	public int getSourceUserId() {
+		return userId;
+	}
+
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}

@@ -88,11 +88,16 @@
 		  testcase="true"
 		  verbose="true"
 		  url="resources/kundservice_LoginService.wsdl" />
-		<axis-wsdl2java 
-		  output="src/java"
-		  testcase="true"
-		  verbose="true"
-		  url="resources/kundservice_RegisterSubscriptionService.wsdl" />
+    <axis-wsdl2java 
+      output="src/java"
+      testcase="true"
+      verbose="true"
+      url="resources/kundservice_RegisterSubscriptionService.wsdl" />
+    <axis-wsdl2java 
+      output="src/java"
+      testcase="true"
+      verbose="true"
+      url="resources/kundservice_PrenService.wsdl" />
 		<axis-wsdl2java 
 		  output="src/java"
 		  testcase="true"

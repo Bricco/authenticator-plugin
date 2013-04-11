@@ -26,6 +26,10 @@ public class KayakUser implements AuthenticatedUser {
 		return Integer.parseInt(customerNo);
 	}
 
+	public int getSourceUserId() {
+		return Integer.parseInt(customerNo);
+	}
+
 	public String getToken() {
 		return token;
 	}

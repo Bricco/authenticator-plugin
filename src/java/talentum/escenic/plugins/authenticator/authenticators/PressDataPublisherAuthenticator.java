@@ -8,6 +8,8 @@ import net.kundservice.www.prenstatusws.loginservice.LoginServiceLocator;
 import net.kundservice.www.prenstatusws.loginservice.LoginServiceSoapStub;
 import net.kundservice.www.prenstatusws.loginservice.NTUserStatusDto;
 import net.kundservice.www.prenstatusws.loginservice.UserStatusDto;
+import net.kundservice.www.prenstatusws.prenservice_asmx.PrenServiceLocator;
+import net.kundservice.www.prenstatusws.prenservice_asmx.PrenServiceSoapStub;
 import net.kundservice.www.registersubscriptionservicews.NTOrderDto;
 import net.kundservice.www.registersubscriptionservicews.RegisterSubscriptionServiceLocator;
 import net.kundservice.www.registersubscriptionservicews.RegisterSubscriptionServiceSoap;
@@ -70,7 +72,7 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 
 		AuthenticatedUser user = null;
 
-		// call web service top authenticate
+		// call web service to authenticate
 		LoginServiceSoapStub binding = (LoginServiceSoapStub) new LoginServiceLocator()
 				.getLoginServiceSoap();
 
@@ -80,8 +82,15 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 				password);
 
 		if (userSDto.isIsLoginOk()) {
+			
+			// check if POEM user is a previous NTUser
+			PrenServiceSoapStub bind = (PrenServiceSoapStub) new PrenServiceLocator()
+					.getPrenServiceSoap();
+			int ntUserId = bind.getNTUserIdFromPoemUser(userSDto.getUserId());
+
 			// populate user object
-			user = new PressDataUser(userSDto);
+			user = new PressDataUser(userSDto, ntUserId);
+			
 		} else {
 			// fallback: check the LoginNTUser for authentication
 			NTUserStatusDto ntUserSDto = binding.loginNTUser(publisher,

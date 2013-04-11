@@ -19,6 +19,7 @@ import org.apache.commons.collections.ListUtils;
 public class PressDataUser implements AuthenticatedUser {
 
 	private int userId;
+	private int ntUserId = 0;
 	private String token;
 	private String userName;
 	private String name;
@@ -35,8 +36,11 @@ public class PressDataUser implements AuthenticatedUser {
 	 * Constructs a user from the LoginService web service
 	 * @param userSDto
 	 */
-	public PressDataUser(UserStatusDto userSDto) {
+	public PressDataUser(UserStatusDto userSDto, int ntUserId) {
 		this.userId = userSDto.getUserId();
+		if(ntUserId > 0) {
+			this.ntUserId = ntUserId + 10000000; //add 10 million to distinguish from normal user ids.
+		}
 		this.userName = userSDto.getUsername();
 		this.name = userSDto.getFirstname() + " " + userSDto.getLastname();
 		this.companyName = userSDto.getCompanyName();
@@ -62,6 +66,7 @@ public class PressDataUser implements AuthenticatedUser {
 	 */
 	public PressDataUser(NTUserStatusDto userSDto, int ntuserValidDays) {
 		this.userId = userSDto.getUserId() + 10000000; //add 10 million to distinguish from normal user ids.
+		this.ntUserId = this.userId;
 		this.userName = userSDto.getUserName();
 		this.name = userSDto.getUserName();
 		this.email = userSDto.getEmail();
@@ -96,6 +101,10 @@ public class PressDataUser implements AuthenticatedUser {
 	
 	public int getUserId() {
 		return userId;
+	}
+
+	public int getSourceUserId() {
+		return ntUserId;
 	}
 
 	public String getToken() {

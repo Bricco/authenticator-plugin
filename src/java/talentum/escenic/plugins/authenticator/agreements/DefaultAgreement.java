@@ -1,9 +1,7 @@
 package talentum.escenic.plugins.authenticator.agreements;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -138,7 +136,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 			// where should unauthorized users be redirected
 			String loginUrl = (String)urlMap.get("loginform");
 			if(loginUrl.contains("showPopup")){
-			  response.setHeader("X-Paywall-Denied-Url", url.getPath() + encodeForUrl(loginUrl));
+			  response.setHeader("X-Paywall-Denied-Url", url.getPath() + loginUrl);
 			}
 			else{
 				String contextPath = "/" + publication.getName();
@@ -148,7 +146,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 				if(contextPath.length() > 1 && urlPath.startsWith(contextPath)) {
 					urlPath = urlPath.substring(contextPath.length());
 				}
-				response.setHeader("X-Paywall-Denied-Url", loginUrl + encodeForUrl(urlPath));	
+				response.setHeader("X-Paywall-Denied-Url", loginUrl + urlPath);	
 			}
 			// where should evicted users be redirected
 			response.setHeader("X-Paywall-Rejected-Url", (String)urlMap.get("rejected"));
@@ -180,7 +178,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 					response.setHeader("X-Paywall-Metered-Identifier", String.valueOf(articleID));
 					// set denied URL for redirecting user when he/she has no more clicks
 					response.setHeader("X-Paywall-Metered-Denied-Url", url.getPath() + "?showPopup=" +
-							encodeForUrl((String)urlMap.get("freemium_no_more_clicks")));
+							(String)urlMap.get("freemium_no_more_clicks"));
 					// set expires for metered cookie to configured number of days from now
 					Calendar cal = Calendar.getInstance();
 					// get number of days from config
@@ -238,14 +236,14 @@ public abstract class DefaultAgreement implements AgreementPartner {
 		return false;
 	}
 
-	private String encodeForUrl(String s) {
-		try {
-			s = URLEncoder.encode(s, "iso-8859-1");
-		} catch (UnsupportedEncodingException e) {
-			log.error("Could not encode string", e);
-		}
-		return s;
-	}
+//	private String encodeForUrl(String s) {
+//		try {
+//			s = URLEncoder.encode(s, "iso-8859-1");
+//		} catch (UnsupportedEncodingException e) {
+//			log.error("Could not encode string", e);
+//		}
+//		return s;
+//	}
 	
 	/**
 	 * Create a string array

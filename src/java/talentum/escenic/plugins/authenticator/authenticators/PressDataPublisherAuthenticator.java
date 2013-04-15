@@ -86,7 +86,15 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 			// check if POEM user is a previous NTUser
 			PrenServiceSoapStub bind = (PrenServiceSoapStub) new PrenServiceLocator()
 					.getPrenServiceSoap();
-			int ntUserId = bind.getNTUserIdFromPoemUser(userSDto.getUserId());
+			int ntUserId = -1;
+			try {
+				// Axis 1.4 has a bug that makes nil responses throw NullPointerExcepition (POC-914)
+				ntUserId = bind.getNTUserIdFromPoemUser(userSDto.getUserId());
+			} catch (NullPointerException e) {
+				if(log.isDebugEnabled()) {
+					log.debug("got nullpointer from axis for user " + userSDto.getUserId());
+				}
+			}
 
 			// populate user object
 			user = new PressDataUser(userSDto, ntUserId);

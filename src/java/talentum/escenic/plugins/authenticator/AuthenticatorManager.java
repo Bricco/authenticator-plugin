@@ -30,6 +30,7 @@ public class AuthenticatorManager {
 	private HashMap authenticators = new HashMap();
 
 	UserCache userCache;
+	boolean singleUserAccess = true;
 
 	private AuthenticatorManager() {
 	}
@@ -56,6 +57,14 @@ public class AuthenticatorManager {
 
 	public void setUserCache(UserCache userCache) {
 		this.userCache = userCache;
+	}
+
+	public boolean isSingleUserAccess() {
+		return singleUserAccess;
+	}
+
+	public void setSingleUserAccess(boolean singleUserAccess) {
+		this.singleUserAccess = singleUserAccess;
 	}
 
 	public String[] getCookieNames() {
@@ -234,6 +243,11 @@ public class AuthenticatorManager {
 	 * @return true if the user with specified token has been evicted
 	 */
 	public boolean userHasBeenEvicted(String token) {
+		// if singleUserAccess flag is set to false (true is default)
+		// return false indicating that no eviction has taken place
+		if(!singleUserAccess) {
+			return false;
+		}
 		return userCache.userHasBeenRemoved(token);
 	}
 

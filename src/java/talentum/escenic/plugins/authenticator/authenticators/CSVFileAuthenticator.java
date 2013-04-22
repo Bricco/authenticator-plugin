@@ -55,10 +55,10 @@ public class CSVFileAuthenticator extends Authenticator {
 					getComparator());
 
 			if (index > 0) {
-				String[] arr = (String[]) entries.get(index);
-				if (arr[3].equals(postalCode)) {
+				String[] line = (String[]) entries.get(index);
+				if (line[3].equals(postalCode)) {
 					// we have a match, create user object
-					user = new KayakUser(arr[2], arr[3], arr[4]);
+					user = new KayakUser(line);
 				}
 			}
 

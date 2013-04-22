@@ -10,16 +10,21 @@ public class KayakUser implements AuthenticatedUser {
 
 	private String token;
 	private String customerNo;
+	private String name;
 	private String postalCode;
 	private String status;
 	private Date loggedInTime = new Date();
 
-	public KayakUser(String customerNo, String postalCode, String status) {
-		super();
-		this.token = customerNo + String.valueOf(System.currentTimeMillis());
-		this.customerNo = customerNo;
-		this.postalCode = postalCode;
-		this.status = status;
+	/**
+	 * 
+	 * @param line an array of field on this format 
+	 * AN;P MOF;72108563;67150;aktiv;20121214;20130613;ANNLISA;CARLSSON;CARLSSON ANNLISA;Ja
+	 */
+	public KayakUser(String[] line) {
+		this.customerNo = line[2];
+		this.postalCode = line[3];
+		this.status = line[4];
+		this.name = line[7] + " " + line[8];
 	}
 
 	public int getUserId() {
@@ -39,7 +44,7 @@ public class KayakUser implements AuthenticatedUser {
 	}
 
 	public String getName() {
-		return customerNo;
+		return name;
 	}
 
 	public String getCompanyName() {

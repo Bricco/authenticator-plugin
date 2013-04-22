@@ -18,8 +18,13 @@ public class CheckAgreementTag extends AbstractArticleTag {
 			throw new JspException("No article found.");
 		}
 
+		// article is readable by default
 		boolean result = true;
+		
+		// only check articles with "locked" home sections
 		if (presentationArticle.getHomeSection().isAgreementRequired()) {
+			
+			// get the agreement info. I e "basic", "article", "lockable", etc
 			AgreementInfo agreementInfo = presentationArticle.getHomeSection()
 					.getAgreementInfo();
 			if (agreementInfo == null) {
@@ -28,6 +33,7 @@ public class CheckAgreementTag extends AbstractArticleTag {
 			} else {
 				AgreementManager manager = AgreementManager
 						.getAgreementManager();
+				// get the agreement partner that matches the agreement info
 				DefaultAgreement agreement = (DefaultAgreement) manager
 						.getAgreementPartnerFor(agreementInfo
 								.getAgreementInfo());

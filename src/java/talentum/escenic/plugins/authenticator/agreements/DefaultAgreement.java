@@ -57,6 +57,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 		config.addRequestAttributeName("com.escenic.context.publication");
 		config.addRequestAttributeName("authenticatedUser");
 		config.addRequestParameterName("showPopup");
+		config.addRequestParameterName("service");
 	}
 
 	public AgreementConfig getAgreementConfig() {
@@ -125,7 +126,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 
 		try {
 			URL url = new URL(request.getUrl());
-		
+				
 			Publication publication = (Publication) request
 					.getRequestAttribute("com.escenic.context.publication");
 
@@ -133,25 +134,61 @@ public abstract class DefaultAgreement implements AgreementPartner {
 		
 			// which roles are allowed
 			response.setHeader("X-Paywall-Roles", requestedRole);
+			
 			// where should unauthorized users be redirected
+//			String mobile="";
+//			if(request.getRequestParameter("service").equalsIgnoreCase("mobile")){
+//				mobile="?service=mobile";
+//			}
+			
+			
+			// Alternative configuration - without popup, would be
+			// NWT
+			// loginUrl=/prenumerera/users/loginform/?redirectionUrl=
+			// Talentum
+			// loginUrl=?showPopup=/prenumerera/users/loginform/
+			
 			String loginUrl = (String)urlMap.get("loginform");
+			log.debug("loginUrl: " + loginUrl);
+			String urlPath = url.getPath();
+			log.debug("urlPath1: " + urlPath);
+			if(url.getQuery()!=null) {
+				urlPath += url.getQuery();
+				log.debug("urlPath2: " + urlPath);
+			}
+			
+			// There might be request params in the loginUrl (from for instance BasicAgreement.properties) so we need to consider this for X-Paywall-Denied-Url
+			String serviceParam = "";
+			if(request.getRequestParameter("service") != null) {
+				serviceParam = (loginUrl.indexOf('?') > 0 ? "&" : "?") + "service=" + request.getRequestParameter("service");
+			}
+			
+			
 			if(loginUrl.contains("showPopup")){
-			  response.setHeader("X-Paywall-Denied-Url", url.getPath() + loginUrl);
+			  response.setHeader("X-Paywall-Denied-Url", urlPath + loginUrl + serviceParam);
 			}
 			else{
 				String contextPath = "/" + publication.getName();
-				String urlPath = url.getPath();
 				// if context path is not empty string and not / remove it.
 				// example: the url /nwt/kultur/ has context path /nwt so the url will be /kultur/
 				if(contextPath.length() > 1 && urlPath.startsWith(contextPath)) {
 					urlPath = urlPath.substring(contextPath.length());
 				}
-				response.setHeader("X-Paywall-Denied-Url", loginUrl + urlPath);	
+				log.debug("urlPath3: " + urlPath);
+				response.setHeader("X-Paywall-Denied-Url", loginUrl + urlPath + serviceParam);	
 			}
+			
+			// When it comes to X-Paywall-Rejected-Url and X-Paywall-Passive-Url we only consider the service param
+			serviceParam = "";
+			if(request.getRequestParameter("service") != null) {
+				serviceParam = "?service=" + request.getRequestParameter("service");
+			}
+
+			
 			// where should evicted users be redirected
-			response.setHeader("X-Paywall-Rejected-Url", (String)urlMap.get("rejected"));
+			response.setHeader("X-Paywall-Rejected-Url", (String)urlMap.get("rejected") + serviceParam);
 			// where should users with status passive be redirected
-			response.setHeader("X-Paywall-Passive-Url", (String)urlMap.get("passive"));
+			response.setHeader("X-Paywall-Passive-Url", (String)urlMap.get("passive") + serviceParam);
 			// where should we authorize users
 			response.setHeader("X-Paywall-Authorization-Url", publication.getUrl() + "/authorize.do");
 			

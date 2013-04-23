@@ -21,6 +21,7 @@ public class KayakUser implements AuthenticatedUser {
 	 * AN;P MOF;72108563;67150;aktiv;20121214;20130613;ANNLISA;CARLSSON;CARLSSON ANNLISA;Ja
 	 */
 	public KayakUser(String[] line) {
+		this.token = line[2] + String.valueOf(System.currentTimeMillis());
 		this.customerNo = line[2];
 		this.postalCode = line[3];
 		this.status = line[4];

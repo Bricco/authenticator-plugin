@@ -56,7 +56,7 @@ public class LoginAction extends Action {
 			}
 
 			if (log.isInfoEnabled()) {
-				log.info("User with token " + user.getToken() + " and email " + user.getEmail() + " logged in");
+				log.info("User with username " + user.getUserName() + " and email " + user.getEmail() + " logged in from " + request.getHeader("x-forwarded-for"));
 			}
 
 			// redirect to page found in form

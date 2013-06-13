@@ -3,6 +3,7 @@ package talentum.escenic.plugins.authenticator.authenticators;
 import java.io.FileReader;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;

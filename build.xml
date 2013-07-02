@@ -169,7 +169,16 @@
 	</target>
 	
 	<target name="publish-artefact" depends="pack">
-    <fail unless="env.bamboo_pluginVersion" message="Missing plugin version. In Bamboo 'Run Customised' instead"/>
+    <fail message="Missing plugin version. In Bamboo plan use 'Run Customised...' to set the plugin version.">
+        <condition>
+            <or>
+                <equals arg1="${env.bamboo_pluginVersion}" arg2=""/>
+                <not>
+                    <isset property="env.bamboo_pluginVersion"/>
+                </not>
+           </or>
+       </condition>
+    </fail>
 		<ivy:retrieve />
 		<ivy:publish
 			artifactspattern="dist/[artifact].[ext]"

@@ -1,6 +1,15 @@
 <project name="authenticator" default="pack" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<property name="version" value="1.37" />
+  <property environment="env"/>
+  <if>
+    <isset property="env.bamboo_pluginVersion" />
+    <then>
+      <property name="plugin.version" value="${env.bamboo_pluginVersion}" />
+    </then>
+    <else>
+      <property name="plugin.version" value="dev" />
+    </else>
+  </if>
 
 	<path id="path:antcontrib" path="buildjars/ant-contrib.jar" />
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="path:antcontrib" />
@@ -44,7 +53,7 @@
 	<target name="jar" depends="compile">
 		<delete failonerror="false" file="dist/${jar.file}" />
 		<mkdir dir="tmp/com/escenic/plugin" />
-		<filter token="plugin.version" value="${version}" />
+		<filter token="plugin.version" value="${plugin.version}" />
 		<copy file="resources/plugin.xml" tofile="tmp/com/escenic/plugin/plugin.xml" filtering="true" />
 		<jar jarfile="dist/${jar.file}">
 			<fileset dir="build">
@@ -160,12 +169,12 @@
 	</target>
 	
 	<target name="publish-artefact" depends="pack">
-		<fail unless="version" message="Property version must be set."/>
+    <fail unless="env.bamboo_pluginVersion" message="Missing plugin version. In Bamboo 'Run Customised' instead"/>
 		<ivy:retrieve />
 		<ivy:publish
 			artifactspattern="dist/[artifact].[ext]"
 			resolver="local"
-			pubrevision="${version}"
+			pubrevision="${env.bamboo_pluginVersion}"
 			status="release"
 			overwrite="false"/>
 	</target>

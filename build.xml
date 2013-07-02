@@ -1,5 +1,11 @@
 <project name="authenticator" default="pack" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
+  <path id="path:antcontrib" path="buildjars/ant-contrib.jar" />
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="path:antcontrib" />
+
+  <path id="ivy.lib.path" path="buildjars/ivy-2.0.0-beta1.jar"/>
+  <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+
   <property environment="env"/>
   <if>
     <isset property="env.bamboo_pluginVersion" />
@@ -10,12 +16,6 @@
       <property name="plugin.version" value="dev" />
     </else>
   </if>
-
-	<path id="path:antcontrib" path="buildjars/ant-contrib.jar" />
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="path:antcontrib" />
-
-	<path id="ivy.lib.path" path="buildjars/ivy-2.0.0-beta1.jar"/>
-	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
 
 	<property name="escenic.major.version" value="5"/>
 	<if>

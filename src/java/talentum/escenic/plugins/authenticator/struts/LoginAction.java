@@ -58,6 +58,11 @@ public class LoginAction extends Action {
 			if (log.isInfoEnabled()) {
 				log.info("User with username " + user.getUserName() + " and email " + user.getEmail() + " logged in from " + request.getHeader("x-forwarded-for"));
 			}
+			
+			// if forwarding to "passive" is configured redirect passive users.
+			if(mapping.findForward("passive") != null && user.hasPassiveStatusForRole(user.getRoles())) {
+				return mapping.findForward("passive");
+			}
 
 			// redirect to page found in form
 			if (loginForm.getRedirectToURL() != null

@@ -15,7 +15,7 @@ import talentum.escenic.plugins.authenticator.ReminderException;
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
- * CSV File authenticator.
+ * CSV File authenticator. (not in use, keeping code for reference)
  * 
  * @author stefan.norman
  */
@@ -59,7 +59,7 @@ public class CSVFileAuthenticator extends Authenticator {
 				String[] line = (String[]) entries.get(index);
 				if (line[3].equals(postalCode)) {
 					// we have a match, create user object
-					user = new KayakUser(line);
+//					user = new KayakUser(line);
 				}
 			}
 

@@ -11,61 +11,31 @@ import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class KayakUser implements AuthenticatedUser {
+public class KayakUser extends DBUser {
 
-	private String token;
-	private String customerNo;
-	private String name;
-	private String postalCode;
-	private String status;
-	private Date loggedInTime = new Date();
-	private Date activationDate = null;
-	
 	private static Log log = LogFactory
 			.getLog(KayakUser.class);
 
-	/**
-	 * 
-	 * @param line an array of field on this format 
-	 * AN;P MOF;72108563;67150;aktiv;20121214;20130613;ANNLISA;CARLSSON;CARLSSON ANNLISA;Ja;20120601 21:05:21
-	 */
-	public KayakUser(String[] line) {
-		this.token = line[2] + String.valueOf(System.currentTimeMillis());
-		this.customerNo = line[2];
-		this.postalCode = line[3];
-		this.status = line[4];
-		this.name = line[7] + " " + line[8];
-		if(line.length >= 11) {
-			log.debug("activationDateString:" + line[11]);
-			DateFormat format = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
-			try {
-				activationDate = format.parse(line[11]);
-				log.debug("activationDate:" + activationDate);
-			} catch (ParseException e) {
-				log.error("Could not parse expiration date " + line[11]
-						+ "of customer " + customerNo, e);
-			}
-		}
-	}
-
+	private Date timestamp = new Date();
+	
 	public int getUserId() {
-		return Integer.parseInt(customerNo);
+		return Integer.parseInt((String)map.get("id"));
 	}
 
 	public int getSourceUserId() {
-		return Integer.parseInt(customerNo);
+		return getUserId();
 	}
 
 	public String getToken() {
-		return token;
+		return getUserId() + String.valueOf(timestamp.getTime());
 	}
 
 	public String getUserName() {
-		return customerNo;
+		return (String)map.get("id");
 	}
 
 	public String getName() {
-		return name;
+		return (String)map.get("name");
 	}
 
 	public String getCompanyName() {
@@ -85,7 +55,7 @@ public class KayakUser implements AuthenticatedUser {
 	}
 
 	public int getCustomerNumber() {
-		return Integer.parseInt(customerNo);
+		return Integer.parseInt((String)map.get("id"));
 	}
 
 	public Date getExpirationDate() {
@@ -93,7 +63,7 @@ public class KayakUser implements AuthenticatedUser {
 	}
 
 	public Date getLoggedInTime() {
-		return loggedInTime;
+		return timestamp;
 	}
 
 	public String[] matchingRoles(String[] roles) {
@@ -104,13 +74,26 @@ public class KayakUser implements AuthenticatedUser {
 
 	public boolean hasPassiveStatusForRole(String[] roles) {
 		
+		String status = (String)map.get("status");
 		log.debug("status:" + status);
 
 		// check status "dygn"
 		if(status.equals("dygn")) {
+			
+			Date activationDate = null;
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+			String activattionDateStr = (String)map.get("activationdate");
+			try {
+				activationDate = format.parse(activattionDateStr);
+				log.debug("activationDate:" + activationDate);
+			} catch (ParseException e) {
+				log.error("Could not parse expiration date " + activattionDateStr
+						+ "of customer " + getCustomerNumber(), e);
+			}
+			
 			if(activationDate == null) {
 				log.error("User "
-						+ this.customerNo
+						+ getCustomerNumber()
 						+ " has status 'dygn' but no activation date set. That's weird so we return passive.");
 				return true;
 			} else {
@@ -135,6 +118,13 @@ public class KayakUser implements AuthenticatedUser {
 		}
 	}
 
+	/**
+	 * Return passive status in not the nicest fashion. Used in "my page".
+	 */
+	public boolean isPassive() {
+		return hasPassiveStatusForRole(null);
+	}
+	
 	public String getAdminPage() {
 		return null;
 	}

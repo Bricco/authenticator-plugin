@@ -56,16 +56,11 @@ public class AuthenticatorProcessor extends GenericProcessor implements
 
 		String userDataCookieName = AuthenticatorManager.getInstance()
 				.getCookieName(publicationName);
-		String autologinCookieName = AuthenticatorManager.getInstance()
-				.getAutoLoginCookieName(publicationName);
 		Cookie userDataCookie = null;
-		String autologinString = null;
 		Cookie[] allCookies = request.getCookies();
 		for (int i = 0; allCookies != null && i < allCookies.length; i++) {
 			if (allCookies[i].getName().equals(userDataCookieName)) {
 				userDataCookie = allCookies[i];
-			} else if (allCookies[i].getName().equals(autologinCookieName)) {
-				autologinString = allCookies[i].getValue();
 			}
 		}
 		AuthenticatedUser user = null;
@@ -74,18 +69,7 @@ public class AuthenticatorProcessor extends GenericProcessor implements
 			user = AuthenticatorManager.getInstance().getUser(
 					userDataCookie.getValue());
 		}
-
-		// (user cookie is missing OR token is invalid) AND there is an
-		// autologin cookie, then perform auto login
-		if (user == null && autologinString != null) {
-			user = AuthenticatorManager.getInstance().authenticateAuto(
-					publicationName, autologinString, AuthenticatorManager.getRemoteAddress(request));
-			if (user != null) {
-				response.addCookie(AuthenticatorManager.getInstance()
-						.getSessionCookie(publicationName, user.getToken()));
-			}
-		}
-
+		
 		// backdoor to perform autologin (from Tiger)
 		if(user == null && request.getParameter("artefact")!=null) {
 			user = AuthenticatorManager.getInstance().authenticateUsingToken(publicationName, request.getParameter("artefact"));

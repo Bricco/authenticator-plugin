@@ -31,12 +31,14 @@ public class MemcachedUserCache extends HashMapUserCache {
         }
 	}
 		
-	public void addUser(AuthenticatedUser user) {
+	public void addUser(AuthenticatedUser user, boolean singleUserAccess) {
 		
-		// remove any cheater first
-		String cheaterToken = findCheater(user);
-		if(cheaterToken != null) {
-			memCachedClient.delete(cheaterToken);
+		if(singleUserAccess) {
+			// remove any cheater first
+			String cheaterToken = findCheater(user);
+			if(cheaterToken != null) {
+				memCachedClient.delete(cheaterToken);
+			}
 		}
 		// add user to memcached
 		memCachedClient.add(user.getToken(), user);
@@ -45,7 +47,7 @@ public class MemcachedUserCache extends HashMapUserCache {
 		ensureEvictedUsers();
 		
 		// add user to HashMap
-		super.addUser(user);
+		super.addUser(user, singleUserAccess);
 
 		// replace HashMaps in memcached
 		memCachedClient.replace(VALID_USERS, validUsers);

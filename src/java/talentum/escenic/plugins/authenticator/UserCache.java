@@ -15,8 +15,9 @@ public interface UserCache {
 	/**
 	 * Add a user to the list.
 	 * @param user AuthenticatedUser to add.
+	 * @param singleUserAccess if true delete duplicate stored user 
 	 */
-	public void addUser(AuthenticatedUser user);
+	public void addUser(AuthenticatedUser user, boolean singleUserAccess);
 	
 	/**
 	 * Get a specified user.

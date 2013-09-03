@@ -24,16 +24,18 @@ public class HashMapUserCache implements UserCache {
 		evictedUsers = new HashMap();
 	}
 	
-	public void addUser(AuthenticatedUser user) {
+	public void addUser(AuthenticatedUser user, boolean singleUserAccess) {
 		
 		// remove old users
 		validUsers = removeOldUsers(validUsers);
 		evictedUsers = removeOldUsers(evictedUsers);
 
-		String cheaterToken = findCheater(user);
-		if(cheaterToken != null) {
-			evictedUsers.put(cheaterToken, validUsers.remove(cheaterToken));
-		}		
+		if(singleUserAccess) {
+			String cheaterToken = findCheater(user);
+			if(cheaterToken != null) {
+				evictedUsers.put(cheaterToken, validUsers.remove(cheaterToken));
+			}		
+		}
 		
 		validUsers.put(user.getToken(), user);
 	}

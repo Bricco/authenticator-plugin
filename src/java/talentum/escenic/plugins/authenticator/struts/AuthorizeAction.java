@@ -54,7 +54,7 @@ public class AuthorizeAction  extends Action {
 		if(log.isDebugEnabled()) {
 			log.debug("user=" + user);
 		}
-		if(user == null) {
+		if(user == null) {	
 			
 			if (AuthenticatorManager.getInstance().userHasBeenEvicted(token)) {
 				if (log.isDebugEnabled()) {

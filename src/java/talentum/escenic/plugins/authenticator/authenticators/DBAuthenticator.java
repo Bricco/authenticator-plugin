@@ -1,5 +1,7 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -65,16 +67,20 @@ public class DBAuthenticator extends Authenticator {
 		}
 		try {
 
-
 			ContentManager contentManager = ContentManager.getContentManager();
 			List result = new ArrayList();
 			String sql = "SELECT * FROM " + table + " WHERE "
-					+ columns.get("username") + "=" + username + " AND "
-					+ columns.get("password") + "='" + password + "'";
+					+ columns.get("username") + "= ? AND "
+					+ columns.get("password") + "= '?'";
+			
+			String[] preparedVariables = new String[] {username, password};
+			
+			
+			
 			if(log.isDebugEnabled()) {
 				log.debug(sql);
 			}
-			contentManager.doQuery(new Query(sql, result));
+			contentManager.doQuery(new Query(sql, preparedVariables, result));
 			
 			if(log.isDebugEnabled()) {
 				log.debug("found " + result.size() + " records");
@@ -135,14 +141,17 @@ public class DBAuthenticator extends Authenticator {
 	private static class Query implements TransactionOperation {
 		private String query;
 		private List list;
+		private String[] variables;
 
-		public Query(String query, List list) {
+		public Query(String query, String[] variables, List list) {
 			this.query = query;
+			this.variables = variables;
 			this.list = list;
 		}
 
 		public void execute(Transaction t) throws SQLException {
-			Statement st = t.getConnection().createStatement();
+			//Statement st = t.getConnection().createStatement();
+			Statement st = t.getConnection().prepareStatement(query, variables);
 			try {
 				ResultSet rs = st.executeQuery(query);
 				ResultSetMetaData metaData = rs.getMetaData();

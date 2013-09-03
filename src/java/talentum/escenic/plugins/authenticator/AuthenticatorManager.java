@@ -140,7 +140,7 @@ public class AuthenticatorManager {
 	 */
 	private boolean addUserToCache(AuthenticatedUser user) {
 		try {
-			userCache.addUser(user);
+			userCache.addUser(user, singleUserAccess);
 		} catch (Exception e) {
 			log.error("User was authenticated, but storing the user in the cache failed. Memcached needs flush_all? Exception: "
 					+ e.getMessage());

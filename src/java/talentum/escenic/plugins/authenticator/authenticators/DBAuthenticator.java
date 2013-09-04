@@ -1,11 +1,9 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -67,20 +65,16 @@ public class DBAuthenticator extends Authenticator {
 		}
 		try {
 
+
 			ContentManager contentManager = ContentManager.getContentManager();
 			List result = new ArrayList();
 			String sql = "SELECT * FROM " + table + " WHERE "
 					+ columns.get("username") + "= ? AND "
-					+ columns.get("password") + "= '?'";
-			
-			String[] preparedVariables = new String[] {username, password};
-			
-			
-			
+					+ columns.get("password") + "= ?";
 			if(log.isDebugEnabled()) {
 				log.debug(sql);
 			}
-			contentManager.doQuery(new Query(sql, preparedVariables, result));
+			contentManager.doQuery(new Query(sql, new String[] { username, password },  result));
 			
 			if(log.isDebugEnabled()) {
 				log.debug("found " + result.size() + " records");
@@ -140,20 +134,21 @@ public class DBAuthenticator extends Authenticator {
 	
 	private static class Query implements TransactionOperation {
 		private String query;
+		private String[] args;
 		private List list;
-		private String[] variables;
 
-		public Query(String query, String[] variables, List list) {
+		public Query(String query, String[] args, List list) {
 			this.query = query;
-			this.variables = variables;
+			this.args = args;
 			this.list = list;
 		}
 
 		public void execute(Transaction t) throws SQLException {
-			//Statement st = t.getConnection().createStatement();
-			Statement st = t.getConnection().prepareStatement(query, variables);
+			PreparedStatement prepStmt = t.getConnection().prepareStatement(query);
+			prepStmt.setString(1, args[0]);
+			prepStmt.setString(2, args[1]);
 			try {
-				ResultSet rs = st.executeQuery(query);
+				ResultSet rs = prepStmt.executeQuery();
 				ResultSetMetaData metaData = rs.getMetaData();
 				while (rs.next()) {
 					Map map = new HashMap();
@@ -163,7 +158,7 @@ public class DBAuthenticator extends Authenticator {
 					list.add(map);
 				}
 	        } finally {
-	            st.close();
+	        	prepStmt.close();
 	        }
 		}
 	}

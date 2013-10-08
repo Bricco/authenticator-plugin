@@ -149,6 +149,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 			// loginUrl=?showPopup=/prenumerera/users/loginform/
 			
 			String loginUrl = (String)urlMap.get("loginform");
+			loginUrl = loginUrl.replace("PUBNAME", publication.getName());
 			log.debug("loginUrl: " + loginUrl);
 			String urlPath = url.getPath();
 			log.debug("urlPath1: " + urlPath);

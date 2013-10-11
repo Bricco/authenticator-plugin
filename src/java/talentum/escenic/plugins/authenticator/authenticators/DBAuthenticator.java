@@ -32,6 +32,7 @@ public class DBAuthenticator extends Authenticator {
 
 	private String table;
 	private String userClass;
+	private String reference;
 	private HashMap columns = new HashMap();
 
 	public String getTable() {
@@ -48,6 +49,14 @@ public class DBAuthenticator extends Authenticator {
 
 	public void setUserClass(String userClass) {
 		this.userClass = userClass;
+	}
+	
+	public String getReference() {
+		return reference;
+	}
+
+	public void setReference(String reference) {
+		this.reference = reference;
 	}
 
 	public void addColumn(String column,
@@ -70,11 +79,12 @@ public class DBAuthenticator extends Authenticator {
 			List result = new ArrayList();
 			String sql = "SELECT * FROM " + table + " WHERE "
 					+ columns.get("username") + "= ? AND "
-					+ columns.get("password") + "= ?";
+					+ columns.get("password") + "= ? AND "					
+					+ columns.get("reference") + "=" + reference;
 			if(log.isDebugEnabled()) {
 				log.debug(sql);
 			}
-			contentManager.doQuery(new Query(sql, new String[] { username, password },  result));
+			contentManager.doQuery(new Query(sql, new String[] { username, password},  result));
 			
 			if(log.isDebugEnabled()) {
 				log.debug("found " + result.size() + " records");

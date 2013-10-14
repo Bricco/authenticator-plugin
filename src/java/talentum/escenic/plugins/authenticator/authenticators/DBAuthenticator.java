@@ -80,11 +80,11 @@ public class DBAuthenticator extends Authenticator {
 			String sql = "SELECT * FROM " + table + " WHERE "
 					+ columns.get("username") + "= ? AND "
 					+ columns.get("password") + "= ? AND "					
-					+ columns.get("reference") + "=" + reference;
+					+ columns.get("reference") + "=?";
 			if(log.isDebugEnabled()) {
-				log.debug(sql);
+				log.debug(sql);				
 			}
-			contentManager.doQuery(new Query(sql, new String[] { username, password},  result));
+			contentManager.doQuery(new Query(sql, new String[] { username, password,reference},  result));
 			
 			if(log.isDebugEnabled()) {
 				log.debug("found " + result.size() + " records");
@@ -157,6 +157,7 @@ public class DBAuthenticator extends Authenticator {
 			PreparedStatement prepStmt = t.getConnection().prepareStatement(query);
 			prepStmt.setString(1, args[0]);
 			prepStmt.setString(2, args[1]);
+			prepStmt.setString(3, args[2]);
 			try {
 				ResultSet rs = prepStmt.executeQuery();
 				ResultSetMetaData metaData = rs.getMetaData();

@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +33,7 @@ public class DBAuthenticator extends Authenticator {
 	private String userClass;
 	private String reference;
 	private HashMap columns = new HashMap();
+	private final String ENCRYPT_SALT = "salt_and_pepper";
 
 	public String getTable() {
 		return table;
@@ -79,7 +79,7 @@ public class DBAuthenticator extends Authenticator {
 			List result = new ArrayList();
 			String sql = "SELECT * FROM " + table + " WHERE "
 					+ columns.get("username") + "= ? AND "
-					+ columns.get("password") + "= ? AND "					
+					+ columns.get("password") + "= ENCRYPT(?, '" + ENCRYPT_SALT + "') AND "					
 					+ columns.get("reference") + "=?";
 			if(log.isDebugEnabled()) {
 				log.debug(sql);				
@@ -130,18 +130,6 @@ public class DBAuthenticator extends Authenticator {
 		// do nothing
 	}
 
-	private Comparator getComparator() {
-		return new Comparator() {
-			public int compare(Object o1, Object o2) {
-				String[] arr1 = (String[]) o1;
-				String[] arr2 = (String[]) o2;
-				Integer i1 = new Integer(arr1[2]);
-				Integer i2 = new Integer(arr2[2]);
-				return i1.compareTo(i2);
-			}
-		};
-	}
-	
 	private static class Query implements TransactionOperation {
 		private String query;
 		private String[] args;

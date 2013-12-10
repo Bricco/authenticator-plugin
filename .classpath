@@ -21,5 +21,6 @@
 	<classpathentry kind="lib" path="buildjars/log4j.jar"/>
 	<classpathentry kind="lib" path="buildjars/commons-collections-3.2.jar"/>
 	<classpathentry kind="lib" path="buildjars/opencsv-2.4.jar"/>
+	<classpathentry kind="lib" path="buildjars/java_memcached-release_2.0.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

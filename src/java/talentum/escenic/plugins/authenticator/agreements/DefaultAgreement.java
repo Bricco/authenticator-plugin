@@ -34,6 +34,8 @@ public abstract class DefaultAgreement implements AgreementPartner {
 	AgreementConfig config;
 
 	private HashMap urlMap;
+
+	private boolean enabled;
 	
 	private String freemiumRole;
 	private int freemiumNoOfFreeArticles;
@@ -44,6 +46,7 @@ public abstract class DefaultAgreement implements AgreementPartner {
 	 * 
 	 */
 	public DefaultAgreement() {
+		enabled = true; // enable per default for backward compatibility
 		urlMap = new HashMap();
 		config = new AgreementConfig();
 		config.setAuthentication(true);
@@ -62,6 +65,14 @@ public abstract class DefaultAgreement implements AgreementPartner {
 
 	public AgreementConfig getAgreementConfig() {
 		return config;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public void addUrl(String pName, String pUrl) {
@@ -96,6 +107,12 @@ public abstract class DefaultAgreement implements AgreementPartner {
 	 * Handles agreement requests.
 	 */
 	public void service(AgreementRequest request, AgreementResponse response) {
+		
+		// Check enabled flag and abort if not true.
+		// Used to globally disable authentication.
+		if(!enabled) {
+			return;
+		}
 
 		String requestedRole = request.getAgreementText();
 		if(request.getRequestParameter("showPopup") !=null) {
@@ -150,12 +167,9 @@ public abstract class DefaultAgreement implements AgreementPartner {
 			
 			String loginUrl = (String)urlMap.get("loginform");
 			loginUrl = loginUrl.replace("PUBNAME", publication.getName());
-			log.debug("loginUrl: " + loginUrl);
 			String urlPath = url.getPath();
-			log.debug("urlPath1: " + urlPath);
 			if(url.getQuery()!=null) {
 				urlPath += url.getQuery();
-				log.debug("urlPath2: " + urlPath);
 			}
 			
 			// There might be request params in the loginUrl (from for instance BasicAgreement.properties) so we need to consider this for X-Paywall-Denied-Url
@@ -175,7 +189,6 @@ public abstract class DefaultAgreement implements AgreementPartner {
 				if(contextPath.length() > 1 && urlPath.startsWith(contextPath)) {
 					urlPath = urlPath.substring(contextPath.length());
 				}
-				log.debug("urlPath3: " + urlPath);
 				response.setHeader("X-Paywall-Denied-Url", loginUrl + urlPath + serviceParam);	
 			}
 			

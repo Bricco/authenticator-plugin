@@ -16,11 +16,12 @@
 	<classpathentry kind="lib" path="buildjars/saaj.jar"/>
 	<classpathentry kind="lib" path="buildjars/wsdl4j-1.5.1.jar"/>
 	<classpathentry kind="lib" path="buildjars/jsp-api.jar"/>
-	<classpathentry kind="lib" path="buildjars/java_memcached-release_1.3.2.jar"/>
 	<classpathentry kind="lib" path="buildjars/engine-taglib-5.1-3.jar"/>
 	<classpathentry kind="lib" path="buildjars/log4j.jar"/>
 	<classpathentry kind="lib" path="buildjars/commons-collections-3.2.jar"/>
 	<classpathentry kind="lib" path="buildjars/opencsv-2.4.jar"/>
 	<classpathentry kind="lib" path="buildjars/java_memcached-release_2.0.1.jar"/>
+	<classpathentry kind="lib" path="buildjars/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="buildjars/dom4j-1.6.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

@@ -144,9 +144,54 @@ public class TitelDataAuthenticator extends Authenticator {
 		// not implemented
 	}
 
+	/**
+	 * Call https://webapi2.prenservicetest.se/Help/Api/GET-Konto-PasswordReminder-id 
+	 */
 	public void passwordReminder(String emailAddress, String publication)
 			throws ReminderException {
-		// not implemented
+
+		// REST URL to password reminder
+		String remindURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
+				+ "/Konto/PasswordReminder/" + emailAddress + "?key=" + APIKey;
+		if (log.isDebugEnabled()) {
+			log.debug("REST uri: " + remindURI);
+		}
+
+		GetMethod method = new GetMethod(remindURI);
+
+		try {
+			// call the activation URL to see if user is active.
+			int statusCode = httpClient.executeMethod(method);
+			if (statusCode != HttpStatus.SC_OK) {
+				throw new ReminderException("Wrong status from REST: "
+						+ method.getStatusLine());
+			} else {
+				String result = method.getResponseBodyAsString();
+				try {
+					Document document = DocumentHelper.parseText(result);
+					Node node = document.selectSingleNode("/boolean");
+					if (node == null && node.getStringValue().equals("false")) {
+						// the reminder failed, throw exception
+						throw new ReminderException("reminder failed");
+					}
+				} catch (DocumentException e) {
+					throw new ReminderException("reminder result parsing failed",
+							e);
+				}
+
+			}
+
+		} catch (HttpException e) {
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage(), e);
+			}
+			throw new ReminderException("http call failed", e);
+		} catch (IOException e) {
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage(), e);
+			}
+			throw new ReminderException("http call failed (i/o)", e);
+		}
 	}
 
 	public void register(String username, String password)

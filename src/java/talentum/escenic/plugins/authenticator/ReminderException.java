@@ -10,5 +10,8 @@ public class ReminderException extends Exception {
 	public ReminderException(String message) {
 		super(message);
 	}
+	public ReminderException(String message, Exception e) {
+		super(message, e);
+	}
 
 }

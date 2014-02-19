@@ -169,10 +169,10 @@ public class AuthenticatorManager {
 		return false;
 	}
 	
-	public boolean register(String publicationName, String username, String password) {
+	public boolean register(String publicationName, String username, String password, String postalCode, String customerNumber) {
 		try {
 			getAuthenticator(publicationName).register(username,
-					password);
+					password, postalCode, customerNumber);
 			return true;
 
 		} catch (RegistrationException e) {

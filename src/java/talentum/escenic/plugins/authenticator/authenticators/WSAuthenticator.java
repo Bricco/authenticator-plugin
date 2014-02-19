@@ -114,7 +114,8 @@ public abstract class WSAuthenticator extends Authenticator {
 		return true;
 	}
 
-	public void register(String username, String password)
+	public void register(String username, String password, String postalCode,
+			String customerNumber)
 			throws RegistrationException {
 		// do nothing
 	}

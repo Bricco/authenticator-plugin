@@ -39,7 +39,7 @@ public abstract class Authenticator {
 	public void setCookieName(String cookieName) {
 		this.cookieName = cookieName;
 	}
-	
+
 	public String getAutoLoginCookieName() {
 		return autoLoginCookieName;
 	}
@@ -47,51 +47,66 @@ public abstract class Authenticator {
 	public void setAutoLoginCookieName(String cookieName) {
 		this.autoLoginCookieName = cookieName;
 	}
-	
+
 	/**
 	 * Performs authentication.
 	 * 
-	 * @param username String the username
-	 * @param password String the password
-	 * @param ipaddress String the ip address
+	 * @param username
+	 *            String the username
+	 * @param password
+	 *            String the password
+	 * @param ipaddress
+	 *            String the ip address
 	 * @return a valid user
-	 * @throws AuthenticationException if authentication fails
+	 * @throws AuthenticationException
+	 *             if authentication fails
 	 */
-	public abstract AuthenticatedUser authenticate(String username, String password, String ipaddress) throws AuthenticationException;
+	public abstract AuthenticatedUser authenticate(String username,
+			String password, String ipaddress) throws AuthenticationException;
 
 	/**
 	 * Performs authentication using token.
 	 * 
-	 * @param token String the token
+	 * @param token
+	 *            String the token
 	 * @return a valid user
-	 * @throws AuthenticationException if authentication fails
+	 * @throws AuthenticationException
+	 *             if authentication fails
 	 */
 	public AuthenticatedUser authenticateUsingToken(String token)
-		throws AuthenticationException {
+			throws AuthenticationException {
 		return null;
 	}
 
 	/**
 	 * Performs logout.
 	 * 
-	 * @param token String the token
+	 * @param token
+	 *            String the token
 	 */
 	public abstract void logout(String token);
 
 	/**
 	 * Performs forgot password action.
 	 * 
-	 * @param token String the token
+	 * @param token
+	 *            String the token
 	 */
-	public abstract void passwordReminder(String emailAddress, String publication) throws ReminderException;
+	public abstract void passwordReminder(String emailAddress,
+			String publication) throws ReminderException;
 
 	/**
 	 * Performs a registration of a user.
 	 * 
-	 * @param username String the username
-	 * @param password String the password
-	 * @throws RegistrationException if registration fails
+	 * @param username
+	 *            String the username
+	 * @param password
+	 *            String the password
+	 * @throws RegistrationException
+	 *             if registration fails
 	 */
-	public abstract void register(String username, String password) throws RegistrationException;
+	public abstract void register(String username, String password,
+			String postalCode, String customerNumber)
+			throws RegistrationException;
 
 }

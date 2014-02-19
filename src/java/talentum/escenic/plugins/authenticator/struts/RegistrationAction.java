@@ -17,7 +17,8 @@ import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 /**
  * Struts action that performs a login. It uses the AuthenticatorManager
  * configured in
- * localconfig/talentum/escenic/plugins/authenticator/AuthenticatorManager.properties
+ * localconfig/talentum/escenic/plugins/authenticator/AuthenticatorManager
+ * .properties
  * 
  * @author stefan.norman
  * 
@@ -36,44 +37,51 @@ public class RegistrationAction extends Action {
 				.getAttribute("com.escenic.publication.name");
 
 		// perform the actual authentication
-		boolean success =  AuthenticatorManager.getInstance()
-				.register(publicationName, registrationForm.getUsername(),
-						registrationForm.getPassword());
-		
-		if(success) {
+		boolean success = AuthenticatorManager.getInstance().register(
+				publicationName, registrationForm.getUsername(),
+				registrationForm.getPassword(),
+				registrationForm.getPostalcode(),
+				registrationForm.getCustomernumber());
+
+		if (success) {
 			// perform the authentication to automatically login
 			AuthenticatedUser user = AuthenticatorManager.getInstance()
-					.authenticate(publicationName, registrationForm.getUsername(),
-							registrationForm.getPassword(), AuthenticatorManager.getRemoteAddress(request));
-			
+					.authenticate(publicationName,
+							registrationForm.getUsername(),
+							registrationForm.getPassword(),
+							AuthenticatorManager.getRemoteAddress(request));
 
 			if (user != null) {
-	
+
 				Cookie sessionCookie = AuthenticatorManager.getInstance()
 						.getSessionCookie(publicationName, user.getToken());
 				response.addCookie(sessionCookie);
-	
-//				// user checked autologin
-//				if (registationForm.isAutologin()) {
-//					Cookie autoCookie = AuthenticatorManager.getInstance()
-//							.getAutologinCookie(publicationName,
-//									registationForm.getUsername(),
-//									registationForm.getPassword());
-//					response.addCookie(autoCookie);
-//				}
-	
+
+				// // user checked autologin
+				// if (registationForm.isAutologin()) {
+				// Cookie autoCookie = AuthenticatorManager.getInstance()
+				// .getAutologinCookie(publicationName,
+				// registationForm.getUsername(),
+				// registationForm.getPassword());
+				// response.addCookie(autoCookie);
+				// }
+
 				if (log.isInfoEnabled()) {
-					log.info("User with token " + user.getToken() + " and email " + user.getEmail() + " logged in");
+					log.info("User with token " + user.getToken()
+							+ " and email " + user.getEmail() + " logged in");
 				}
 
 				// redirect to page found in form
-				if (registrationForm.getRedirectToURL() != null	&& registrationForm.getRedirectToURL().trim().length() > 0) {
-					if(log.isDebugEnabled()) {
-						log.debug("Redirecting user " + user.getName() + " to " + registrationForm.getRedirectToURL());
+				if (registrationForm.getRedirectToURL() != null
+						&& registrationForm.getRedirectToURL().trim().length() > 0) {
+					if (log.isDebugEnabled()) {
+						log.debug("Redirecting user " + user.getName() + " to "
+								+ registrationForm.getRedirectToURL());
 					}
-					return new ActionForward(registrationForm.getRedirectToURL(), true);
+					return new ActionForward(
+							registrationForm.getRedirectToURL(), true);
 				}
-						
+
 				return mapping.findForward("authenticated");
 			}
 		} else {

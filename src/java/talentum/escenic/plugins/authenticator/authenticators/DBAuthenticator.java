@@ -125,7 +125,8 @@ public class DBAuthenticator extends Authenticator {
 		// do nothing
 	}
 
-	public void register(String username, String password)
+	public void register(String username, String password, String postalCode,
+			String customerNumber)
 			throws RegistrationException {
 		// do nothing
 	}

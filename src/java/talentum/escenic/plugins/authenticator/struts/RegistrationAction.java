@@ -85,7 +85,7 @@ public class RegistrationAction extends Action {
 				return mapping.findForward("authenticated");
 			}
 		} else {
-			return mapping.findForward("not-authenticated");
+			return mapping.findForward("failure");
 		}
 		return mapping.findForward("not-authenticated");
 	}

@@ -184,7 +184,7 @@ public class TitelDataAuthenticator extends Authenticator {
 				try {
 					Document document = DocumentHelper.parseText(result);
 					Node node = document.selectSingleNode("/boolean");
-					if (node == null && node.getStringValue().equals("false")) {
+					if (node == null || node.getStringValue().equals("false")) {
 						// the reminder failed, throw exception
 						throw new ReminderException("reminder failed");
 					}
@@ -236,7 +236,7 @@ public class TitelDataAuthenticator extends Authenticator {
 				try {
 					Document document = DocumentHelper.parseText(result);
 					Node node = document.selectSingleNode("/boolean");
-					if (node == null && node.getStringValue().equals("false")) {
+					if (node == null || node.getStringValue().equals("false")) {
 						// the reminder failed, throw exception
 						throw new RegistrationException("registration failed");
 					}

@@ -238,7 +238,7 @@ public class TitelDataAuthenticator extends Authenticator {
 					Node node = document.selectSingleNode("/boolean");
 					if (node == null || node.getStringValue().equals("false")) {
 						// the reminder failed, throw exception
-						throw new RegistrationException("registration failed");
+						throw new RegistrationException("registration failed: " + (node==null ? "Node is null" : node.getStringValue()));
 					}
 				} catch (DocumentException e) {
 					throw new RegistrationException(

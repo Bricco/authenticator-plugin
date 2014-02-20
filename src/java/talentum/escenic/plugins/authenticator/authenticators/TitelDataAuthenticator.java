@@ -213,7 +213,7 @@ public class TitelDataAuthenticator extends Authenticator {
 
 		// REST URL to registration
 		String registerURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
-				+ "Konto/Register?key=" + APIKey;
+				+ "/Konto/Register?key=" + APIKey;
 		if (log.isDebugEnabled()) {
 			log.debug("REST uri: " + registerURI);
 		}

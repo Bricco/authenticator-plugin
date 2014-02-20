@@ -224,7 +224,7 @@ public class TitelDataAuthenticator extends Authenticator {
 				+ "</Postnummer>" + "<Username>" + username + "</Username>"
 				+ "<Password>" + password + "</Password>" + "<Epostadress>"
 				+ username + "</Epostadress>" + "</NyttKonto>";
-		method.setRequestBody(body);
+		method.setParameter("RequestBody", body);
 		try {
 			// call the activation URL to see if user is active.
 			int statusCode = httpClient.executeMethod(method);

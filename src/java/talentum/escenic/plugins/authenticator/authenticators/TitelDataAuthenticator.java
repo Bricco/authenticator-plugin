@@ -215,9 +215,6 @@ public class TitelDataAuthenticator extends Authenticator {
 		// REST URL to registration
 		String registerURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
 				+ "/Konto/Register?key=" + APIKey;
-		if (log.isDebugEnabled()) {
-			log.debug("REST uri: " + registerURI);
-		}
 
 		PostMethod method = new PostMethod(registerURI);
 		String body = "<NyttKonto>" + "<Kundnummer>" + customerNumber
@@ -225,6 +222,10 @@ public class TitelDataAuthenticator extends Authenticator {
 				+ "</Postnummer>" + "<Username>" + username + "</Username>"
 				+ "<Password>" + password + "</Password>" + "<Epostadress>"
 				+ username + "</Epostadress>" + "</NyttKonto>";
+		if (log.isDebugEnabled()) {
+			log.debug("REST uri: " + registerURI);
+			log.debug("RequestBody: " + body);
+		}
 		method.setParameter("RequestBody", body);
 		try {
 			// call the activation URL to see if user is active.

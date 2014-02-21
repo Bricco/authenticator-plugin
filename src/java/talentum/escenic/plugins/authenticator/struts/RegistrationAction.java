@@ -12,6 +12,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import talentum.escenic.plugins.authenticator.AuthenticatorManager;
+import talentum.escenic.plugins.authenticator.DuplicateUserNameException;
+import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
 
 /**
@@ -36,56 +38,59 @@ public class RegistrationAction extends Action {
 		String publicationName = (String) request
 				.getAttribute("com.escenic.publication.name");
 
-		// perform the actual authentication
-		boolean success = AuthenticatorManager.getInstance().register(
-				publicationName, registrationForm.getUsername(),
-				registrationForm.getPassword(),
-				registrationForm.getPostalcode(),
-				registrationForm.getCustomernumber());
 
-		if (success) {
-			// perform the authentication to automatically login
-			AuthenticatedUser user = AuthenticatorManager.getInstance()
-					.authenticate(publicationName,
-							registrationForm.getUsername(),
-							registrationForm.getPassword(),
-							AuthenticatorManager.getRemoteAddress(request));
-
-			if (user != null) {
-
-				Cookie sessionCookie = AuthenticatorManager.getInstance()
-						.getSessionCookie(publicationName, user.getToken());
-				response.addCookie(sessionCookie);
-
-				// // user checked autologin
-				// if (registationForm.isAutologin()) {
-				// Cookie autoCookie = AuthenticatorManager.getInstance()
-				// .getAutologinCookie(publicationName,
-				// registationForm.getUsername(),
-				// registationForm.getPassword());
-				// response.addCookie(autoCookie);
-				// }
-
-				if (log.isInfoEnabled()) {
-					log.info("User with token " + user.getToken()
-							+ " and email " + user.getEmail() + " logged in");
-				}
-
-				// redirect to page found in form
-				if (registrationForm.getRedirectToURL() != null
-						&& registrationForm.getRedirectToURL().trim().length() > 0) {
-					if (log.isDebugEnabled()) {
-						log.debug("Redirecting user " + user.getName() + " to "
-								+ registrationForm.getRedirectToURL());
-					}
-					return new ActionForward(
-							registrationForm.getRedirectToURL(), true);
-				}
-
-				return mapping.findForward("authenticated");
-			}
-		} else {
+		try {
+			// perform the actual registration
+			AuthenticatorManager.getInstance().register(publicationName,
+					registrationForm.getUsername(),
+					registrationForm.getPassword(),
+					registrationForm.getPostalcode(),
+					registrationForm.getCustomernumber());
+		} catch (DuplicateUserNameException dune) {
+			return mapping.findForward("duplicateusername");
+		} catch (RegistrationException re) {
 			return mapping.findForward("failure");
+		}
+
+		// perform the authentication to automatically login
+		AuthenticatedUser user = AuthenticatorManager.getInstance()
+				.authenticate(publicationName,
+						registrationForm.getUsername(),
+						registrationForm.getPassword(),
+						AuthenticatorManager.getRemoteAddress(request));
+
+		if (user != null) {
+
+			Cookie sessionCookie = AuthenticatorManager.getInstance()
+					.getSessionCookie(publicationName, user.getToken());
+			response.addCookie(sessionCookie);
+
+			// // user checked autologin
+			// if (registationForm.isAutologin()) {
+			// Cookie autoCookie = AuthenticatorManager.getInstance()
+			// .getAutologinCookie(publicationName,
+			// registationForm.getUsername(),
+			// registationForm.getPassword());
+			// response.addCookie(autoCookie);
+			// }
+
+			if (log.isInfoEnabled()) {
+				log.info("User with token " + user.getToken()
+						+ " and email " + user.getEmail() + " logged in");
+			}
+
+			// redirect to page found in form
+			if (registrationForm.getRedirectToURL() != null
+					&& registrationForm.getRedirectToURL().trim().length() > 0) {
+				if (log.isDebugEnabled()) {
+					log.debug("Redirecting user " + user.getName() + " to "
+							+ registrationForm.getRedirectToURL());
+				}
+				return new ActionForward(
+						registrationForm.getRedirectToURL(), true);
+			}
+
+			return mapping.findForward("authenticated");
 		}
 		return mapping.findForward("not-authenticated");
 	}

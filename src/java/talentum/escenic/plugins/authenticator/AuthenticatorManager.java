@@ -169,20 +169,11 @@ public class AuthenticatorManager {
 		return false;
 	}
 	
-	public boolean register(String publicationName, String username, String password, String postalCode, String customerNumber) {
-		try {
-			getAuthenticator(publicationName).register(username,
-					password, postalCode, customerNumber);
-			return true;
+	public void register(String publicationName, String username,
+			String password, String postalCode, String customerNumber) throws RegistrationException {
+		getAuthenticator(publicationName).register(username, password,
+				postalCode, customerNumber);
 
-		} catch (RegistrationException e) {
-			log.error("Could not register: " + e.getMessage());
-			if (log.isDebugEnabled()) {
-				log.debug(e);
-			}
-		}
-
-		return false;
 	}
 
 	public AuthenticatedUser authenticateAuto(String authenticatorName,

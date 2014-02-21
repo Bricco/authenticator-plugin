@@ -19,6 +19,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.DuplicateUserNameException;
 import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.ReminderException;
 
@@ -235,10 +236,11 @@ public class TitelDataAuthenticator extends Authenticator {
 				String result = method.getResponseBodyAsString();
 				try {
 					Document document = DocumentHelper.parseText(result);
-					Node node = document.selectSingleNode("/boolean");
-					if (node == null || node.getStringValue().equals("false")) {
-						// the reminder failed, throw exception
-						throw new RegistrationException("registration failed: " + (node==null ? "Node is null" : node.getStringValue()));
+					Node node = document.selectSingleNode("/NyttKontoResult/Status");
+					if (node == null) {
+						throw new RegistrationException("registration failed: Node is null");
+					} else if(node.getStringValue().equals("DuplicateUserName")) {
+						throw new DuplicateUserNameException("registration failed: Username already in use");
 					}
 				} catch (DocumentException e) {
 					throw new RegistrationException(

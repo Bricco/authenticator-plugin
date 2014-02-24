@@ -31,6 +31,7 @@ public class TitelDataAuthenticator extends Authenticator {
 
 	private URL RESTUrl;
 	private String APIKey;
+	private String defaultRole;
 	private int titelNr;
 	private HttpClient httpClient;
 
@@ -56,6 +57,14 @@ public class TitelDataAuthenticator extends Authenticator {
 
 	public void setAPIKey(String aPIKey) {
 		APIKey = aPIKey;
+	}
+
+	public String getDefaultRole() {
+		return defaultRole;
+	}
+
+	public void setDefaultRole(String defaultRole) {
+		this.defaultRole = defaultRole;
 	}
 
 	public int getTitelNr() {
@@ -135,34 +144,34 @@ public class TitelDataAuthenticator extends Authenticator {
 								throw new AuthenticationException(
 										"info result parsing failed", e);
 							}
-							
-							// after successful login, try to get the roles
-							method = new GetMethod(rolesURI);
-							statusCode = httpClient.executeMethod(method);
-							if (statusCode != HttpStatus.SC_OK) {
-								throw new AuthenticationException(
-										"Wrong status from REST: "
-												+ method.getStatusLine());
+							// if defaultRole is set, we use it
+							// otherwise, try to get the roles
+							if(defaultRole != null) {
+								user.addRole(defaultRole);
 							} else {
-								result = method.getResponseBodyAsString();
-								try {
-									document = DocumentHelper.parseText(result);
-									List nodes = document
-											.selectNodes("/ArrayOfBilaga/Bilaga");
-									
-									for (Iterator iterator = nodes.iterator(); iterator
-											.hasNext();) {
-										node = (Node) iterator
-												.next();
-										user.addRole(node.selectSingleNode("Bilagakod").getStringValue());
-									}
-								} catch (DocumentException e) {
+								method = new GetMethod(rolesURI);
+								statusCode = httpClient.executeMethod(method);
+								if (statusCode != HttpStatus.SC_OK) {
 									throw new AuthenticationException(
-											"role result parsing failed", e);
-								}
-								// if user still doesn't have any roles add "T"
-								if(user.getRoles().length == 0) {
-									user.addRole("T");
+											"Wrong status from REST: "
+													+ method.getStatusLine());
+								} else {
+									result = method.getResponseBodyAsString();
+									try {
+										document = DocumentHelper.parseText(result);
+										List nodes = document
+												.selectNodes("/ArrayOfBilaga/Bilaga");
+										
+										for (Iterator iterator = nodes.iterator(); iterator
+												.hasNext();) {
+											node = (Node) iterator
+													.next();
+											user.addRole(node.selectSingleNode("Bilagakod").getStringValue());
+										}
+									} catch (DocumentException e) {
+										throw new AuthenticationException(
+												"role result parsing failed", e);
+									}
 								}
 							}							
 							

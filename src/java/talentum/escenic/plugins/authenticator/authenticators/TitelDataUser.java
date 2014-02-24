@@ -1,5 +1,6 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ public class TitelDataUser implements AuthenticatedUser {
 	private String username;
 	private String firstName;
 	private String lastName;
+	private List roles = new ArrayList();
 
 	private Date timestamp = new Date();
 
@@ -44,7 +46,11 @@ public class TitelDataUser implements AuthenticatedUser {
 	}
 
 	public String[] getRoles() {
-		return new String[] {"T"};
+		return (String[]) roles.toArray(new String[roles.size()]);
+	}
+	
+	public void addRole(String role) {
+		roles.add(role);
 	}
 
 	public String getEmail() {

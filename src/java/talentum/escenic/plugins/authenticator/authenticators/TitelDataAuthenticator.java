@@ -3,6 +3,8 @@ package talentum.escenic.plugins.authenticator.authenticators;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -67,7 +69,7 @@ public class TitelDataAuthenticator extends Authenticator {
 	public AuthenticatedUser authenticate(String username, String password,
 			String ipaddress) throws AuthenticationException {
 
-		AuthenticatedUser user = null;
+		TitelDataUser user = null;
 
 		// set username and password credentials
 		httpClient.getState().setCredentials(
@@ -81,6 +83,9 @@ public class TitelDataAuthenticator extends Authenticator {
 		// REST URL to get user info
 		String infoURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
 				+ "/Abonnemang/Oversikt?key=" + APIKey;
+		// REST URL to get user roles
+		String rolesURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
+				+ "Abonnemang/AktivaBilagor/" + titelNr + "?key=" + APIKey;
 
 		if (log.isDebugEnabled()) {
 			log.debug("REST uri: " + activeURI);
@@ -130,6 +135,37 @@ public class TitelDataAuthenticator extends Authenticator {
 								throw new AuthenticationException(
 										"info result parsing failed", e);
 							}
+							
+							// after successful login, try to get the roles
+							method = new GetMethod(rolesURI);
+							statusCode = httpClient.executeMethod(method);
+							if (statusCode != HttpStatus.SC_OK) {
+								throw new AuthenticationException(
+										"Wrong status from REST: "
+												+ method.getStatusLine());
+							} else {
+								result = method.getResponseBodyAsString();
+								try {
+									document = DocumentHelper.parseText(result);
+									List nodes = document
+											.selectNodes("/ArrayOfBilaga/Bilaga");
+									
+									for (Iterator iterator = nodes.iterator(); iterator
+											.hasNext();) {
+										node = (Node) iterator
+												.next();
+										user.addRole(node.selectSingleNode("Bilagakod").getStringValue());
+									}
+								} catch (DocumentException e) {
+									throw new AuthenticationException(
+											"role result parsing failed", e);
+								}
+								// if user still doesn't have any roles add "T"
+								if(user.getRoles().length == 0) {
+									user.addRole("T");
+								}
+							}							
+							
 						}
 					}
 				} catch (DocumentException e) {

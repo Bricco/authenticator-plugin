@@ -1,6 +1,7 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -9,11 +10,11 @@ import java.util.List;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -287,8 +288,9 @@ public class TitelDataAuthenticator extends Authenticator {
 			log.debug("REST uri: " + registerURI);
 			log.debug("RequestBody: " + body);
 		}
-		method.setRequestBody(new NameValuePair[] {new NameValuePair("nyttKonto", body)});
 		try {
+			method.setRequestHeader("Content-Type", "application/xml");
+			method.setRequestEntity(new StringRequestEntity(body, "application/xml", "utf-8"));
 			// call the activation URL to see if user is active.
 			int statusCode = httpClient.executeMethod(method);
 			if (statusCode != HttpStatus.SC_OK) {
@@ -315,6 +317,11 @@ public class TitelDataAuthenticator extends Authenticator {
 
 			}
 
+		} catch (UnsupportedEncodingException e) {
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage(), e);
+			}
+			throw new RegistrationException("setting request body failed", e);
 		} catch (HttpException e) {
 			if (log.isDebugEnabled()) {
 				log.debug(e.getMessage(), e);

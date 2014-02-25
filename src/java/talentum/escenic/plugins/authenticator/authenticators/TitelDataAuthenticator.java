@@ -94,7 +94,7 @@ public class TitelDataAuthenticator extends Authenticator {
 				+ "/Abonnemang/Oversikt?key=" + APIKey;
 		// REST URL to get user roles
 		String rolesURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
-				+ "Abonnemang/AktivaBilagor/" + titelNr + "?key=" + APIKey;
+				+ "/Abonnemang/AktivaBilagor/" + titelNr + "?key=" + APIKey;
 
 		if (log.isDebugEnabled()) {
 			log.debug("REST uri: " + activeURI);
@@ -110,6 +110,9 @@ public class TitelDataAuthenticator extends Authenticator {
 						+ method.getStatusLine());
 			} else {
 				String result = method.getResponseBodyAsString();
+				if (log.isDebugEnabled()) {
+					log.debug("REST response " + result);
+				}
 				try {
 					Document document = DocumentHelper.parseText(result);
 					Node node = document.selectSingleNode("/boolean");
@@ -124,6 +127,9 @@ public class TitelDataAuthenticator extends Authenticator {
 											+ method.getStatusLine());
 						} else {
 							result = method.getResponseBodyAsString();
+							if (log.isDebugEnabled()) {
+								log.debug("REST response " + result);
+							}
 							try {
 								document = DocumentHelper.parseText(result);
 								String customerNo = document
@@ -227,6 +233,9 @@ public class TitelDataAuthenticator extends Authenticator {
 						+ method.getStatusLine());
 			} else {
 				String result = method.getResponseBodyAsString();
+				if (log.isDebugEnabled()) {
+					log.debug("REST response " + result);
+				}
 				try {
 					Document document = DocumentHelper.parseText(result);
 					Node node = document.selectSingleNode("/boolean");
@@ -280,6 +289,9 @@ public class TitelDataAuthenticator extends Authenticator {
 						+ method.getStatusLine());
 			} else {
 				String result = method.getResponseBodyAsString();
+				if (log.isDebugEnabled()) {
+					log.debug("REST response " + result);
+				}
 				try {
 					Document document = DocumentHelper.parseText(result);
 					Node node = document.selectSingleNode("/NyttKontoResult/Status");

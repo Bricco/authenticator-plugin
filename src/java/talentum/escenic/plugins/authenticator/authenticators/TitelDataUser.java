@@ -8,17 +8,15 @@ public class TitelDataUser implements AuthenticatedUser {
 
 	private String customerNo;
 	private String username;
-	private String firstName;
-	private String lastName;
+	private String name;
 	private List roles = new ArrayList();
 
 	private Date timestamp = new Date();
 
-	public TitelDataUser(String customerNo, String username, String firstName, String lastName) {
+	public TitelDataUser(String customerNo, String username, String name) {
 		this.customerNo = customerNo;
 		this.username = username;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.name = name;
 	}
 	
 	public int getUserId() {
@@ -38,7 +36,7 @@ public class TitelDataUser implements AuthenticatedUser {
 	}
 
 	public String getName() {
-		return firstName + " " + lastName;
+		return name;
 	}
 
 	public String getCompanyName() {

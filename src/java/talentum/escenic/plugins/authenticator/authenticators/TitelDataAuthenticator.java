@@ -138,23 +138,34 @@ public class TitelDataAuthenticator extends Authenticator {
 										.selectSingleNode(
 												"/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Kundnummer")
 										.getStringValue();
-								String firstName = document
-										.selectSingleNode(
-												"/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Förnamn")
-										.getStringValue();
-								String lastName = document
-										.selectSingleNode(
-												"/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Efternamn")
-										.getStringValue();
+
+								// try to get Företagsnamn and fall back on Förnamn and Efternamn
+								String name = "name-not-found";
+								node = document
+										.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Företagsnamn");
+								if (node != null) {
+									name = node.getStringValue();
+								} else {
+									Node firstNameNode = document
+											.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Förnamn");
+									Node lastNameNode = document
+											.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Efternamn");
+									if (firstNameNode != null
+											&& lastNameNode != null) {
+										name = firstNameNode.getStringValue()
+												+ " "
+												+ lastNameNode.getStringValue();
+									}
+								}
 								user = new TitelDataUser(customerNo, username,
-										firstName, lastName);
+										name);
 							} catch (DocumentException e) {
 								throw new AuthenticationException(
 										"info result parsing failed", e);
 							}
 							// if defaultRole is set, we use it
 							// otherwise, try to get the roles
-							if(defaultRole != null) {
+							if (defaultRole != null) {
 								user.addRole(defaultRole);
 							} else {
 								method = new GetMethod(rolesURI);
@@ -166,23 +177,25 @@ public class TitelDataAuthenticator extends Authenticator {
 								} else {
 									result = method.getResponseBodyAsString();
 									try {
-										document = DocumentHelper.parseText(result);
+										document = DocumentHelper
+												.parseText(result);
 										List nodes = document
 												.selectNodes("/ArrayOfBilaga/Bilaga");
-										
-										for (Iterator iterator = nodes.iterator(); iterator
-												.hasNext();) {
-											node = (Node) iterator
-													.next();
-											user.addRole(node.selectSingleNode("Bilagakod").getStringValue());
+
+										for (Iterator iterator = nodes
+												.iterator(); iterator.hasNext();) {
+											node = (Node) iterator.next();
+											user.addRole(node.selectSingleNode(
+													"Bilagakod")
+													.getStringValue());
 										}
 									} catch (DocumentException e) {
 										throw new AuthenticationException(
 												"role result parsing failed", e);
 									}
 								}
-							}							
-							
+							}
+
 						}
 					}
 				} catch (DocumentException e) {
@@ -220,7 +233,7 @@ public class TitelDataAuthenticator extends Authenticator {
 
 		// remove credentials
 		httpClient.getState().clearCredentials();
-		
+
 		// REST URL to password reminder
 		String remindURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
 				+ "/Konto/PasswordReminder/" + emailAddress + "?key=" + APIKey;
@@ -270,7 +283,7 @@ public class TitelDataAuthenticator extends Authenticator {
 
 	public void register(String username, String password, String postalCode,
 			String customerNumber) throws RegistrationException {
-		
+
 		// remove credentials
 		httpClient.getState().clearCredentials();
 
@@ -290,7 +303,8 @@ public class TitelDataAuthenticator extends Authenticator {
 		}
 		try {
 			method.setRequestHeader("Content-Type", "application/xml");
-			method.setRequestEntity(new StringRequestEntity(body, "application/xml", "utf-8"));
+			method.setRequestEntity(new StringRequestEntity(body,
+					"application/xml", "utf-8"));
 			// call the activation URL to see if user is active.
 			int statusCode = httpClient.executeMethod(method);
 			if (statusCode != HttpStatus.SC_OK) {
@@ -303,12 +317,16 @@ public class TitelDataAuthenticator extends Authenticator {
 				}
 				try {
 					Document document = DocumentHelper.parseText(result);
-					Node node = document.selectSingleNode("/NyttKontoResult/Status");
+					Node node = document
+							.selectSingleNode("/NyttKontoResult/Status");
 					if (node == null) {
-						throw new RegistrationException("registration failed: Node is null");
-					} else if(node.getStringValue().equals("DuplicateUserName")) {
+						throw new RegistrationException(
+								"registration failed: Node is null");
+					} else if (node.getStringValue()
+							.equals("DuplicateUserName")) {
 						// TODO UserRejected
-						throw new DuplicateUserNameException("registration failed: Username already in use");
+						throw new DuplicateUserNameException(
+								"registration failed: Username already in use");
 					}
 				} catch (DocumentException e) {
 					throw new RegistrationException(
@@ -334,15 +352,14 @@ public class TitelDataAuthenticator extends Authenticator {
 			throw new RegistrationException("http call failed (i/o)", e);
 		}
 
-		
-//		<NyttKonto>
-//		  <Kundnummer>212044770</Kundnummer>
-//		  <Postnummer>42738</Postnummer>
-//		  <Username>stefan@bricco.se</Username>
-//		  <Password>norman</Password>
-//		  <Epostadress>stefan@bricco.se</Epostadress>
-//		</NyttKonto>
-		
+		// <NyttKonto>
+		// <Kundnummer>212044770</Kundnummer>
+		// <Postnummer>42738</Postnummer>
+		// <Username>stefan@bricco.se</Username>
+		// <Password>norman</Password>
+		// <Epostadress>stefan@bricco.se</Epostadress>
+		// </NyttKonto>
+
 		// TODO make call
 	}
 

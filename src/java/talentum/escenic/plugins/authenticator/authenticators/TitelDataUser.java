@@ -52,7 +52,7 @@ public class TitelDataUser implements AuthenticatedUser {
 	}
 
 	public String getEmail() {
-		return null;
+		return username;
 	}
 
 	public String getProductId() {

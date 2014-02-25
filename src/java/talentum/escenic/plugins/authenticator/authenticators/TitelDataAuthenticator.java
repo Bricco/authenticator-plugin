@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -216,6 +217,9 @@ public class TitelDataAuthenticator extends Authenticator {
 	public void passwordReminder(String emailAddress, String publication)
 			throws ReminderException {
 
+		// remove credentials
+		httpClient.getState().clearCredentials();
+		
 		// REST URL to password reminder
 		String remindURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
 				+ "/Konto/PasswordReminder/" + emailAddress + "?key=" + APIKey;
@@ -265,6 +269,9 @@ public class TitelDataAuthenticator extends Authenticator {
 
 	public void register(String username, String password, String postalCode,
 			String customerNumber) throws RegistrationException {
+		
+		// remove credentials
+		httpClient.getState().clearCredentials();
 
 		// REST URL to registration
 		String registerURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
@@ -280,7 +287,7 @@ public class TitelDataAuthenticator extends Authenticator {
 			log.debug("REST uri: " + registerURI);
 			log.debug("RequestBody: " + body);
 		}
-		method.setParameter("RequestBody", body);
+		method.setRequestBody(new NameValuePair[] {new NameValuePair("nyttKonto", body)});
 		try {
 			// call the activation URL to see if user is active.
 			int statusCode = httpClient.executeMethod(method);
@@ -298,6 +305,7 @@ public class TitelDataAuthenticator extends Authenticator {
 					if (node == null) {
 						throw new RegistrationException("registration failed: Node is null");
 					} else if(node.getStringValue().equals("DuplicateUserName")) {
+						// TODO UserRejected
 						throw new DuplicateUserNameException("registration failed: Username already in use");
 					}
 				} catch (DocumentException e) {

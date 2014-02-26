@@ -15,6 +15,7 @@ import talentum.escenic.plugins.authenticator.AuthenticatorManager;
 import talentum.escenic.plugins.authenticator.DuplicateUserNameException;
 import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.authenticators.AuthenticatedUser;
+import talentum.escenic.plugins.authenticator.authenticators.UserRejectedException;
 
 /**
  * Struts action that performs a login. It uses the AuthenticatorManager
@@ -48,6 +49,8 @@ public class RegistrationAction extends Action {
 					registrationForm.getCustomernumber());
 		} catch (DuplicateUserNameException dune) {
 			return mapping.findForward("duplicateusername");
+		} catch (UserRejectedException ure) {
+			return mapping.findForward("userrejected");
 		} catch (RegistrationException re) {
 			return mapping.findForward("failure");
 		}

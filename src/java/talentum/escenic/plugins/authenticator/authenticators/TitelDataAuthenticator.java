@@ -324,9 +324,12 @@ public class TitelDataAuthenticator extends Authenticator {
 								"registration failed: Node is null");
 					} else if (node.getStringValue()
 							.equals("DuplicateUserName")) {
-						// TODO UserRejected
 						throw new DuplicateUserNameException(
 								"registration failed: Username already in use");
+					} else if (node.getStringValue()
+							.equals("UserRejected")) {
+						throw new UserRejectedException(
+								"registration failed: Username was rejected");
 					}
 				} catch (DocumentException e) {
 					throw new RegistrationException(

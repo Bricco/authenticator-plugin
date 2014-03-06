@@ -1,7 +1,6 @@
 package talentum.escenic.plugins.authenticator.struts;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,33 +31,33 @@ public class AuthorizeAction  extends Action {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		
-		String token = request.getParameter("token");
-		if(token == null) {
+		String tokenParam = request.getParameter("token");
+		if(tokenParam == null) {
 			// missing parameter, return 400
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "parameter token must be provided");
 			return null;
 		}
-		String roles = request.getParameter("roles");
-		if(roles == null) {
+		String rolesParam = request.getParameter("roles");
+		if(rolesParam == null) {
 			// missing parameter, return 400
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "parameter roles must be provided");
 			return null;
 		}
 
 		if(log.isDebugEnabled()) {
-			log.debug("token=" + token);
-			log.debug("roles=" + roles);
+			log.debug("token=" + tokenParam);
+			log.debug("roles=" + rolesParam);
 		}
 		
-		AuthenticatedUser user = AuthenticatorManager.getInstance().getUser(token);
+		AuthenticatedUser user = AuthenticatorManager.getInstance().getUser(tokenParam);
 		if(log.isDebugEnabled()) {
 			log.debug("user=" + user);
 		}
 		if(user == null) {	
 			
-			if (AuthenticatorManager.getInstance().userHasBeenEvicted(token)) {
+			if (AuthenticatorManager.getInstance().userHasBeenEvicted(tokenParam)) {
 				if (log.isDebugEnabled()) {
-					log.debug("User " + user.getUserId()
+					log.debug("User with token" + tokenParam
 							+ " was rejected, another user was logged in");
 				}
 				// user was rejected, return 409
@@ -74,15 +73,22 @@ public class AuthorizeAction  extends Action {
 		if(log.isDebugEnabled()) {
 			log.debug("user.roles=" + Arrays.toString(user.getRoles()));
 		}
-		if(Collections.disjoint(Arrays.asList(user.getRoles()), Arrays.asList(DefaultAgreement.splitCommaSeparatedString(roles)))) {
-			// roles don't match, return 406
-			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "roles did not match");
+		
+		String[] roles = DefaultAgreement.splitCommaSeparatedString(rolesParam);
+		
+		if(user.matchingRoles(roles).length == 0) {
+			if (log.isDebugEnabled()) {
+				log.debug("User " + user + " roles did not match "
+						+ rolesParam);
+			}
+			// roles don't match, return 401
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "roles did not match");
 			return null;
-		} else if (user.hasPassiveStatusForRole(DefaultAgreement.splitCommaSeparatedString(roles))) {
+		} else if (user.hasPassiveStatusForRole(roles)) {
 
 			if (log.isDebugEnabled()) {
 				log.debug("User " + user + " has passive status for role "
-						+ roles);
+						+ rolesParam);
 			}
 			// if user is logged in but has status passive, return 406
 			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "user has passive status for role");

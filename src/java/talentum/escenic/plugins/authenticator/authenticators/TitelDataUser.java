@@ -1,8 +1,11 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.collections.ListUtils;
 
 public class TitelDataUser implements AuthenticatedUser {
 
@@ -72,10 +75,12 @@ public class TitelDataUser implements AuthenticatedUser {
 	}
 
 	public String[] matchingRoles(String[] roles) {
-		return null;
+		List diff = ListUtils.intersection(Arrays.asList(getRoles()), Arrays.asList(roles));
+		return (String[]) diff.toArray(new String[diff.size()]);
 	}
 
 	public boolean hasPassiveStatusForRole(String[] roles) {
+		// passive not in use
 		return false;
 	}
 

@@ -199,6 +199,8 @@ public abstract class DefaultAgreement implements AgreementPartner {
 			}
 
 			
+			// where should unauthorized users be redirected
+			response.setHeader("X-Paywall-Unauthorized-Url", (String)urlMap.get("unauthorized") + serviceParam);
 			// where should evicted users be redirected
 			response.setHeader("X-Paywall-Rejected-Url", (String)urlMap.get("rejected") + serviceParam);
 			// where should users with status passive be redirected

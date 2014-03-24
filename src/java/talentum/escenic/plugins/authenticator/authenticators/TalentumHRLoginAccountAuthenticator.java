@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import se.talentumhr.webservices.LoginAccountServiceLocator;
 import se.talentumhr.webservices.LoginAccountServiceSoapStub;
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.ChangePasswordException;
 
 /**
  * Implements authentication through Talentum HR LoginAccount web service.
@@ -192,6 +193,11 @@ public class TalentumHRLoginAccountAuthenticator extends WSAuthenticator {
 		binding.setTimeout(getTimeout());
 
 		return binding;
+	}
+
+	public void changePassword(String username, String oldPassword,
+			String newPassword) throws ChangePasswordException {
+		// do nothing
 	}
 
 }

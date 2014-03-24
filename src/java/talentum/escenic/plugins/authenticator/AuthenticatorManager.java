@@ -133,6 +133,30 @@ public class AuthenticatorManager {
 	}
 	
 	/**
+	 * Get a user from the login cookie
+	 * 
+	 * @param publicationName which publication to find the cookie namn config from.
+	 * @param cookies an array of Cookie from the request
+	 * @return AuthenticatedUser a user if found, or else null
+	 */
+	public AuthenticatedUser getUserFromCookie(String publicationName, Cookie[] cookies) {
+		// loop cookies to find the right one
+		Cookie userDataCookie = null;
+		for (int i = 0; cookies != null && i < cookies.length; i++) {
+			if (cookies[i].getName().equals(getCookieName(publicationName))) {
+				userDataCookie = cookies[i];
+			}
+		}
+		AuthenticatedUser user = null;
+		// check the session cookie
+		if (userDataCookie != null) {
+			user = AuthenticatorManager.getInstance().getUser(
+					userDataCookie.getValue());
+		}
+		return user;
+	}
+	
+	/**
 	 * Stores the user to the cache
 	 * 
 	 * @param user the user to store 
@@ -309,5 +333,26 @@ public class AuthenticatorManager {
 			}
 		}
 		return callerIP;
+	}
+
+	/**
+	 * Change the password of a user.
+	 * 
+	 * @param publicationName the publication to locate the Authenticator to use
+	 * @param user the user whose password should change
+	 * @param oldPassword the old password
+	 * @param newPassword the new password
+	 * @return true if password change was successful
+	 */
+	public boolean changePassword(String publicationName,
+			AuthenticatedUser user, String oldPassword, String newPassword) {
+		try {
+			getAuthenticator(publicationName).changePassword(
+					user.getUserName(), oldPassword, newPassword);
+		} catch (ChangePasswordException e) {
+			log.error("Could not change password", e);
+			return false;
+		}
+		return true;
 	}
 }

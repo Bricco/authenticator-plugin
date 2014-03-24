@@ -6,7 +6,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,21 +53,8 @@ public class AuthenticatorProcessor extends GenericProcessor implements
 					.error("Could not find publication name. Make sure the AuthenticatorFilter is loaded AFTER EscenicStandardFilterChain.");
 		}
 
-		String userDataCookieName = AuthenticatorManager.getInstance()
-				.getCookieName(publicationName);
-		Cookie userDataCookie = null;
-		Cookie[] allCookies = request.getCookies();
-		for (int i = 0; allCookies != null && i < allCookies.length; i++) {
-			if (allCookies[i].getName().equals(userDataCookieName)) {
-				userDataCookie = allCookies[i];
-			}
-		}
-		AuthenticatedUser user = null;
-		// check the session cookie
-		if (userDataCookie != null) {
-			user = AuthenticatorManager.getInstance().getUser(
-					userDataCookie.getValue());
-		}
+		AuthenticatedUser user = AuthenticatorManager.getInstance()
+				.getUserFromCookie(publicationName, request.getCookies());
 		
 		// backdoor to perform autologin (from Tiger)
 		if(user == null && request.getParameter("artefact")!=null) {

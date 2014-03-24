@@ -1,6 +1,7 @@
 package talentum.escenic.plugins.authenticator.authenticators;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.ChangePasswordException;
 import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.ReminderException;
 
@@ -108,5 +109,20 @@ public abstract class Authenticator {
 	public abstract void register(String username, String password,
 			String postalCode, String customerNumber)
 			throws RegistrationException;
+
+	/**
+	 * Performs change password action.
+	 * 
+	 * @param username
+	 *            String the username
+	 * @param oldPassword
+	 *            String the old password
+	 * @param newPassword
+	 *            String the new password
+	 *            
+	 * @return true if change was successful
+	 */
+	public abstract void changePassword(String username, String oldPassword,
+			String newPassword) throws ChangePasswordException;
 
 }

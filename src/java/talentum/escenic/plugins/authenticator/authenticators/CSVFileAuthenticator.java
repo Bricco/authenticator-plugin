@@ -3,13 +3,13 @@ package talentum.escenic.plugins.authenticator.authenticators;
 import java.io.FileReader;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.ChangePasswordException;
 import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.ReminderException;
 import au.com.bytecode.opencsv.CSVReader;
@@ -101,5 +101,10 @@ public class CSVFileAuthenticator extends Authenticator {
 				return i1.compareTo(i2);
 			}
 		};
+	}
+
+	public void changePassword(String username, String oldPassword,
+			String newPassword) throws ChangePasswordException {
+		// do nothing
 	}
 }

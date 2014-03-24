@@ -23,6 +23,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.ChangePasswordException;
 import talentum.escenic.plugins.authenticator.DuplicateUserNameException;
 import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.ReminderException;
@@ -355,15 +356,72 @@ public class TitelDataAuthenticator extends Authenticator {
 			throw new RegistrationException("http call failed (i/o)", e);
 		}
 
-		// <NyttKonto>
-		// <Kundnummer>212044770</Kundnummer>
-		// <Postnummer>42738</Postnummer>
-		// <Username>stefan@bricco.se</Username>
-		// <Password>norman</Password>
-		// <Epostadress>stefan@bricco.se</Epostadress>
-		// </NyttKonto>
-
-		// TODO make call
 	}
+
+	public void changePassword(String username, String oldPassword,
+			String newPassword) throws ChangePasswordException {
+
+		// set username and password credentials
+		httpClient.getState().setCredentials(
+				new AuthScope(RESTUrl.getHost(), 443),
+				new UsernamePasswordCredentials(username, oldPassword));
+
+		// REST URL to change password
+		String changePasswdURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
+				+ "/Konto/ChangePassword?key=" + APIKey;
+
+		PostMethod method = new PostMethod(changePasswdURI);
+		String body = "<Credentials>" + "<Username>" + username + "</Username>"
+				+ "<Password>" + newPassword + "</Password>" + "</Credentials>";
+		if (log.isDebugEnabled()) {
+			log.debug("REST uri: " + changePasswdURI);
+			log.debug("RequestBody: " + body);
+		}
+
+		try {
+			method.setRequestHeader("Content-Type", "application/xml");
+			method.setRequestEntity(new StringRequestEntity(body,
+					"application/xml", "utf-8"));
+
+			// call the activation URL to see if user is active.
+			int statusCode = httpClient.executeMethod(method);
+			if (statusCode != HttpStatus.SC_OK) {
+				throw new ChangePasswordException("Wrong status from REST: "
+						+ method.getStatusLine());
+			} else {
+
+				String result = method.getResponseBodyAsString();
+				if (log.isDebugEnabled()) {
+					log.debug("REST response " + result);
+				}
+				try {
+					Document document = DocumentHelper.parseText(result);
+					Node node = document.selectSingleNode("/boolean");
+					if (node == null || !node.getStringValue().equals("true")) {
+						throw new ChangePasswordException("Wrong response from REST");
+					}
+				} catch (DocumentException e) {
+					throw new ChangePasswordException(
+							"registration result parsing failed", e);
+				}
+			
+			}		
+		} catch (UnsupportedEncodingException e) {
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage(), e);
+			}
+			throw new ChangePasswordException("setting request body failed", e);
+		} catch (HttpException e) {
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage(), e);
+			}
+			throw new ChangePasswordException("http call failed", e);
+		} catch (IOException e) {
+			if (log.isDebugEnabled()) {
+				log.debug(e.getMessage(), e);
+			}
+			throw new ChangePasswordException("http call failed (i/o)", e);
+		}
+	}		
 
 }

@@ -11,6 +11,8 @@ import net.kundservice.www.WS.Authorization.UserStruct;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import talentum.escenic.plugins.authenticator.ChangePasswordException;
+
 /**
  * Implements authentication through Pressdata Authorization web service.
  * 
@@ -56,6 +58,11 @@ public class PressDataProductAuthenticator extends WSAuthenticator {
 		}
 
 		return user;
+	}
+
+	public void changePassword(String username, String oldPassword,
+			String newPassword) throws ChangePasswordException {
+		// do nothing
 	}
 
 }

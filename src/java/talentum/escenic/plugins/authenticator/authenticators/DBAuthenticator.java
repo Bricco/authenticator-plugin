@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import talentum.escenic.plugins.authenticator.AuthenticationException;
+import talentum.escenic.plugins.authenticator.ChangePasswordException;
 import talentum.escenic.plugins.authenticator.RegistrationException;
 import talentum.escenic.plugins.authenticator.ReminderException;
 
@@ -161,5 +162,10 @@ public class DBAuthenticator extends Authenticator {
 	        	prepStmt.close();
 	        }
 		}
+	}
+
+	public void changePassword(String username, String oldPassword,
+			String newPassword) throws ChangePasswordException {
+		// do nothing
 	}
 }

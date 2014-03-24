@@ -17,6 +17,7 @@ import net.kundservice.www.registersubscriptionservicews.RegisterSubscriptionSer
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import talentum.escenic.plugins.authenticator.ChangePasswordException;
 import talentum.escenic.plugins.authenticator.RegistrationException;
 
 /**
@@ -133,6 +134,11 @@ public class PressDataPublisherAuthenticator extends WSAuthenticator {
 			throw new RegistrationException("Registration failed");
 		}
 
+	}
+
+	public void changePassword(String username, String oldPassword,
+			String newPassword) throws ChangePasswordException {
+		// do nothing
 	}
 
 }

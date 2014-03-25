@@ -148,10 +148,8 @@ public class AuthenticatorManager {
 			}
 		}
 		AuthenticatedUser user = null;
-		// check the session cookie
 		if (userDataCookie != null) {
-			user = AuthenticatorManager.getInstance().getUser(
-					userDataCookie.getValue());
+			user = getUser(userDataCookie.getValue());
 		}
 		return user;
 	}

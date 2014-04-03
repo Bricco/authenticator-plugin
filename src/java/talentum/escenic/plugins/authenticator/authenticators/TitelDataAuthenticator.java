@@ -137,7 +137,7 @@ public class TitelDataAuthenticator extends Authenticator {
 								document = DocumentHelper.parseText(result);
 								String customerNo = document
 										.selectSingleNode(
-												"/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Kundnummer")
+												"/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Externtkundnummer")
 										.getStringValue();
 
 								// try to get Företagsnamn and fall back on Förnamn and Efternamn

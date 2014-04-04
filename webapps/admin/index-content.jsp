@@ -29,6 +29,7 @@ request.setAttribute("authenticatorManager", manager);
           <th>ROLES</th>
           <th>EMAIL</th>
           <th>LOGGED IN</th>
+          <th>TOKEN</th>
           <th></th>
         </tr>
 		<logic:iterate id="user" name="authenticatorManager" property="loggedInUsers">
@@ -44,7 +45,8 @@ request.setAttribute("authenticatorManager", manager);
                 </td>
 				<td><a href="mailto:<bean:write name="user" property="email" />"><bean:write name="user" property="email" /></a></td>
 				<td><bean:write name="user" property="loggedInTime" format="yyyy-MM-dd hh:mm" /></td>
-				<td><a href="index.jsp?evictUser=<bean:write name="user" property="token" />">EVICT</a></td>
+                <td><bean:write name="user" property="token" /></td>
+                <td><a href="index.jsp?evictUser=<bean:write name="user" property="token" />">EVICT</a></td>
 			</tr>
 		</logic:iterate>
 	</table>

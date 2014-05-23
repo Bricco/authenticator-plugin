@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,14 +79,29 @@ public class DBAuthenticator extends Authenticator {
 
 			ContentManager contentManager = ContentManager.getContentManager();
 			List result = new ArrayList();
-			String sql = "SELECT * FROM " + table + " WHERE "
-					+ columns.get("username") + "= ? AND "
+			// build the SQL
+			// it's possible to configure a "altusername",
+			// i e email address, that can be used in conjunction with "username"
+			String sql = "SELECT * FROM " + table + " WHERE " +
+					(
+							columns.get("altusername") != null ?
+									"(" + columns.get("username") + "= ?  OR " + columns.get("altusername") + "= ? )" :
+									columns.get("username") + "= ? "
+					)
+					+ " AND "
 					+ columns.get("password") + "= ENCRYPT(?, '" + ENCRYPT_SALT + "') AND "					
 					+ columns.get("reference") + "=?";
 			if(log.isDebugEnabled()) {
 				log.debug(sql);				
 			}
-			contentManager.doQuery(new Query(sql, new String[] { username, password,reference},  result));
+			String[] queryParams = new String[] { username, password, reference};
+			if(columns.get("altusername") != null) {
+				queryParams = new String[] { username, username, password, reference};
+			}
+			if(log.isDebugEnabled()) {
+				log.debug("Query parameters: " + Arrays.toString(queryParams));				
+			}
+			contentManager.doQuery(new Query(sql, queryParams, result));
 			
 			if(log.isDebugEnabled()) {
 				log.debug("found " + result.size() + " records");
@@ -145,9 +161,9 @@ public class DBAuthenticator extends Authenticator {
 
 		public void execute(Transaction t) throws SQLException {
 			PreparedStatement prepStmt = t.getConnection().prepareStatement(query);
-			prepStmt.setString(1, args[0]);
-			prepStmt.setString(2, args[1]);
-			prepStmt.setString(3, args[2]);
+			for (int i = 0; i < args.length; i++) {
+				prepStmt.setString(i+1, args[i]);
+			}
 			try {
 				ResultSet rs = prepStmt.executeQuery();
 				ResultSetMetaData metaData = rs.getMetaData();

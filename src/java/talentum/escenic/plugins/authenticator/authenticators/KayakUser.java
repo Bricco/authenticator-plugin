@@ -47,7 +47,7 @@ public class KayakUser extends DBUser {
 	}
 
 	public String getEmail() {
-		return null;
+		return (String)map.get("email");
 	}
 
 	public String getProductId() {

@@ -32,6 +32,7 @@ public class DBAuthenticator extends Authenticator {
 	private static Log log = LogFactory.getLog(DBAuthenticator.class);
 
 	private String table;
+	private String logTable;
 	private String userClass;
 	private String reference;
 	private HashMap columns = new HashMap();
@@ -43,6 +44,14 @@ public class DBAuthenticator extends Authenticator {
 
 	public void setTable(String table) {
 		this.table = table;
+	}
+
+	public String getLogTable() {
+		return logTable;
+	}
+
+	public void setLogTable(String logTable) {
+		this.logTable = logTable;
 	}
 
 	public String getUserClass() {
@@ -82,7 +91,7 @@ public class DBAuthenticator extends Authenticator {
 			// build the SQL
 			// it's possible to configure a "altusername",
 			// i e email address, that can be used in conjunction with "username"
-			String sql = "SELECT * FROM " + table + " WHERE " +
+			String whereClause = "WHERE " +
 					(
 							columns.get("altusername") != null ?
 									"(" + columns.get("username") + "= ?  OR " + columns.get("altusername") + "= ? )" :
@@ -91,6 +100,7 @@ public class DBAuthenticator extends Authenticator {
 					+ " AND "
 					+ columns.get("password") + "= ENCRYPT(?, '" + ENCRYPT_SALT + "') AND "					
 					+ columns.get("reference") + "=?";
+			String sql = "SELECT * FROM " + table + " " + whereClause;
 			if(log.isDebugEnabled()) {
 				log.debug(sql);				
 			}
@@ -118,6 +128,18 @@ public class DBAuthenticator extends Authenticator {
 				DBUser dbUser = (DBUser)clazz.newInstance();
 				dbUser.init(row);
 				user = dbUser;
+				
+				// update the login counter column
+				if(logTable != null) {
+					sql = "INSERT INTO " + logTable +
+						  " (" + columns.get("username") + "," + columns.get("reference") + ")" +
+						  " VALUES (" + user.getUserId() + ",'" + reference + "')";
+					if(log.isDebugEnabled()) {
+						log.debug("Inserting login into " + logTable);	
+						log.debug(sql);	
+					}
+					contentManager.getUpdateConnector().doTransaction(new InsertQuery(sql));
+				}
 			}
 
 		} catch (Exception e) {
@@ -174,6 +196,23 @@ public class DBAuthenticator extends Authenticator {
 					}
 					list.add(map);
 				}
+	        } finally {
+	        	prepStmt.close();
+	        }
+		}
+	}
+
+	private static class InsertQuery implements TransactionOperation {
+		private String query;
+
+		public InsertQuery(String query) {
+			this.query = query;
+		}
+
+		public void execute(Transaction t) throws SQLException {
+			PreparedStatement prepStmt = t.getConnection().prepareStatement(query);
+			try {
+				prepStmt.executeUpdate();
 	        } finally {
 	        	prepStmt.close();
 	        }

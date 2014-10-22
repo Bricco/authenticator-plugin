@@ -86,7 +86,7 @@ public class SimpleUser implements AuthenticatedUser {
 	}
 
 	public boolean hasPassiveStatusForRole(String[] roles) {
-		return true;
+		return false;
 	}
 
 	public String getAdminPage() {

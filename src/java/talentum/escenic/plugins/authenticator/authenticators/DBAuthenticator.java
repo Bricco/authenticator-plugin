@@ -138,7 +138,7 @@ public class DBAuthenticator extends Authenticator {
 						log.debug("Inserting login into " + logTable);	
 						log.debug(sql);	
 					}
-					contentManager.getUpdateConnector().doTransaction(new InsertQuery(sql));
+					contentManager.doTransaction(new InsertQuery(sql));
 				}
 			}
 

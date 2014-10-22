@@ -74,11 +74,11 @@ public class SimpleUser implements AuthenticatedUser {
 	}
 
 	public String[] getRoles() {
-		return null;
+		return new String[0];
 	}
 
 	public String[] matchingRoles(String[] roles) {
-		return null;
+		return new String[0];
 	}
 
 	public boolean hasPassiveStatusForRole(String[] roles) {
@@ -90,7 +90,7 @@ public class SimpleUser implements AuthenticatedUser {
 	}
 
 	public String[] getProductIds() {
-		return null;
+		return new String[0];
 	}
 
 	public List getProducts() {

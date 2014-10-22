@@ -19,6 +19,7 @@ public class SimpleAuthenticator extends Authenticator {
 
 	private String username;
 	private String password;
+	private String role;
 
 	public String getUsername() {
 		return username;
@@ -36,6 +37,14 @@ public class SimpleAuthenticator extends Authenticator {
 		this.password = password;
 	}
 
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 
 	public AuthenticatedUser authenticate(String username, String password,
 			String ipaddress) throws AuthenticationException {
@@ -47,7 +56,7 @@ public class SimpleAuthenticator extends Authenticator {
 		}
 
 		if(username.equals(this.username) && password.equals(this.password)) {
-			user = new SimpleUser(username);
+			user = new SimpleUser(username, role);
 		} else {
 			throw new AuthenticationException(
 					"Authentication failed: Invalid credentials");

@@ -14,6 +14,7 @@ import org.apache.commons.collections.ListUtils;
 public class SimpleUser implements AuthenticatedUser {
 
 	private String userName;
+	private String role;
 	private String productId;
 	private int customerNumber = 0;
 	private Date expirationDate;
@@ -24,8 +25,9 @@ public class SimpleUser implements AuthenticatedUser {
 	 * Constructs a user
 	 * @param userName the user name
 	 */
-	public SimpleUser(String userName) {
+	public SimpleUser(String userName, String role) {
 		this.userName = userName;
+		this.role = role;
 	}
 
 	
@@ -74,11 +76,13 @@ public class SimpleUser implements AuthenticatedUser {
 	}
 
 	public String[] getRoles() {
-		return new String[0];
+		return new String[] {role};
 	}
 
 	public String[] matchingRoles(String[] roles) {
-		return new String[0];
+		// intersecion() returns a new list containing all elements that are contained in both given lists
+		List diff = ListUtils.intersection(Arrays.asList(getRoles()), Arrays.asList(roles));
+		return (String[]) diff.toArray(new String[diff.size()]);
 	}
 
 	public boolean hasPassiveStatusForRole(String[] roles) {

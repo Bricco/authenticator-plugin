@@ -19,7 +19,7 @@ request.setAttribute("authenticatorManager", manager);
 <logic:present name="authenticatorManager">
 	<table cellspacing="1" cellpadding="1" border="1">
 		<tr>
-			<th align="left" colspan="8">Logged in users</th>
+			<th align="left" colspan="9">Logged in users</th>
 		</tr>
         <tr>
           <th>ID</th>

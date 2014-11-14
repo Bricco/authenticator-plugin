@@ -30,9 +30,8 @@ public class SimpleUser implements AuthenticatedUser {
 		this.role = role;
 	}
 
-	
 	public int getUserId() {
-		return -1;
+		return (int) loggedInTime.getTime();
 	}
 
 	public int getSourceUserId() {
@@ -101,5 +100,5 @@ public class SimpleUser implements AuthenticatedUser {
 		return null;
 	}
 
-	
+
 }

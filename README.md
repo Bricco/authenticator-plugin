@@ -29,9 +29,10 @@ Installation
 - Make sure that the correct memcached server is configured in localconfig/com/danga/SockIOPool.properties
 
 - Add to Initial.properties
-
-  `service.0.0-memcached-socket-pool=/com/danga/SockIOPool`
-  `service.3.2-authenticator=/talentum/escenic/plugins/authenticator/AuthenticatorManager`
+```
+  service.0.0-memcached-socket-pool=/com/danga/SockIOPool
+  service.3.2-authenticator=/talentum/escenic/plugins/authenticator/AuthenticatorManager
+```
   
 - Restart web app server.
 

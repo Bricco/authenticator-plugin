@@ -1,12 +1,12 @@
 AUTHENTICATOR PLUGIN
---------------------
+====================
 
 Author
-======
+------
 [Stefan Norman](https://github.com/stefannorman), [Bricco AB](http://www.bricco.se)
 
 Introduction
-============
+------------
 
 This is an Escenic plugin that provides cookie based authentication functionality to a publication.
 It utilises the [Agreement functionality](http://docs.escenic.com/ece-advanced-temp-dev-guide/5.4/restricting_access_to_content.html) in Escenic. That makes it possible to restrict access to sections in Escenic WebStudio.
@@ -14,13 +14,13 @@ It uses memcached as a backend for storing authenticated users. It also provides
 Struts actions and a AuthenticatedUser object to be used in the publication.
 
 Building
-========
+--------
 
 Build plugin using ant. Target "pack" will produce a plugin jar file in dist dir.
 
 
 Installation
-============
+------------
 
 - Install [memcached](http://danga.com/memcached/) on a server accessible from the Escenic server or on localhost.
 - Unpack jar file in escenic/engine/plugins.
@@ -38,14 +38,14 @@ Installation
 
 
 Usage in publication
-====================
+--------------------
 
 The AuthenticatorFilter has to be added in the EscenicStandardFilterChain in the config.3xx range.
 The publication has to be deployed through Assembly Tool to pick up supporting jar file.
 Login/logout actions can be added in struts-config.xml see demo publication for example.
 
 User guide
-==========
+----------
 
 To lock a section:
 - In Web Studio, edit the section and check "Is agreement required" and enter 'afv T' in "Agreement information".
@@ -57,8 +57,8 @@ In escenic-admin there is a user interface for the plugin listed on the start pa
 logged in.
 
 
-Escenic bug
-===========
+Escenic bug :warning:
+-------------
 
 There is an unsolved bug in ECE core (as of version 5.7). It has been reported several times to Escenic without getting a fix. The problem is in neo/util/servlet/AgreementUtil. There is a line missing:
 ``` java
@@ -71,7 +71,7 @@ In the ece-patches there are a couple of patches for various 5.x versions of ECE
 
 
 AuthenticatorManager
-====================
+--------------------
 
 AuthenticatorManager is the main class of the plugin. It loads the Authenticators (per publication) and the UserCache. A typical configuration might look something like this.
 ```
@@ -89,7 +89,7 @@ userCache=./UserCache
 ```
 
 Authenticators
-==============
+--------------
 
 The Authenticator plugin is itself pluggable. The authentication mechanism is operated by an interface called Authenticator. 
 All authenticators have these properties in common:
@@ -148,7 +148,7 @@ titelNr=318
 ```
 
 Agreements
-==========
+----------
 
 Agreements are implementations of the Escenic AgreementPartner interface. They determine how a ECE resource (section or article) should be authorized. The agreement has an identifier ("basic", "article") that is configured in the section in Web Studio.
 All agreements are configured in neo/io/managers/AgreementManager:
@@ -177,7 +177,7 @@ The available agreements are:
 -- Never authorize section.
 
 Struts actions
-==============
+--------------
 There are a couple of Struts actions used in the plugin to aid the login process inside each publication.
 - AuthorizeAction is called by Varnish to authorize a user.
 - AutologinAction is called by Varnish to perform an autologin.
@@ -187,7 +187,7 @@ There are a couple of Struts actions used in the plugin to aid the login process
 - UserStatusAction can be used by external systems to get status on a user token (cookie value). This is used by bors.affarsvalden.se.
 
 Varnish
-=======
+-------
 
 Authenticator can act as the backend for a paywall solution configured in Varnish. The cookie reading is then elevated to Varnish configuration (VCL) with callbacks to primarily the AuthorizeAction class. The call to AuthorizeAction is cached in Varnish for maximum efficency. Authenticator will set HTTP headers to each request based on the Agreement configured.
 The HTTP headers are then checked in vcl_deliver.

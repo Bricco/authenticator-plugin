@@ -2,7 +2,7 @@ AUTHENTICATOR PLUGIN
 --------------------
 
 This is an Escenic plugin that provides cookie based authentication functionality to a publication.
-It utilises the [Agreement functionality|http://docs.escenic.com/ece-advanced-temp-dev-guide/5.4/restricting_access_to_content.html] in Escenic. That makes it possible to restrict access to sections in Escenic WebStudio.
+It utilises the [Agreement functionality](http://docs.escenic.com/ece-advanced-temp-dev-guide/5.4/restricting_access_to_content.html) in Escenic. That makes it possible to restrict access to sections in Escenic WebStudio.
 It uses memcached as a backend for storing authenticated users. It also provides login/logout
 Struts actions and a AuthenticatedUser object to be used in the publication.
 
@@ -15,7 +15,7 @@ Build plugin using ant. Target "pack" will produce a plugin jar file in dist dir
 Installation
 ============
 
-- Install memcached (http://danga.com/memcached/) on a server accessible from the Escenic server or on localhost.
+- Install [memcached](http://danga.com/memcached/) on a server accessible from the Escenic server or on localhost.
 
 - Unpack jar file in escenic/engine/plugins.
 
@@ -89,7 +89,7 @@ column.reference=pubref
 userClass=talentum.escenic.plugins.authenticator.authenticators.KayakUser
 reference=NWT
 ```
-- PressDataProductAuthenticator and PressDataPublisherAuthenticator will call the web service of [PressData|http://www.pressdata.se/] to authenticate. The web service returns roles that are then used in the authorization process. The configuration might look something like
+- PressDataProductAuthenticator and PressDataPublisherAuthenticator will call the web service of [PressData](http://www.pressdata.se/) to authenticate. The web service returns roles that are then used in the authorization process. The configuration might look something like
 ```
 $class=talentum.escenic.plugins.authenticator.authenticators.PressDataPublisherAuthenticator
 publisher=AFFVAR
@@ -109,7 +109,7 @@ password=secret_password
 role=X
 ```
 - TalentumHRLoginAccountAuthenticator is a web service authenticator for a deprecated system.
-- TitelDataAuthenticator will call the REST web service of [TitelData|http://www.titeldata.se/] to authenticate. The web service returns roles that are then used in the authorization process. The configuration might look something like
+- TitelDataAuthenticator will call the REST web service of [TitelData](http://www.titeldata.se/) to authenticate. The web service returns roles that are then used in the authorization process. The configuration might look something like
 ```
 $class=talentum.escenic.plugins.authenticator.authenticators.TitelDataAuthenticator
 RESTUrl=https://webapi2.prenservice.se

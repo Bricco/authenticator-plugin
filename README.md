@@ -59,6 +59,24 @@ required role.
 In escenic-admin there is a user interface for the plugin listed on the start page. It lists all users currently 
 logged in.
 
+AuthenticatorManager
+====================
+
+AuthenticatorManager is the main class of the plugin. It loads the Authenticators (per publication) and the UserCache. A typical configuration might look something like this.
+```
+$class=talentum.escenic.plugins.authenticator.AuthenticatorManager
+
+# load authenticators to use per publication
+authenticator.affarsvarlden=./AffarsvarldenAuthenticator
+authenticator.arbetarskydd=./ArbetarskyddAuthenticator
+authenticator.dagensmedia=./DagensmediaAuthenticator
+authenticator.konsultguiden=./KonsultguidenAuthenticator
+authenticator.lagavtal=./LagavtalAuthenticator
+authenticator.nyteknik=./NyteknikAuthenticator
+
+userCache=./UserCache
+```
+
 Authenticators
 ==============
 
@@ -118,6 +136,45 @@ defaultRole=T
 titelNr=318
 ```
 
+Agreements
+==========
+
+Agreements are implementations of the Escenic AgreementPartner interface. They determine how a ECE resource (section or article) should be authorized. The agreement has an identifier ("basic", "article") that is configured in the section in Web Studio.
+All agreements are configured in neo/io/managers/AgreementManager:
+```
+agreementPartner.basic=/talentum/escenic/plugins/authenticator/BasicAgreement
+agreementPartner.time=/talentum/escenic/plugins/authenticator/TimeAgreement
+agreementPartner.article=/talentum/escenic/plugins/authenticator/ArticleAgreement
+agreementPartner.section=/talentum/escenic/plugins/authenticator/SectionAgreement
+agreementPartner.lockable=/talentum/escenic/plugins/authenticator/LockableAgreement
+```
+The available agreements are:
+- BasicAgreement
+-- Articles can skip authorization if override field is checked.
+-- Always authorize section.
+- TimeAgreement
+-- Articles can skip authorization if publishdate matches or override field is checked.
+-- Always authorize section.
+- ArticleAgreement
+-- Articles can skip authorization if override field is checked.
+-- Never authorize section.
+- SectionAgreement
+-- Never authorize articles.
+-- Always authorize section.
+- LockableAgreement
+-- Articles can force authorization if lock field is checked.
+-- Never authorize section.
+
+Struts actions
+==============
+There are a couple of Struts actions used in the plugin to aid the login process inside each publication.
+- AuthorizeAction is called by Varnish to authorize a user.
+- AutologinAction is called by Varnish to perform an autologin.
+- ChangePasswordAction, ForgotPasswordAction and RegistrationAction will pass calls to underlying web service calls (if the authenticator has implented it).
+- LoginAction performs the actual login by calling the configured Authenticator.
+- LogoutAction logs out the user
+- UserStatusAction can be used by external systems to get status on a user token (cookie value). This is used by bors.affarsvalden.se.
+
 Escenic bug
 ===========
 
@@ -133,7 +190,8 @@ In the ece-patches there are a couple of patches for various 5.x versions of ECE
 Varnish
 =======
 
-Authenticator can act as the backend for a paywall solution configured in Varnish. The cookie reading is then elevated to Varnish configuration (VCL) with callbacks to primarily the AuthorizeAction class. The call to AuthorizeAction is cached in Varnish for maximum efficency.
+Authenticator can act as the backend for a paywall solution configured in Varnish. The cookie reading is then elevated to Varnish configuration (VCL) with callbacks to primarily the AuthorizeAction class. The call to AuthorizeAction is cached in Varnish for maximum efficency. Authenticator will set HTTP headers to each request based on the Agreement configured.
+The HTTP headers are then checked in vcl_deliver.
 
 The configuration in Varnish is made in the two VCL subroutines vcl_recv and vcl_deliver.
 

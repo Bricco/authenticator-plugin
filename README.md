@@ -1,6 +1,13 @@
 AUTHENTICATOR PLUGIN
 --------------------
 
+Author
+======
+[Stefan Norman](https://github.com/stefannorman), [Bricco AB](http://www.bricco.se)
+
+Introduction
+============
+
 This is an Escenic plugin that provides cookie based authentication functionality to a publication.
 It utilises the [Agreement functionality](http://docs.escenic.com/ece-advanced-temp-dev-guide/5.4/restricting_access_to_content.html) in Escenic. That makes it possible to restrict access to sections in Escenic WebStudio.
 It uses memcached as a backend for storing authenticated users. It also provides login/logout
@@ -16,25 +23,17 @@ Installation
 ============
 
 - Install [memcached](http://danga.com/memcached/) on a server accessible from the Escenic server or on localhost.
-
 - Unpack jar file in escenic/engine/plugins.
-
 - Add libraries in authenticator/lib to engine classpath.
-
 - Copy files in authenticator/misc/siteconfig/ to localconfig
-
 - Add to localconfig/neo/io/managers/AgreementManager.properties
-
   agreementPartner.afv=/talentum/escenic/plugins/authenticator/DefaultAgreement
-
 - Make sure that the correct memcached server is configured in localconfig/com/danga/SockIOPool.properties
-
 - Add to Initial.properties
 ```
   service.0.0-memcached-socket-pool=/com/danga/SockIOPool
   service.3.2-authenticator=/talentum/escenic/plugins/authenticator/AuthenticatorManager
 ```
-  
 - Restart web app server.
 
 
@@ -42,9 +41,7 @@ Usage in publication
 ====================
 
 The AuthenticatorFilter has to be added in the EscenicStandardFilterChain in the config.3xx range.
-
 The publication has to be deployed through Assembly Tool to pick up supporting jar file.
-
 Login/logout actions can be added in struts-config.xml see demo publication for example.
 
 User guide
@@ -58,6 +55,20 @@ required role.
 
 In escenic-admin there is a user interface for the plugin listed on the start page. It lists all users currently 
 logged in.
+
+
+Escenic bug
+===========
+
+There is an unsolved bug in ECE core (as of version 5.7). It has been reported several times to Escenic without getting a fix. The problem is in neo/util/servlet/AgreementUtil. There is a line missing:
+``` java
+    checkHeaders(response, servletresponse);
+```
+The Authenticator will use HTTP headers for it's communication with Varnish.
+
+To install the patch simply add the patch jar to engine/patches and re-assemble ECE.
+In the ece-patches there are a couple of patches for various 5.x versions of ECE.
+
 
 AuthenticatorManager
 ====================
@@ -174,18 +185,6 @@ There are a couple of Struts actions used in the plugin to aid the login process
 - LoginAction performs the actual login by calling the configured Authenticator.
 - LogoutAction logs out the user
 - UserStatusAction can be used by external systems to get status on a user token (cookie value). This is used by bors.affarsvalden.se.
-
-Escenic bug
-===========
-
-There is an unsolved bug in ECE core (as of version 5.7). It has been reported several times to Escenic without getting a fix. The problem is in neo/util/servlet/AgreementUtil. There is a line missing:
-``` java
-    checkHeaders(response, servletresponse);
-```
-The Authenticator will use HTTP headers for it's communication with Varnish.
-
-To install the patch simply add the patch jar to engine/patches and re-assemble ECE.
-In the ece-patches there are a couple of patches for various 5.x versions of ECE.
 
 Varnish
 =======

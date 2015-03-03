@@ -111,14 +111,14 @@ filePath=/tmp/users.csv
 ```
 $class=talentum.escenic.plugins.authenticator.authenticators.DBAuthenticator
 
-table=Kayak
-logTable=KayakLogins
+table=ExternalUsers
+logTable=AllLogins
 column.username=id
 column.altusername=email
 column.password=pass 
 column.reference=pubref
 userClass=talentum.escenic.plugins.authenticator.authenticators.KayakUser
-reference=NWT
+reference=REF
 ```
 - PressDataProductAuthenticator and PressDataPublisherAuthenticator will call the web service of [PressData](http://www.pressdata.se/) to authenticate. The web service returns roles that are then used in the authorization process. The configuration might look something like
 ```

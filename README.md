@@ -13,6 +13,8 @@ It utilises the [Agreement functionality](http://docs.escenic.com/ece-advanced-t
 It uses memcached as a backend for storing authenticated users. It also provides login/logout
 Struts actions and a AuthenticatedUser object to be used in the publication.
 
+The plugin has been successfully been running on a big Escenic installation since 2008. It's been tested in production with version 5.0, 5.2, 5.3 and 5.7.
+
 Building
 --------
 

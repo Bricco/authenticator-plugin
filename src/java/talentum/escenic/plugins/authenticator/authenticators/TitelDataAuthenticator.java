@@ -35,7 +35,7 @@ public class TitelDataAuthenticator extends Authenticator {
 	private URL RESTUrl;
 	private String APIKey;
 	private String defaultRole;
-	private int titelNr;
+	private int[] titelNr;
 	private HttpClient httpClient;
 
 	public TitelDataAuthenticator() {
@@ -70,11 +70,11 @@ public class TitelDataAuthenticator extends Authenticator {
 		this.defaultRole = defaultRole;
 	}
 
-	public int getTitelNr() {
+	public int[] getTitelNr() {
 		return titelNr;
 	}
 
-	public void setTitelNr(int titelNr) {
+	public void setTitelNr(int[] titelNr) {
 		this.titelNr = titelNr;
 	}
 
@@ -88,136 +88,138 @@ public class TitelDataAuthenticator extends Authenticator {
 				new AuthScope(RESTUrl.getHost(), 443),
 				new UsernamePasswordCredentials(username, password));
 
-		// REST URL to check if a user has an active subscription to the
-		// publication
-		String activeURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
-				+ "/Abonnemang/AktivtAbonnemang/" + titelNr + "?key=" + APIKey;
-		// REST URL to get user info
-		String infoURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
-				+ "/Abonnemang/Oversikt?key=" + APIKey;
-		// REST URL to get user roles
-		String rolesURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
-				+ "/Abonnemang/AktivaBilagor/" + titelNr + "?key=" + APIKey;
+		for (int i=0; i < titelNr.length; i++) {
+			
+			// REST URL to check if a user has an active subscription to the
+			// publication
+			String activeURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
+					+ "/Abonnemang/AktivtAbonnemang/" + titelNr[i] + "?key=" + APIKey;
+			// REST URL to get user info
+			String infoURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
+					+ "/Abonnemang/Oversikt?key=" + APIKey;
+			// REST URL to get user roles
+			String rolesURI = RESTUrl.getProtocol() + "://" + RESTUrl.getHost()
+					+ "/Abonnemang/AktivaBilagor/" + titelNr[i] + "?key=" + APIKey;
 
-		if (log.isDebugEnabled()) {
-			log.debug("REST uri: " + activeURI);
-		}
+			if (log.isDebugEnabled()) {
+				log.debug("REST uri: " + activeURI);
+			}
 
-		GetMethod method = new GetMethod(activeURI);
+			GetMethod method = new GetMethod(activeURI);
 
-		try {
-			// call the activation URL to see if user is active.
-			int statusCode = httpClient.executeMethod(method);
-			if (statusCode != HttpStatus.SC_OK) {
-				throw new AuthenticationException("Wrong status from REST: "
-						+ method.getStatusLine());
-			} else {
-				String result = method.getResponseBodyAsString();
-				if (log.isDebugEnabled()) {
-					log.debug("REST response " + result);
-				}
-				try {
-					Document document = DocumentHelper.parseText(result);
-					Node node = document.selectSingleNode("/boolean");
-					if (node != null && node.getStringValue().equals("true")) {
-						// the user has active subscription
-						// try to get his info to populate user object
-						method = new GetMethod(infoURI);
-						statusCode = httpClient.executeMethod(method);
-						if (statusCode != HttpStatus.SC_OK) {
-							throw new AuthenticationException(
-									"Wrong status from REST: "
-											+ method.getStatusLine());
-						} else {
-							result = method.getResponseBodyAsString();
-							if (log.isDebugEnabled()) {
-								log.debug("REST response " + result);
-							}
-							try {
-								document = DocumentHelper.parseText(result);
-								String customerNo = document
-										.selectSingleNode(
-												"/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Externtkundnummer")
-										.getStringValue();
-
-								// try to get Företagsnamn and fall back on Förnamn and Efternamn
-								String name = "name-not-found";
-								node = document
-										.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Företagsnamn");
-								if (node != null) {
-									name = node.getStringValue();
-								} else {
-									Node firstNameNode = document
-											.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Förnamn");
-									Node lastNameNode = document
-											.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Efternamn");
-									if (firstNameNode != null
-											&& lastNameNode != null) {
-										name = firstNameNode.getStringValue()
-												+ " "
-												+ lastNameNode.getStringValue();
-									}
-								}
-								user = new TitelDataUser(customerNo, username,
-										name);
-							} catch (DocumentException e) {
-								throw new AuthenticationException(
-										"info result parsing failed", e);
-							}
-							// if defaultRole is set, we use it
-							// otherwise, try to get the roles
-							if (defaultRole != null) {
-								user.addRole(defaultRole);
-							} else {
-								method = new GetMethod(rolesURI);
-								statusCode = httpClient.executeMethod(method);
-								if (statusCode != HttpStatus.SC_OK) {
-									throw new AuthenticationException(
-											"Wrong status from REST: "
-													+ method.getStatusLine());
-								} else {
-									result = method.getResponseBodyAsString();
-									try {
-										document = DocumentHelper
-												.parseText(result);
-										List nodes = document
-												.selectNodes("/ArrayOfBilaga/Bilaga");
-
-										for (Iterator iterator = nodes
-												.iterator(); iterator.hasNext();) {
-											node = (Node) iterator.next();
-											user.addRole(node.selectSingleNode(
-													"Bilagakod")
-													.getStringValue());
-										}
-									} catch (DocumentException e) {
-										throw new AuthenticationException(
-												"role result parsing failed", e);
-									}
-								}
-							}
-
-						}
+			try {
+				// call the activation URL to see if user is active.
+				int statusCode = httpClient.executeMethod(method);
+				if (statusCode != HttpStatus.SC_OK) {
+					throw new AuthenticationException("Wrong status from REST: "
+							+ method.getStatusLine());
+				} else {
+					String result = method.getResponseBodyAsString();
+					if (log.isDebugEnabled()) {
+						log.debug("REST response " + result);
 					}
-				} catch (DocumentException e) {
-					throw new AuthenticationException(
-							"active result parsing failed", e);
+					try {
+						Document document = DocumentHelper.parseText(result);
+						Node node = document.selectSingleNode("/boolean");
+						if (node != null && node.getStringValue().equals("true")) {
+							// the user has active subscription
+							// try to get his info to populate user object
+							method = new GetMethod(infoURI);
+							statusCode = httpClient.executeMethod(method);
+							if (statusCode != HttpStatus.SC_OK) {
+								throw new AuthenticationException(
+										"Wrong status from REST: "
+												+ method.getStatusLine());
+							} else {
+								result = method.getResponseBodyAsString();
+								if (log.isDebugEnabled()) {
+									log.debug("REST response " + result);
+								}
+								try {
+									document = DocumentHelper.parseText(result);
+									String customerNo = document
+											.selectSingleNode(
+													"/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Externtkundnummer")
+											.getStringValue();
+
+									// try to get Företagsnamn and fall back on Förnamn and Efternamn
+									String name = "name-not-found";
+									node = document
+											.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Företagsnamn");
+									if (node != null) {
+										name = node.getStringValue();
+									} else {
+										Node firstNameNode = document
+												.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Förnamn");
+										Node lastNameNode = document
+												.selectSingleNode("/AbonnemangöversiktContainer/Abonnemangöversikt/Mottagare/Efternamn");
+										if (firstNameNode != null
+												&& lastNameNode != null) {
+											name = firstNameNode.getStringValue()
+													+ " "
+													+ lastNameNode.getStringValue();
+										}
+									}
+									user = new TitelDataUser(customerNo, username,
+											name);
+								} catch (DocumentException e) {
+									throw new AuthenticationException(
+											"info result parsing failed", e);
+								}
+								// if defaultRole is set, we use it
+								// otherwise, try to get the roles
+								if (defaultRole != null) {
+									user.addRole(defaultRole);
+								} else {
+									method = new GetMethod(rolesURI);
+									statusCode = httpClient.executeMethod(method);
+									if (statusCode != HttpStatus.SC_OK) {
+										throw new AuthenticationException(
+												"Wrong status from REST: "
+														+ method.getStatusLine());
+									} else {
+										result = method.getResponseBodyAsString();
+										try {
+											document = DocumentHelper
+													.parseText(result);
+											List nodes = document
+													.selectNodes("/ArrayOfBilaga/Bilaga");
+
+											for (Iterator iterator = nodes
+													.iterator(); iterator.hasNext();) {
+												node = (Node) iterator.next();
+												user.addRole(node.selectSingleNode(
+														"Bilagakod")
+														.getStringValue());
+											}
+										} catch (DocumentException e) {
+											throw new AuthenticationException(
+													"role result parsing failed", e);
+										}
+									}
+								}
+
+							}
+						}
+					} catch (DocumentException e) {
+						throw new AuthenticationException(
+								"active result parsing failed", e);
+					}
+
 				}
 
+			} catch (HttpException e) {
+				if (log.isDebugEnabled()) {
+					log.debug(e.getMessage(), e);
+				}
+				throw new AuthenticationException("http call failed", e);
+			} catch (IOException e) {
+				if (log.isDebugEnabled()) {
+					log.debug(e.getMessage(), e);
+				}
+				throw new AuthenticationException("http call failed (i/o)", e);
 			}
-
-		} catch (HttpException e) {
-			if (log.isDebugEnabled()) {
-				log.debug(e.getMessage(), e);
-			}
-			throw new AuthenticationException("http call failed", e);
-		} catch (IOException e) {
-			if (log.isDebugEnabled()) {
-				log.debug(e.getMessage(), e);
-			}
-			throw new AuthenticationException("http call failed (i/o)", e);
 		}
-
 		return user;
 	}
 

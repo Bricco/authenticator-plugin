@@ -241,7 +241,7 @@ public class AuthenticatorManager {
 	 * @return a valid user
 	 */
 	public AuthenticatedUser getUser(String token) {
-		if (token == null) {
+		if (token == null || token == "") {
 			return null;
 		}
 		return userCache.getUser(token);
